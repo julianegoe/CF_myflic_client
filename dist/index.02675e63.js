@@ -26485,41 +26485,69 @@ try {
   });
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
+  require("react-dom");
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/main-view/main-view.jsx";
   class MainView extends _reactDefault.default.Component {
+    constructor() {
+      super();
+      this.state = {
+        movies: [{
+          _id: 1,
+          Title: "Inception",
+          Description: "lorem ipsum",
+          ImagePath: "#"
+        }, {
+          _id: 2,
+          Title: "Young Adult",
+          Description: "lorem ipsum",
+          ImagePath: "#"
+        }, {
+          _id: 3,
+          Title: "Rope",
+          Description: "lorem ipsum",
+          ImagePath: "#"
+        }]
+      };
+    }
     render() {
-      return (
-        /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "main-view",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 6,
-            columnNumber: 13
-          }
-        }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 7,
-            columnNumber: 17
-          }
-        }, "Inception"), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 8,
-            columnNumber: 17
-          }
-        }, "The Shawshank Redemption"), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 9,
-            columnNumber: 17
-          }
-        }, "Gladiator"))
-      );
+      const movies = this.state.movies;
+      if (movies.length === 0) {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "main-view",
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 19,
+              columnNumber: 20
+            }
+          }, "The list is empty!")
+        );
+      } else {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "main-view",
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 22,
+              columnNumber: 17
+            }
+          }, movies.map(movie => {
+            return (
+              /*#__PURE__*/_reactDefault.default.createElement("div", {
+                key: movie._id,
+                __self: this,
+                __source: {
+                  fileName: _jsxFileName,
+                  lineNumber: 24,
+                  columnNumber: 32
+                }
+              }, movie.Title)
+            );
+          }))
+        );
+      }
     }
   }
   helpers.postlude(module);
@@ -26528,6 +26556,6 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
+},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-dom":"2sg1U"}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
 
 //# sourceMappingURL=index.02675e63.js.map
