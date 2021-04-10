@@ -32,3 +32,26 @@ npm start
 ## Build Process
 
 The build is done with [Parcel v2](https://www.npmjs.com/package/parcel#transformers)
+
+## Components
+
+The hirarchy of the components is as follows:
+
+MainView
+    MovieView
+        MovieCard
+            MovieView
+                GenreView
+                DirectorView
+        MovieCard
+            MovieView
+                GenreView
+                DirectorView
+        MovieCard
+            MovieView
+                GenreView
+                DirectorView
+    ProfileView
+        EditView
+        FavoritesView
+    ...
