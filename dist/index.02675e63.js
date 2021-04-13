@@ -26496,18 +26496,18 @@ try {
         movies: [{
           _id: 1,
           Title: "Inception",
-          Description: "lorem ipsum",
-          ImagePath: "#"
+          Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+          ImagePath: "./public/inception.jpeg"
         }, {
           _id: 2,
           Title: "Young Adult",
-          Description: "lorem ipsum",
-          ImagePath: "#"
+          Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.",
+          ImagePath: "../../img/young_adult.jpeg"
         }, {
           _id: 3,
           Title: "Rope",
-          Description: "lorem ipsum",
-          ImagePath: "#"
+          Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.",
+          ImagePath: "../../img/rope.jpeg"
         }],
         selectedMovie: null
       };
@@ -26522,6 +26522,9 @@ try {
       if (selectedMovie) {
         return (
           /*#__PURE__*/_reactDefault.default.createElement(_movieViewMovieView.MovieView, {
+            goBack: () => {
+              this.setSelectedMovie();
+            },
             movieData: selectedMovie,
             __self: this,
             __source: {
@@ -26614,7 +26617,15 @@ try {
             lineNumber: 7,
             columnNumber: 13
           }
-        }, movieData.Title))
+        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-poster",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 8,
+            columnNumber: 13
+          }
+        }))
       );
     }
   }
@@ -26640,7 +26651,7 @@ try {
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-view/movie-view.jsx";
   class MovieView extends _reactDefault.default.Component {
     render() {
-      const {movieData} = this.props;
+      const {movieData, goBack} = this.props;
       return (
         /*#__PURE__*/_reactDefault.default.createElement("div", {
           className: "movie-view",
@@ -26668,6 +26679,7 @@ try {
           }
         }, /*#__PURE__*/_reactDefault.default.createElement("img", {
           src: movieData.ImagePath,
+          alt: "movie poster",
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -26682,7 +26694,17 @@ try {
             lineNumber: 11,
             columnNumber: 13
           }
-        }, movieData.Description))
+        }, movieData.Description), /*#__PURE__*/_reactDefault.default.createElement("button", {
+          onClick: () => {
+            goBack(null);
+          },
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 12,
+            columnNumber: 13
+          }
+        }, "Back"))
       );
     }
   }

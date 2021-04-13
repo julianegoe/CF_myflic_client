@@ -2,4 +2,19 @@
   color: steelblue;
   font-size: 2rem;
 }
+
+.main-view {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 20px;
+  margin: 50px;
+}
+
+.movie-card {
+  text-align: center;
+}
+
+.movie-poster {
+  background-image: url("inception.7d0cbb84.jpeg");
+}
 /*# sourceMappingURL=index.d22b8a02.css.map */

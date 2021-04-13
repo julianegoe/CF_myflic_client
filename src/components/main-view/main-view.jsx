@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDom from "react-dom";
+import ReactDom, { render } from "react-dom";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view"
 
@@ -8,23 +8,23 @@ export class MainView extends React.Component {
         super();
         this.state = {
             movies: [
-                { _id: 1, Title: "Inception", Description: "lorem ipsum", ImagePath: "#" },
-                { _id: 2, Title: "Young Adult", Description: "lorem ipsum", ImagePath: "#" },
-                { _id: 3, Title: "Rope", Description: "lorem ipsum", ImagePath: "#" },
+                { _id: 1, Title: "Inception", Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", ImagePath: "./public/inception.jpeg" },
+                { _id: 2, Title: "Young Adult", Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.", ImagePath: "../../img/young_adult.jpeg" },
+                { _id: 3, Title: "Rope", Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.", ImagePath: "../../img/rope.jpeg" },
             ],
-            selectedMovie: null
+            selectedMovie: null,
         };
     }
 
     setSelectedMovie(clickedMovie) {
         this.setState({
             selectedMovie: clickedMovie
-        });
+        })
     }
 
     render() {
         const { movies, selectedMovie } = this.state;
-        if (selectedMovie) { return <MovieView movieData={selectedMovie} /> };
+        if (selectedMovie) { return <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} /> };
         if (movies.length === 0) {
             return <div className="main-view">The list is empty!</div>;
         } else {

@@ -37,8 +37,8 @@ The build is done with [Parcel v2](https://www.npmjs.com/package/parcel#transfor
 
 The hirarchy of the components is as follows:
 
-- MainView
-    - MovieView
+- MainView 
+    - MovieView 
        - MovieCard
             - MovieView
                 - GenreView
