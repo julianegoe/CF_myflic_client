@@ -35,7 +35,7 @@ The build is done with [Parcel v2](https://www.npmjs.com/package/parcel#transfor
 
 ## Components
 
-The hirarchy of the components is as follows:
+The hierarchy of the components is as follows:
 
 - MainView 
     - MovieView 
