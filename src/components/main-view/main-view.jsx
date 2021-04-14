@@ -8,9 +8,9 @@ export class MainView extends React.Component {
         super();
         this.state = {
             movies: [
-                { _id: 1, Title: "Inception", Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", ImagePath: "./public/inception.jpeg" },
-                { _id: 2, Title: "Young Adult", Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.", ImagePath: "../../img/young_adult.jpeg" },
-                { _id: 3, Title: "Rope", Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.", ImagePath: "../../img/rope.jpeg" },
+                { _id: 1, Title: "Inception", Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", ImagePath: "../../src/img/inception.jpeg" },
+                { _id: 2, Title: "Young Adult", Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.", ImagePath: "../../src/img/young_adult.jpeg" },
+                { _id: 3, Title: "Rope", Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.", ImagePath: "../../src/img/rope.jpeg" },
             ],
             selectedMovie: null,
         };

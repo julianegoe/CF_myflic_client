@@ -1080,7 +1080,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","react-dom":"2sg1U","./index.scss":"5iJih","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","./components/main-view/main-view":"67PhB"}],"3b2NM":[function(require,module,exports) {
+},{"react":"3b2NM","react-dom":"2sg1U","./components/main-view/main-view":"67PhB","./index.scss":"5iJih","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"3b2NM":[function(require,module,exports) {
 "use strict";
 if ("development" === 'production') {
   module.exports = require('./cjs/react.production.min.js');
@@ -26273,7 +26273,170 @@ if ("development" !== "production") {
   })();
 }
 
-},{}],"5iJih":[function() {},{}],"5gA8y":[function(require,module,exports) {
+},{}],"67PhB":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  _parcelHelpers.export(exports, "MainView", function () {
+    return MainView;
+  });
+  var _react = require("react");
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  require("react-dom");
+  var _movieCardMovieCard = require("../movie-card/movie-card");
+  var _movieViewMovieView = require("../movie-view/movie-view");
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/main-view/main-view.jsx";
+  class MainView extends _reactDefault.default.Component {
+    constructor() {
+      super();
+      this.state = {
+        movies: [{
+          _id: 1,
+          Title: "Inception",
+          Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
+          ImagePath: "../../src/img/inception.jpeg"
+        }, {
+          _id: 2,
+          Title: "Young Adult",
+          Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.",
+          ImagePath: "../../src/img/young_adult.jpeg"
+        }, {
+          _id: 3,
+          Title: "Rope",
+          Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.",
+          ImagePath: "../../src/img/rope.jpeg"
+        }],
+        selectedMovie: null
+      };
+    }
+    setSelectedMovie(clickedMovie) {
+      this.setState({
+        selectedMovie: clickedMovie
+      });
+    }
+    render() {
+      const {movies, selectedMovie} = this.state;
+      if (selectedMovie) {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement(_movieViewMovieView.MovieView, {
+            goBack: () => {
+              this.setSelectedMovie();
+            },
+            movieData: selectedMovie,
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 27,
+              columnNumber: 37
+            }
+          })
+        );
+      }
+      ;
+      if (movies.length === 0) {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "main-view",
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 29,
+              columnNumber: 20
+            }
+          }, "The list is empty!")
+        );
+      } else {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "main-view",
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 32,
+              columnNumber: 17
+            }
+          }, movies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCard.MovieCard, {
+            key: movie._id,
+            movieData: movie,
+            onMovieClick: movie => {
+              this.setSelectedMovie(movie);
+            },
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 33,
+              columnNumber: 42
+            }
+          })))
+        );
+      }
+    }
+  }
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","react-dom":"2sg1U","../movie-card/movie-card":"7v6h3","../movie-view/movie-view":"3xBbr","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"7v6h3":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  _parcelHelpers.export(exports, "MovieCard", function () {
+    return MovieCard;
+  });
+  var _react = require("react");
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
+  class MovieCard extends _reactDefault.default.Component {
+    render() {
+      const {movieData, onMovieClick} = this.props;
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-card",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 6,
+            columnNumber: 16
+          }
+        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
+          onClick: () => {
+            onMovieClick(movieData);
+          },
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 7,
+            columnNumber: 13
+          }
+        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("img", {
+          src: movieData.ImagePath,
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 8,
+            columnNumber: 13
+          }
+        }))
+      );
+    }
+  }
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
@@ -26472,170 +26635,7 @@ function registerExportsForReactRefresh(module) {
   }
 }
 
-},{"react-refresh/runtime":"592mh"}],"67PhB":[function(require,module,exports) {
-var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-try {
-  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-  _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "MainView", function () {
-    return MainView;
-  });
-  var _react = require("react");
-  var _reactDefault = _parcelHelpers.interopDefault(_react);
-  require("react-dom");
-  var _movieCardMovieCard = require("../movie-card/movie-card");
-  var _movieViewMovieView = require("../movie-view/movie-view");
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/main-view/main-view.jsx";
-  class MainView extends _reactDefault.default.Component {
-    constructor() {
-      super();
-      this.state = {
-        movies: [{
-          _id: 1,
-          Title: "Inception",
-          Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-          ImagePath: "./public/inception.jpeg"
-        }, {
-          _id: 2,
-          Title: "Young Adult",
-          Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.",
-          ImagePath: "../../img/young_adult.jpeg"
-        }, {
-          _id: 3,
-          Title: "Rope",
-          Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.",
-          ImagePath: "../../img/rope.jpeg"
-        }],
-        selectedMovie: null
-      };
-    }
-    setSelectedMovie(clickedMovie) {
-      this.setState({
-        selectedMovie: clickedMovie
-      });
-    }
-    render() {
-      const {movies, selectedMovie} = this.state;
-      if (selectedMovie) {
-        return (
-          /*#__PURE__*/_reactDefault.default.createElement(_movieViewMovieView.MovieView, {
-            goBack: () => {
-              this.setSelectedMovie();
-            },
-            movieData: selectedMovie,
-            __self: this,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 27,
-              columnNumber: 37
-            }
-          })
-        );
-      }
-      ;
-      if (movies.length === 0) {
-        return (
-          /*#__PURE__*/_reactDefault.default.createElement("div", {
-            className: "main-view",
-            __self: this,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 29,
-              columnNumber: 20
-            }
-          }, "The list is empty!")
-        );
-      } else {
-        return (
-          /*#__PURE__*/_reactDefault.default.createElement("div", {
-            className: "main-view",
-            __self: this,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 32,
-              columnNumber: 17
-            }
-          }, movies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCard.MovieCard, {
-            key: movie._id,
-            movieData: movie,
-            onMovieClick: movie => {
-              this.setSelectedMovie(movie);
-            },
-            __self: this,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 33,
-              columnNumber: 42
-            }
-          })))
-        );
-      }
-    }
-  }
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-
-},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-dom":"2sg1U","../movie-card/movie-card":"7v6h3","../movie-view/movie-view":"3xBbr"}],"7v6h3":[function(require,module,exports) {
-var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-try {
-  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-  _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "MovieCard", function () {
-    return MovieCard;
-  });
-  var _react = require("react");
-  var _reactDefault = _parcelHelpers.interopDefault(_react);
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
-  class MovieCard extends _reactDefault.default.Component {
-    render() {
-      const {movieData, onMovieClick} = this.props;
-      return (
-        /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-card",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 6,
-            columnNumber: 16
-          }
-        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
-          onClick: () => {
-            onMovieClick(movieData);
-          },
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 7,
-            columnNumber: 13
-          }
-        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-poster",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 8,
-            columnNumber: 13
-          }
-        }))
-      );
-    }
-  }
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-
-},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"3xBbr":[function(require,module,exports) {
+},{"react-refresh/runtime":"592mh"}],"3xBbr":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -26670,7 +26670,6 @@ try {
             columnNumber: 13
           }
         }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-poster",
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -26714,6 +26713,6 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
+},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"5iJih":[function() {},{}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
 
 //# sourceMappingURL=index.02675e63.js.map

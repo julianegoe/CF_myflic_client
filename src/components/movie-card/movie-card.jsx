@@ -5,7 +5,7 @@ export class MovieCard extends React.Component {
         const { movieData, onMovieClick } = this.props;
         return <div className="movie-card">
             <h1 onClick={() => { onMovieClick(movieData) }}>{movieData.Title}</h1>
-            <div className="movie-poster"></div>
+            <img src={movieData.ImagePath} />
         </div >
 
     }
