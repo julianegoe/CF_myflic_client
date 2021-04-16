@@ -5,11 +5,13 @@ export class MovieView extends React.Component {
         const { movieData, goBack } = this.props;
         return <div className="movie-view">
             <h1 className="movie-title">{movieData.Title}</h1>
-            <div>
-                <img src={movieData.ImagePath} alt="movie poster" />
+            <span className="movie-year">{movieData.Year}</span>
+            <span className="movie-director">{" Directed by " + movieData.Director}</span>
+            <div className="movie-section">
+                <img className="movie-poster" src={movieData.ImagePath} alt="movie poster" />
+                <div className="movie-description">{movieData.Description}</div>
             </div>
-            <div className="movie-description">{movieData.Description}</div>
-            <button onClick={() => { goBack(null) }}>Back</button>
+            <button className="back-button" onClick={() => { goBack(null) }}>Back</button>
 
         </div >
     }

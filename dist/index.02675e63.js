@@ -26297,18 +26297,24 @@ try {
         movies: [{
           _id: 1,
           Title: "Inception",
+          Year: 2010,
+          Director: "Christopher Nolan",
           Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.",
-          ImagePath: "../../src/img/inception.jpeg"
+          ImagePath: "https://media.outnow.ch/Movies/Bilder/2010/Inception/posters.p/12.jpg"
         }, {
           _id: 2,
           Title: "Young Adult",
+          Year: 2011,
+          Director: "Jason Reitman",
           Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.",
-          ImagePath: "../../src/img/young_adult.jpeg"
+          ImagePath: "https://media.outnow.ch/Movies/Bilder/2011/YoungAdult/posters.p/01.jpg"
         }, {
           _id: 3,
           Title: "Rope",
+          Year: 1948,
+          Director: "Alfred Hitchcock",
           Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.",
-          ImagePath: "../../src/img/rope.jpeg"
+          ImagePath: "https://cdn.shopify.com/s/files/1/1416/8662/products/rope_1948_original_film_art_5000x.jpg"
         }],
         selectedMovie: null
       };
@@ -26402,6 +26408,9 @@ try {
       return (
         /*#__PURE__*/_reactDefault.default.createElement("div", {
           className: "movie-card",
+          onClick: () => {
+            onMovieClick(movieData);
+          },
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -26409,9 +26418,6 @@ try {
             columnNumber: 16
           }
         }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
-          onClick: () => {
-            onMovieClick(movieData);
-          },
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -26419,14 +26425,38 @@ try {
             columnNumber: 13
           }
         }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("img", {
+          className: "movie-poster",
           src: movieData.ImagePath,
+          alt: "movie poster",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 8,
             columnNumber: 13
           }
-        }))
+        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-info",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 9,
+            columnNumber: 13
+          }
+        }, /*#__PURE__*/_reactDefault.default.createElement("p", {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 10,
+            columnNumber: 17
+          }
+        }, "Year: " + movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("p", {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 11,
+            columnNumber: 17
+          }
+        }, "Director: " + movieData.Director)))
       );
     }
   }
@@ -26669,38 +26699,57 @@ try {
             lineNumber: 7,
             columnNumber: 13
           }
-        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("div", {
+        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("span", {
+          className: "movie-year",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 8,
             columnNumber: 13
           }
+        }, movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("span", {
+          className: "movie-director",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 9,
+            columnNumber: 13
+          }
+        }, " Directed by " + movieData.Director), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-section",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 10,
+            columnNumber: 13
+          }
         }, /*#__PURE__*/_reactDefault.default.createElement("img", {
+          className: "movie-poster",
           src: movieData.ImagePath,
           alt: "movie poster",
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 9,
+            lineNumber: 11,
             columnNumber: 17
           }
-        })), /*#__PURE__*/_reactDefault.default.createElement("div", {
+        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
           className: "movie-description",
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 11,
-            columnNumber: 13
+            lineNumber: 12,
+            columnNumber: 17
           }
-        }, movieData.Description), /*#__PURE__*/_reactDefault.default.createElement("button", {
+        }, movieData.Description)), /*#__PURE__*/_reactDefault.default.createElement("button", {
+          className: "back-button",
           onClick: () => {
             goBack(null);
           },
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 12,
+            lineNumber: 14,
             columnNumber: 13
           }
         }, "Back"))

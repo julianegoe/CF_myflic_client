@@ -3,18 +3,48 @@
   font-size: 2rem;
 }
 
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
 .main-view {
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 20px;
-  margin: 50px;
+  grid-template-columns: 300px 300px 300px;
+  grid-gap: 60px;
+  margin: 80px;
+  justify-content: center;
+}
+
+.info-section {
+  font-size: medium;
+  display: flex;
+  flex-direction: row;
+}
+
+.movie-section {
+  display: flex;
+  flex-direction: row;
+  margin-top: 10px;
+}
+
+.movie-description {
+  max-width: 500px;
+  margin-left: 30px;
+}
+
+.back-button {
+  font-size: larger;
+  padding: 5px;
+  margin-top: 10px;
+  cursor: pointer;
 }
 
 .movie-card {
   text-align: center;
+  cursor: pointer;
 }
 
-/* .movie-poster {
-  background-image: url("../public/inception.jpeg");
-} */
+.movie-poster {
+  max-width: 250px;
+}
 /*# sourceMappingURL=index.d22b8a02.css.map */
