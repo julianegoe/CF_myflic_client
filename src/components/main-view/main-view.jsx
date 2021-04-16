@@ -1,10 +1,10 @@
 import React from "react";
 import axios from 'axios';
-import PropTypes from 'prop-types';
 import ReactDom, { render } from "react-dom";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
-import { LoginView } from "../login-view/login-view"
+import { LoginView } from "../login-view/login-view";
+import { RegistrationView } from "../registration-view/registration-view"
 
 export class MainView extends React.Component {
     constructor() {
@@ -12,7 +12,7 @@ export class MainView extends React.Component {
         this.state = {
             movies: [],
             selectedMovie: null,
-            user: null
+            user: null,
         };
     }
 
@@ -30,6 +30,7 @@ export class MainView extends React.Component {
 
     render() {
         const { movies, selectedMovie, user } = this.state;
+        if (!user) return <RegistrationView onRegistered={user => this.onLoggedIn(user)} />;
         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
         console.log(user)
         if (selectedMovie) { return <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} /> };
