@@ -10,7 +10,7 @@ export class MovieView extends React.Component {
             <span className="movie-year">{movieData.Year}</span>
             <span className="movie-director">{" Directed by " + movieData.Director.Name}</span>
             <div className="movie-section">
-                <img className="movie-poster" src={movieData.ImagePath} alt="movie poster" />
+                <img className="movie-poster" src={movieData.ImageUrl} alt="movie poster" />
                 <div className="movie-description">{movieData.Description}</div>
             </div>
             <button className="back-button" onClick={() => { goBack(null) }}>Back</button>
