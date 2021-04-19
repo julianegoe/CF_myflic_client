@@ -13,6 +13,7 @@ export class MainView extends React.Component {
             movies: [],
             selectedMovie: null,
             user: null,
+            registered: false
         };
     }
 
@@ -28,9 +29,15 @@ export class MainView extends React.Component {
         });
     }
 
+    onRegistered(event) {
+        this.setState({
+            registered: true
+        });
+    }
+
     render() {
-        const { movies, selectedMovie, user } = this.state;
-        if (!user) return <RegistrationView onRegistered={user => this.onLoggedIn(user)} />;
+        const { movies, selectedMovie, user, registered } = this.state;
+        if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
         console.log(user)
         if (selectedMovie) { return <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} /> };
