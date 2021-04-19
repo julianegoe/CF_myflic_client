@@ -1,18 +1,19 @@
 import React from "react";
+import axios from 'axios';
 import ReactDom, { render } from "react-dom";
 import { MovieCard } from "../movie-card/movie-card";
-import { MovieView } from "../movie-view/movie-view"
+import { MovieView } from "../movie-view/movie-view";
+import { LoginView } from "../login-view/login-view";
+import { RegistrationView } from "../registration-view/registration-view"
 
 export class MainView extends React.Component {
     constructor() {
         super();
         this.state = {
-            movies: [
-                { _id: 1, Title: "Inception", Year: 2010, Director: "Christopher Nolan", Description: "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a C.E.O.", ImagePath: "https://media.outnow.ch/Movies/Bilder/2010/Inception/posters.p/12.jpg" },
-                { _id: 2, Title: "Young Adult", Year: 2011, Director: "Jason Reitman", Description: "Soon after her divorce, a fiction writer returns to her home in small-town Minnesota, looking to rekindle a romance with her ex-boyfriend, who is now happily married and has a newborn daughter.", ImagePath: "https://media.outnow.ch/Movies/Bilder/2011/YoungAdult/posters.p/01.jpg" },
-                { _id: 3, Title: "Rope", Year: 1948, Director: "Alfred Hitchcock", Description: "Two men attempt to prove they committed the perfect crime by hosting a dinner party after strangling their former classmate to death.", ImagePath: "https://cdn.shopify.com/s/files/1/1416/8662/products/rope_1948_original_film_art_5000x.jpg" },
-            ],
+            movies: [],
             selectedMovie: null,
+            user: null,
+            registered: false
         };
     }
 
@@ -22,11 +23,26 @@ export class MainView extends React.Component {
         })
     }
 
+    onLoggedIn(user) {
+        this.setState({
+            user
+        });
+    }
+
+    onRegistered(event) {
+        this.setState({
+            registered: true
+        });
+    }
+
     render() {
-        const { movies, selectedMovie } = this.state;
+        const { movies, selectedMovie, user, registered } = this.state;
+        if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
+        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+        console.log(user)
         if (selectedMovie) { return <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} /> };
         if (movies.length === 0) {
-            return <div className="main-view">The list is empty!</div>;
+            return <div className="main-view" />;
         } else {
             return (
                 <div className="main-view">
@@ -34,5 +50,14 @@ export class MainView extends React.Component {
                 </div>
             );
         }
+    }
+
+    componentDidMount() {
+        axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwNzk3MDQ0MDk2MDFkMDAxNThkNGIwYSIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6Imp1bGlhbmUiLCJQYXNzd29yZCI6IiQyYiQxMCRNaU9oVWJBb1pGM1ZRTzhqM0RacFIuZlFxSWowMGpVdVFHMHhzOGdJc2pYZDZIMDQ3eFlrTyIsIkVtYWlsIjoiZ29lcnNjaC5qdWxpYW5lQGdtYWlsLmNvbSIsIkJpcnRoZGF5IjoiMTk4OS0xMS0xOVQwMDowMDowMC4wMDBaIiwiX192IjowLCJpYXQiOjE2MTg1NzEzNTIsImV4cCI6MTYxOTE3NjE1Miwic3ViIjoianVsaWFuZSJ9.-S66_893BpyUuEBr7rEEkgW3d3j7628xIQSQ9kQ3-C0` } }
+        ).then((res) => {
+            this.setState({ movies: res.data })
+        }).catch((e) => {
+            console.log(e)
+        })
     }
 }

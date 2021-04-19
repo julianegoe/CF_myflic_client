@@ -1,16 +1,28 @@
 $color: steelblue;
 $font-size: 2rem;
 
-
-.my-flix {
-  color: $color;
-  font-size: $font-size;
+* {
+  box-sizing: border-box;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif
 }
 
+input {
+  width: 50%;
+  padding: 12px 20px;
+  margin: 10px 0;
+  display: inline-block;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+.my-flix {
+  color: $color;
+  font-size: $font-size;
+}
 
 .main-view {
   display: grid;
@@ -38,7 +50,7 @@ body {
   margin-left: 30px;
 }
 
-.back-button {
+button {
   font-size: larger;
   padding: 5px;
   margin-top: 10px;
@@ -52,4 +64,21 @@ body {
 
 .movie-poster {
   max-width: 250px;
+}
+
+.login-component {
+  margin: 200px;
+  text-align: center;
+  font-size: $font-size;
+  border-radius: 5px;
+  background-color: #f2f2f2;
+  padding: 30px;
+}
+
+.login-username {
+  padding: 10px;
+}
+
+.login-password {
+  padding: 10px;
 }
