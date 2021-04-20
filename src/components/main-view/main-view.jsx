@@ -4,7 +4,10 @@ import ReactDom, { render } from "react-dom";
 import { MovieCard } from "../movie-card/movie-card";
 import { MovieView } from "../movie-view/movie-view";
 import { LoginView } from "../login-view/login-view";
+import { Divider } from "../divider-component/divider-component";
 import { RegistrationView } from "../registration-view/registration-view";
+import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
+
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import './main-view.scss';
@@ -16,7 +19,8 @@ export class MainView extends React.Component {
             movies: [],
             selectedMovie: null,
             user: null,
-            registered: false
+            registered: false,
+            isLoggedIn: true
         };
     }
 
@@ -45,25 +49,36 @@ export class MainView extends React.Component {
          */
         if (movies.length === 0) { return <div>Empty</div> }
         return (
-            <Row className="main-view justify-content-md-center">
+            <>
+                <BootstrapNavbar />
                 {
-                    selectedMovie ?
-                        (
-                            <Col md={8}>
-                                <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} />
-                            </Col>
-                        )
-                        :
-
-                        movies.map(movie => (
-                            <Col md={3} key={movie._id}>
-                                <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
-                            </Col>
-                        ))
-
-
+                    !selectedMovie ? <Divider title="All Movies" /> : null
                 }
-            </Row >
+                <Row className="main-view mx-5 mb-5">
+                    {
+                        selectedMovie ?
+                            (
+
+                                <Col md={6}>
+                                    <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} />
+                                </Col>
+                            )
+                            :
+
+                            movies.map(movie => (
+
+                                <Col sm={6} md={2} className="p-3" key={movie._id}>
+                                    <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
+                                </Col>
+                            ))
+
+
+                    }
+                </Row >
+                {
+                    !selectedMovie ? <Divider title="My Favorites" /> : null
+                }
+            </>
         )
     }
 
@@ -75,4 +90,5 @@ export class MainView extends React.Component {
             console.log(e)
         })
     }
+
 }
