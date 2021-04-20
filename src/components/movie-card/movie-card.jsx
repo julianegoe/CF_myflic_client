@@ -1,17 +1,14 @@
 import React from "react";
 import PropTypes from 'prop-types';
+import './movie-card.scss';
 
 export class MovieCard extends React.Component {
     render() {
         const { movieData, onMovieClick } = this.props;
-        return <div className="movie-card" onClick={() => { onMovieClick(movieData) }}>
-            <h1>{movieData.Title}</h1>
+        return (<div className="movie-card" onClick={() => { onMovieClick(movieData) }}>
             <img className="movie-poster" src={movieData.ImageUrl} alt="movie poster" />
-            <div className="movie-info">
-                <p>{"Year: " + movieData.Year}</p>
-                <p>{"Director: " + movieData.Director.Name}</p>
-            </div>
-        </div >
+            <div>{movieData.Title}</div>
+        </div>)
 
     }
 }
