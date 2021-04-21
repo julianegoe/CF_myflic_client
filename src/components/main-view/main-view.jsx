@@ -54,7 +54,7 @@ export class MainView extends React.Component {
                 {
                     !selectedMovie ? <Divider title="All Movies" /> : null
                 }
-                <Row className="main-view mx-5 mb-5">
+                <Row className="main-view mx-5 mb-5 justify-content-sm-center justify-content-md-start">
                     {
                         selectedMovie ?
                             (
@@ -67,7 +67,7 @@ export class MainView extends React.Component {
 
                             movies.map(movie => (
 
-                                <Col sm={6} md={2} className="p-3" key={movie._id}>
+                                <Col sm={8} md={3} lg={3} xl={2} className="p-3" key={movie._id}>
                                     <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
                                 </Col>
                             ))

@@ -26372,7 +26372,7 @@ try {
             columnNumber: 38
           }
         }) : null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
-          className: "main-view mx-5 mb-5",
+          className: "main-view mx-5 mb-5 justify-content-sm-center justify-content-md-start",
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -26399,8 +26399,10 @@ try {
             columnNumber: 37
           }
         })) : movies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-          sm: 6,
-          md: 2,
+          sm: 8,
+          md: 3,
+          lg: 3,
+          xl: 2,
           className: "p-3",
           key: movie._id,
           __self: this,
@@ -28223,7 +28225,7 @@ try {
           onClick: () => {
             onMovieClick(movieData);
           },
-          className: "bg-dark text-white",
+          className: "card bg-dark text-white",
           __self: this,
           __source: {
             fileName: _jsxFileName,
