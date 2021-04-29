@@ -1,10 +1,9 @@
 $card-title-background: rgb(68, 68, 68);
-
-
-.card-title {
-background-color: $card-title-background;
-}
-
-.card {
+  
+  .movie-image {
+    object-fit: contain;
+    width: 100%;
+    max-height: 200px;
     cursor: pointer;
-}
+  }
+  

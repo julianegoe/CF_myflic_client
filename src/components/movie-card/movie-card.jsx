@@ -1,20 +1,29 @@
 import React from "react";
-import PropTypes from 'prop-types';
-import './movie-card.scss';
-import Card from 'react-bootstrap/Card'
+import PropTypes from "prop-types";
+import { Container, Card } from "react-bootstrap";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import "./movie-card.scss";
 
-export class MovieCard extends React.Component {
-    render() {
-        const { movieData, onMovieClick } = this.props;
-        return <Card onClick={() => { onMovieClick(movieData) }} className="card bg-dark text-white">
-            <Card.Img src={movieData.ImageUrl} alt="Card image" className="movie-poster" />
-            <Card.ImgOverlay className="card-overlay p-0 d-flex align-items-end">
-                <Card.Body className="card-title mb-0 p-2">{movieData.Title}</Card.Body>
-            </Card.ImgOverlay>
-        </Card>
+export default function MovieCard({ movieData, onMovieClick }) {
 
-    }
+    return (
+        <Container fluid className="movie-card" onClick={() => { onMovieClick(movieData) }}>
+            <OverlayTrigger
+                delay="100"
+                placement={'top'}
+                overlay={
+                    <Tooltip id='tooltip-top'>
+                        {movieData.Title} ({movieData.Year})
+                    </Tooltip>
+                }
+            >
+                <img className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+            </OverlayTrigger>
+        </Container>
+    );
 }
+
 
 MovieCard.propTypes = {
     movieData: PropTypes.exact({

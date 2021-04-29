@@ -1,0 +1,27 @@
+.left-column {
+    justify-content: left;
+    align-items: flex-start;
+};
+
+hr.solid {
+    border: 1px solid black;
+
+}
+
+.movie-view {
+    object-fit: contain;
+    max-height: 300px;
+    justify-content: left;
+  };
+
+.categories {
+    font-weight: bolder;
+}
+
+.category {
+    cursor: pointer;
+}
+
+.category:hover {
+    font-weight: bold;
+}

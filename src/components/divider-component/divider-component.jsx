@@ -2,7 +2,7 @@ import React from 'react';
 import './divider-component.scss';
 
 
-export function Divider(props) {
+export default function Divider(props) {
 
 
     return (

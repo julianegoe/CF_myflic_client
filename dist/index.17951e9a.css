@@ -1,11 +1,35 @@
-.card-title {
-  background-color: #444444;
+.movie-image {
+  object-fit: contain;
+  width: 100%;
+  max-height: 200px;
+  cursor: pointer;
+}
+.left-column {
+  justify-content: left;
+  align-items: flex-start;
 }
 
-.card {
+hr.solid {
+  border: 1px solid black;
+}
+
+.movie-view {
+  object-fit: contain;
+  max-height: 300px;
+  justify-content: left;
+}
+
+.categories {
+  font-weight: bolder;
+}
+
+.category {
   cursor: pointer;
 }
 
+.category:hover {
+  font-weight: bold;
+}
 
 
 
@@ -9257,6 +9281,6 @@ h3 {
 }
 * {
   box-sizing: border-box;
-  font-size: 0.75rem;
+  font-size: 1rem;
 }
 /*# sourceMappingURL=index.17951e9a.css.map */
