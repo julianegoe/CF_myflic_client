@@ -20,7 +20,7 @@ export function RegistrationView(props) {
 
     return (
         <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
-            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-2">
+            <Col xs={8} md={6} className="p-1">
                 <Form>
                     <Form.Group controlId="fullName">
                         <Form.Label>Full Name</Form.Label>

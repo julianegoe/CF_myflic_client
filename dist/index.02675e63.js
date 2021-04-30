@@ -42801,12 +42801,9 @@ try {
           columnNumber: 9
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        xs: 12,
-        sm: 6,
-        md: 4,
-        lg: 3,
-        xl: 2,
-        className: "p-3",
+        xs: 8,
+        md: 6,
+        className: "p-1",
         __self: this,
         __source: {
           fileName: _jsxFileName,
@@ -42940,12 +42937,9 @@ try {
           columnNumber: 9
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        xs: 12,
-        sm: 6,
-        md: 4,
-        lg: 3,
-        xl: 2,
-        className: "p-2",
+        xs: 8,
+        md: 6,
+        className: "p-1",
         __self: this,
         __source: {
           fileName: _jsxFileName,
