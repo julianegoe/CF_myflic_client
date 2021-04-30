@@ -1,18 +1,23 @@
-.left-column {
-    justify-content: left;
-    align-items: flex-start;
-};
+@import '../../index.scss';
+
+ul {
+    list-style-type: none;
+    padding: 0px;
+}
 
 hr.solid {
     border: 1px solid black;
 
 }
 
+.bg-button {
+    background-color: $quariary-color;
+}
+
 .movie-view {
     object-fit: contain;
     max-height: 300px;
-    justify-content: left;
-  };
+}
 
 .categories {
     font-weight: bolder;

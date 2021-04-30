@@ -1,7 +1,20 @@
 @import "bootstrap/scss/bootstrap";
 $font-size: 1rem;
+$primary-color: #1A1A1D;
+$secondary-color: #950740;
+$tertiary-color: #6F2232;
+$quariary-color: #4E4E50;
+$auxiliary-color: #C3073F;
+$font-color: white;
+
 
 * {
   box-sizing: border-box;
   font-size: $font-size;
+}
+
+html {
+  color: $font-color;
+  background-color: $primary-color;
+
 }

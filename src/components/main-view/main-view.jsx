@@ -33,7 +33,7 @@ export class MainView extends React.Component {
 
     onLoggedIn(user) {
         this.setState({
-            user
+            user: user
         });
     }
 
@@ -45,9 +45,9 @@ export class MainView extends React.Component {
 
     render() {
         const { movies, selectedMovie, user, registered, favorites } = this.state;
-        /*         if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
-                if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-         */
+        if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
+        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+
         if (movies.length === 0) { return <div>Empty</div> }
         return (
             <>
@@ -66,7 +66,7 @@ export class MainView extends React.Component {
 
                             movies.map(movie => (
 
-                                <Col xs={6} md={3} lg={3} xl={2} className="p-3" key={movie._id}>
+                                <Col xs={12} sm={6} lg={3} xl={2} className="p-3" key={movie._id}>
                                     <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
                                 </Col>
                             ))
@@ -84,6 +84,7 @@ export class MainView extends React.Component {
     componentDidMount() {
         axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk` } }
         ).then((res) => {
+            console.log(res.data)
             this.setState({ movies: res.data })
         }).catch((e) => {
             console.log(e)

@@ -91,16 +91,16 @@ export default function MovieView({ movieData, goBack }) {
                     {/* ToDo: Adding a cast list to data in MongoDB */}
                     <Col sm={4} md={4}>
                         <div className="categories">Cast</div>
-                        <div>
-                            {movieData.Actors}
-                        </div>
+                        <ul>
+                            {movieData.Actors.map(actor => (<li>{actor}</li>))}
+                        </ul>
                     </Col>
                 </Row>
             </Col>
 
             {/* This is the back button spanning all Bootstrap columns */}
             <Col md={12}>
-                <Button variant="dark" onClick={() => { goBack(null) }}>Back</Button>
+                <Button className="bg-button" variant="dark" onClick={() => { goBack(null) }}>Back</Button>
             </Col>
         </>
     )

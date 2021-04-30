@@ -8,7 +8,7 @@ import "./movie-card.scss";
 export default function MovieCard({ movieData, onMovieClick }) {
 
     return (
-        <Container fluid className="movie-card" onClick={() => { onMovieClick(movieData) }}>
+        <Container className="movie-card" onClick={() => { onMovieClick(movieData) }}>
             <OverlayTrigger
                 delay="100"
                 placement={'top'}
@@ -26,7 +26,7 @@ export default function MovieCard({ movieData, onMovieClick }) {
 
 
 MovieCard.propTypes = {
-    movieData: PropTypes.exact({
+    movieData: PropTypes.shape({
         Title: PropTypes.string.isRequired,
         Description: PropTypes.string.isRequired,
         Director: PropTypes.shape({
