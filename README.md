@@ -1,6 +1,6 @@
-# Project Title
+# MyFlix Application
 
-This is the client side application for the myFlix API
+This is the client side application for the myFlix API. It showcases several movies. Users can favorite movies and get information about each movie.
 
 ## Getting Started
 
@@ -33,25 +33,3 @@ npm start
 
 The build is done with [Parcel v2](https://www.npmjs.com/package/parcel#transformers)
 
-## Components
-
-The hierarchy of the components is as follows:
-
-- MainView 
-    - MovieView 
-       - MovieCard
-            - MovieView
-                - GenreView
-                - DirectorView
-        - MovieCard
-            - MovieView
-                - GenreView
-                - DirectorView
-        - MovieCard
-            - MovieView
-                - GenreView
-                - DirectorView
-    - ProfileView
-        - EditView
-        - FavoritesView
-    - ...
