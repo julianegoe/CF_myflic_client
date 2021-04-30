@@ -4,6 +4,7 @@ import { Container, Card } from "react-bootstrap";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import "./movie-card.scss";
+import Image from 'react-bootstrap/Image';
 
 export default function MovieCard({ movieData, onMovieClick }) {
 
@@ -18,7 +19,7 @@ export default function MovieCard({ movieData, onMovieClick }) {
                     </Tooltip>
                 }
             >
-                <img onClick={() => { onMovieClick(movieData) }} className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+                <Image onClick={() => { onMovieClick(movieData) }} className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
             </OverlayTrigger>
         </>
     );

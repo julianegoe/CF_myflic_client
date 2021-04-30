@@ -28223,6 +28223,8 @@ try {
   var _reactBootstrapTooltip = require('react-bootstrap/Tooltip');
   var _reactBootstrapTooltipDefault = _parcelHelpers.interopDefault(_reactBootstrapTooltip);
   require("./movie-card.scss");
+  var _reactBootstrapImage = require('react-bootstrap/Image');
+  var _reactBootstrapImageDefault = _parcelHelpers.interopDefault(_reactBootstrapImage);
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
   function MovieCard({movieData, onMovieClick}) {
     return (
@@ -28234,17 +28236,17 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 16,
+            lineNumber: 17,
             columnNumber: 21
           }
         }, movieData.Title, " (", movieData.Year, ")"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 12,
+          lineNumber: 13,
           columnNumber: 13
         }
-      }, /*#__PURE__*/_reactDefault.default.createElement("img", {
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapImageDefault.default, {
         onClick: () => {
           onMovieClick(movieData);
         },
@@ -28254,7 +28256,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 21,
+          lineNumber: 22,
           columnNumber: 17
         }
       })))
@@ -28291,7 +28293,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-bootstrap":"4n7hB","./movie-card.scss":"43n4t","prop-types":"4dfy5","react-bootstrap/OverlayTrigger":"4VaCP","react-bootstrap/Tooltip":"2YAjd"}],"5gA8y":[function(require,module,exports) {
+},{"react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-bootstrap":"4n7hB","./movie-card.scss":"43n4t","prop-types":"4dfy5","react-bootstrap/OverlayTrigger":"4VaCP","react-bootstrap/Tooltip":"2YAjd","react-bootstrap/Image":"5qrP5"}],"5gA8y":[function(require,module,exports) {
 "use strict";
 
 exports.interopDefault = function (a) {
