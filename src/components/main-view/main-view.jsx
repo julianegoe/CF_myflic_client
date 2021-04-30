@@ -56,7 +56,7 @@ export class MainView extends React.Component {
                 {
                     !selectedMovie ? <Divider title="All Movies" /> : null
                 }
-                <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+                <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
                     {
                         selectedMovie ?
                             (

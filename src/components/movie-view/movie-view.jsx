@@ -58,7 +58,7 @@ export default function MovieView({ movieData, goBack }) {
             </Col>
 
             {/* This is the image element  */}
-            <Col md="auto" className="left-column p-3">
+            <Col md="auto" className="p-3">
                 <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} />
             </Col>
 

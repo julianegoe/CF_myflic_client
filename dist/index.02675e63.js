@@ -26385,7 +26385,7 @@ try {
             columnNumber: 38
           }
         }) : null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
-          className: "m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center",
+          className: "m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start",
           __self: this,
           __source: {
             fileName: _jsxFileName,
@@ -42554,7 +42554,7 @@ try {
         }
       }, movieData.Title, " (", movieData.Year, ")")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         md: "auto",
-        className: "left-column p-3",
+        className: "p-3",
         __self: this,
         __source: {
           fileName: _jsxFileName,
