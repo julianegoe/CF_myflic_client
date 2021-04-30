@@ -12,10 +12,7 @@ import './index.scss';
 class MyFlixApplication extends React.Component {
     render() {
         return (
-            <Container fluid className="p-0">
-                <MainView />
-            </Container>
-
+            < MainView />
         );
     }
 }

@@ -8,7 +8,7 @@ import "./movie-card.scss";
 export default function MovieCard({ movieData, onMovieClick }) {
 
     return (
-        <Container className="movie-card" onClick={() => { onMovieClick(movieData) }}>
+        <>
             <OverlayTrigger
                 delay="100"
                 placement={'top'}
@@ -18,9 +18,9 @@ export default function MovieCard({ movieData, onMovieClick }) {
                     </Tooltip>
                 }
             >
-                <img className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+                <img onClick={() => { onMovieClick(movieData) }} className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
             </OverlayTrigger>
-        </Container>
+        </>
     );
 }
 

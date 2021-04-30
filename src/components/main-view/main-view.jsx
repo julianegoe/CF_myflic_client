@@ -45,6 +45,7 @@ export class MainView extends React.Component {
 
     render() {
         const { movies, selectedMovie, user, registered, favorites } = this.state;
+
         if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
 
@@ -55,7 +56,7 @@ export class MainView extends React.Component {
                 {
                     !selectedMovie ? <Divider title="All Movies" /> : null
                 }
-                <Row className="m-5 justify-content-md-start">
+                <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
                     {
                         selectedMovie ?
                             (
@@ -66,7 +67,7 @@ export class MainView extends React.Component {
 
                             movies.map(movie => (
 
-                                <Col xs={12} sm={6} lg={3} xl={2} className="p-3" key={movie._id}>
+                                <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
                                     <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
                                 </Col>
                             ))

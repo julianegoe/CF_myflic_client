@@ -3,7 +3,8 @@ import PropTypes from "prop-types";
 import './registration-view.scss';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col'
 
 export function RegistrationView(props) {
     const [firstnameLastname, setFirstnameLastname] = useState("");
@@ -18,37 +19,39 @@ export function RegistrationView(props) {
     };
 
     return (
-        <Container className="p-5 m-5">
-            <Form>
-                <Form.Group controlId="fullName">
-                    <Form.Label>Full Name</Form.Label>
-                    <Form.Control type="text" placeholder="Enter full name" />
-                </Form.Group>
+        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-2">
+                <Form>
+                    <Form.Group controlId="fullName">
+                        <Form.Label>Full Name</Form.Label>
+                        <Form.Control type="text" placeholder="Enter full name" />
+                    </Form.Group>
 
-                <Form.Group controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Enter username" />
-                </Form.Group>
+                    <Form.Group controlId="username">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" placeholder="Enter username" />
+                    </Form.Group>
 
-                <Form.Group controlId="email">
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                </Form.Group>
+                    <Form.Group controlId="email">
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" />
+                    </Form.Group>
 
-                <Form.Group controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
+                    <Form.Group controlId="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
 
-                <Form.Group controlId="birthday">
-                    <Form.Label>Birthday</Form.Label>
-                    <Form.Control type="date" placeholder="Enter your birthday" />
-                </Form.Group>
-                <Button onClick={handleSubmit} variant="dark" type="submit">
-                    Register
-  </Button>
-            </Form>
-        </Container>
+                    <Form.Group controlId="birthday">
+                        <Form.Label>Birthday</Form.Label>
+                        <Form.Control type="date" placeholder="Enter your birthday" />
+                    </Form.Group>
+                    <Button onClick={handleSubmit} variant="dark" type="submit">
+                        Register
+                    </Button>
+                </Form>
+            </Col>
+        </Row>
 
     )
 }

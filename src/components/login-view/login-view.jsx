@@ -3,7 +3,8 @@ import PropTypes from 'prop-types';
 import './login-view.scss';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export function LoginView({ onLoggedIn }) {
     const [username, setUsername] = useState("dummy");
@@ -15,22 +16,24 @@ export function LoginView({ onLoggedIn }) {
     }
 
     return (
-        <Container className="p-5 m-5">
-            <Form>
-                <Form.Group controlId="email">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" />
-                </Form.Group>
+        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3">
+                <Form>
+                    <Form.Group controlId="email">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" />
+                    </Form.Group>
 
-                <Form.Group controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" />
-                </Form.Group>
-                <Button onClick={handleSubmit} variant="dark" type="submit">
-                    Login
-  </Button>
-            </Form>
-        </Container>)
+                    <Form.Group controlId="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
+                    <Button onClick={handleSubmit} variant="dark" type="submit">
+                        Login
+                    </Button>
+                </Form>
+            </Col>
+        </Row>)
 
 }
 

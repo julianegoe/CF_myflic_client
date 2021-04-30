@@ -68,7 +68,7 @@ export default function MovieView({ movieData, goBack }) {
                 <hr className="solid" />
                 <Row>
                     <Col sm={4} md={4}>
-                        <div className="categories">Director</div>
+                        <div className="font-weight-bold">Director</div>
 
                         {/* Clicking the director name will open a popover */}
                         <OverlayTrigger trigger="click" placement="bottom" overlay={popoverDirector}>
