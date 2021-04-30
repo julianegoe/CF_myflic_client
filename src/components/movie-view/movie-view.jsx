@@ -109,7 +109,7 @@ export default function MovieView({ movieData, goBack }) {
 
 
 MovieView.propTypes = {
-    movieData: PropTypes.exact({
+    movieData: PropTypes.shape({
         Title: PropTypes.string.isRequired,
         Description: PropTypes.string.isRequired,
         Director: PropTypes.shape({

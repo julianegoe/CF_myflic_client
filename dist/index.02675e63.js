@@ -42730,7 +42730,7 @@ try {
   _s(MovieView, "VnHTlxyjxu34zw1lbWGZyrIQ114=");
   _c = MovieView;
   MovieView.propTypes = {
-    movieData: _propTypesDefault.default.exact({
+    movieData: _propTypesDefault.default.shape({
       Title: _propTypesDefault.default.string.isRequired,
       Description: _propTypesDefault.default.string.isRequired,
       Director: _propTypesDefault.default.shape({
