@@ -1,13 +1,15 @@
 import React from "react";
 import axios from 'axios';
-import { BrowserRouter as Router, Route } from "react-router-dom";
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieCard from "../movie-card/movie-card";
 import MovieView from "../movie-view/movie-view";
+import ProfileView from "../profile-view/profile-view";
+import ProfileEditView from "../profile-edit-view/profile-edit-view";
 import { LoginView } from "../login-view/login-view";
-import Divider from "../divider-component/divider-component";
 import { RegistrationView } from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
+import Divider from "../divider-component/divider-component";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -70,13 +72,22 @@ export class MainView extends React.Component {
                     }} />
 
                     <Route exact path="/register" render={() => {
+                        if (user) return <Redirect to="/" />
                         return <RegistrationView />
                     }} />
 
-                    <Route path="/movies/:movieId" render={({ match, history }) => {
+                    <Route exact path="/movies/:movieId" render={({ match, history }) => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) return <div className="main-view" />;
                         return <MovieView movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                    }} />
+
+                    <Route exact path="/profile" render={() => {
+                        return <ProfileView />
+                    }} />
+
+                    <Route exact path="/profile/edit" render={() => {
+                        return <ProfileEditView />
                     }} />
                 </Row >
             </Router>

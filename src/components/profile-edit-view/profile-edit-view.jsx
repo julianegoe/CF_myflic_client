@@ -1,24 +1,42 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import axios from 'axios'
-import './registration-view.scss';
+import axios from 'axios';
+import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
+import FormGroup from 'react-bootstrap/FormGroup';
+import FormLabel from 'react-bootstrap/FormLabel';
+import FormControl from 'react-bootstrap/FormControl';
 import Col from 'react-bootstrap/Col';
+import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 
 
-export function RegistrationView() {
+
+
+export default function ProfileEditView() {
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [birthday, setBirthday] = useState("");
+    const token = localStorage.getItem('token');
+    const localUsername = localStorage.getItem('user')
 
 
-    handleSubmit = (e) => {
+    useEffect(() => {
+        axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) => {
+                setName(res.data.Name);
+                setUsername(res.data.Username);
+                setEmail(res.data.Email);
+                setPassword(res.data.Password);
+                setBirthday(res.data.Birthday);
+            }).catch((e) => {
+                console.log(e)
+            })
+    }, [])
+
+    const updateUserData = (e) => {
         e.preventDefault();
-        axios.post("https://myflix-0001.herokuapp.com/users",
+        axios.post(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } },
             {
                 Name: name,
                 Username: username,
@@ -28,17 +46,17 @@ export function RegistrationView() {
 
             }).then((res) => {
                 console.log(res.data);
-                window.open('/', '_self');
             }).catch((e) => {
-                console.error("error during registration: " + e)
+                console.log(name);
+                console.error("error during editing: " + e)
             })
-    };
+    }
 
     return (
         <Col xs={8} md={6} className="p-1">
             <Form>
-                <Form.Group controlId="fullName">
-                    <Form.Label>Full Name</Form.Label>
+                <Form.Group controlId="Name">
+                    <Form.Label>Name</Form.Label>
                     <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
                 </Form.Group>
 
@@ -59,34 +77,15 @@ export function RegistrationView() {
 
                 <Form.Group controlId="birthday">
                     <Form.Label>Birthday</Form.Label>
-                    <Form.Control type="text" placeholder="dd.mm.yyyy" value={birthday} onChange={e => setBirthday(e.target.value)} />
+                    <Form.Control type="text" placeholder="yyyy-mm-dd" value={birthday} onChange={e => setBirthday(e.target.value)} />
                 </Form.Group>
-                <Button onClick={handleSubmit} variant="dark" type="submit">
-                    Register
-                    </Button>
-                <Link to="/">
-                    <Button as="div" variant="dark" type="submit" className="m-3">
-                        Login
+                <Link to="/profile">
+                    <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="m-3">
+                        Save edits
                     </Button>
                 </Link>
 
             </Form>
         </Col>
-
     )
 }
-
-RegistrationView.propTypes = {
-    onRegistered: PropTypes.func
-}
-
-/* PropTypes.shape(
-    {
-        Name: PropTypes.string.isRequired,
-        Username: PropTypes.string.isRequired,
-        Email: PropTypes.string.isRequired,
-        Password: PropTypes.string.isRequired,
-        Birthday: PropTypes.string.isRequired
-    }
-)
-} */

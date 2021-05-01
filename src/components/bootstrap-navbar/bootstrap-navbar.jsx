@@ -13,14 +13,20 @@ export function BootstrapNavbar({ userState, logOut }) {
             <Navbar className="bs-navbar" variant="dark" role="navigation">
                 {userState ? (
                     <>
-                        <Navbar.Brand href="#home">MyFlix</Navbar.Brand>
+                        <Link to="/">
+                            <Navbar.Brand as="div" >MyFlix</Navbar.Brand>
+                        </Link>
+
                         <Nav className="bs-navbar" as="ul">
                             <Nav.Item className="bs-navbar" as="li">
-                                <Nav.Link href="#profile">Profile</Nav.Link>
+                                <Link to="/profile" className="text-decoration-none">
+                                    <Nav.Link as="div">Profile</Nav.Link>
+                                </Link>
+
                             </Nav.Item>
                             <Nav.Item className="bs-navbar" as="li">
-                                <Link to="/">
-                                    <Nav.Link as="div" onClick={() => { logOut() }} href="#logout">Logout</Nav.Link>
+                                <Link to="/" className="text-decoration-none">
+                                    <Nav.Link as="div" onClick={() => { logOut() }}>Logout</Nav.Link>
                                 </Link>
                             </Nav.Item>
                         </Nav>
