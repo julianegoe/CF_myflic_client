@@ -31,28 +31,50 @@ export class MainView extends React.Component {
         })
     }
 
-    onLoggedIn(user) {
+    onLoggedIn(authData) {
         this.setState({
-            user: user
+            user: authData.user.Username
         });
+        localStorage.setItem('token', authData.token);
+        localStorage.setItem('user', authData.user.Username);
+        this.getMovies(authData.token);
+        console.info("user logged in")
     }
 
     onRegistered(event) {
         this.setState({
             registered: true
         });
+    };
+
+    getMovies(token) {
+        axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
+        ).then((res) => {
+            console.log(res.data);
+            this.setState({ movies: res.data })
+        }).catch((e) => {
+            console.log(e)
+        })
+    };
+
+    logOut() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.setState({
+            user: null
+        });
+        console.info("user logged out")
     }
 
     render() {
         const { movies, selectedMovie, user, registered, favorites } = this.state;
 
-        if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
 
-        if (movies.length === 0) { return <div>Empty</div> }
+        if (movies.length === 0) { return <div>Loading...</div> }
         return (
             <>
-                <BootstrapNavbar />
+                <BootstrapNavbar logOut={() => this.logOut()} />
                 {
                     !selectedMovie ? <Divider title="All Movies" /> : null
                 }
@@ -76,20 +98,21 @@ export class MainView extends React.Component {
                     }
                 </Row >
                 {
-                    favorites.length > 0 ? <Divider title="My Favorites" /> : null
+                    favorites.length > 0 && !selectedMovie ? (<Divider title="My Favorites" />) : null
                 }
             </>
         )
     }
 
     componentDidMount() {
-        axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk` } }
-        ).then((res) => {
-            console.log(res.data)
-            this.setState({ movies: res.data })
-        }).catch((e) => {
-            console.log(e)
-        })
+        let accessToken = localStorage.getItem('token');
+        if (accessToken) {
+            this.setState({
+                user: localStorage.getItem('user')
+            });
+            this.getMovies(accessToken)
+        }
     }
 
 }
+

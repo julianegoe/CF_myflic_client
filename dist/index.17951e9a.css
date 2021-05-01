@@ -9249,6 +9249,10 @@ html {
   color: white;
   background-color: #1A1A1D;
 }
+.app-container {
+  color: white;
+  background-color: #1A1A1D;
+}
 .movie-image {
   object-fit: contain;
   max-width: 100%;
@@ -18510,6 +18514,10 @@ h3 {
   font-size: 1rem;
 }
 html {
+  color: white;
+  background-color: #1A1A1D;
+}
+.app-container {
   color: white;
   background-color: #1A1A1D;
 }
@@ -27790,6 +27798,10 @@ html {
   color: white;
   background-color: #1A1A1D;
 }
+.app-container {
+  color: white;
+  background-color: #1A1A1D;
+}
 .bs-navbar {
   background-color: #C3073F;
 }
@@ -37042,6 +37054,10 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
+}
+html {
+  color: white;
+  background-color: #1A1A1D;
 }
 .app-container {
   color: white;

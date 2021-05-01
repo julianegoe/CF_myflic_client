@@ -26297,7 +26297,7 @@ try {
   var _loginViewLoginView = require("../login-view/login-view");
   var _dividerComponentDividerComponent = require("../divider-component/divider-component");
   var _dividerComponentDividerComponentDefault = _parcelHelpers.interopDefault(_dividerComponentDividerComponent);
-  var _registrationViewRegistrationView = require("../registration-view/registration-view");
+  require("../registration-view/registration-view");
   var _bootstrapNavbarBootstrapNavbar = require("../bootstrap-navbar/bootstrap-navbar");
   var _reactBootstrapRow = require('react-bootstrap/Row');
   var _reactBootstrapRowDefault = _parcelHelpers.interopDefault(_reactBootstrapRow);
@@ -26322,36 +26322,51 @@ try {
         selectedMovie: clickedMovie
       });
     }
-    onLoggedIn(user) {
+    onLoggedIn(authData) {
       this.setState({
-        user: user
+        user: authData.user.Username
       });
+      localStorage.setItem('token', authData.token);
+      localStorage.setItem('user', authData.user.Username);
+      this.getMovies(authData.token);
+      console.info("user logged in");
     }
     onRegistered(event) {
       this.setState({
         registered: true
       });
     }
+    getMovies(token) {
+      _axiosDefault.default.get("https://myflix-0001.herokuapp.com/movies", {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }).then(res => {
+        console.log(res.data);
+        this.setState({
+          movies: res.data
+        });
+      }).catch(e => {
+        console.log(e);
+      });
+    }
+    logOut() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      this.setState({
+        user: null
+      });
+      console.info("user logged out");
+    }
     render() {
       const {movies, selectedMovie, user, registered, favorites} = this.state;
-      if (!registered) return (
-        /*#__PURE__*/_reactDefault.default.createElement(_registrationViewRegistrationView.RegistrationView, {
-          onRegistered: event => this.onRegistered(event),
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 49,
-            columnNumber: 33
-          }
-        })
-      );
       if (!user) return (
         /*#__PURE__*/_reactDefault.default.createElement(_loginViewLoginView.LoginView, {
           onLoggedIn: user => this.onLoggedIn(user),
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 50,
+            lineNumber: 72,
             columnNumber: 27
           }
         })
@@ -26362,18 +26377,19 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 52,
+              lineNumber: 74,
               columnNumber: 43
             }
-          }, "Empty")
+          }, "Loading...")
         );
       }
       return (
         /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_bootstrapNavbarBootstrapNavbar.BootstrapNavbar, {
+          logOut: () => this.logOut(),
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 55,
+            lineNumber: 77,
             columnNumber: 17
           }
         }), !selectedMovie ? /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
@@ -26381,7 +26397,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 57,
+            lineNumber: 79,
             columnNumber: 38
           }
         }) : null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
@@ -26389,7 +26405,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 59,
+            lineNumber: 81,
             columnNumber: 17
           }
         }, selectedMovie ? /*#__PURE__*/_reactDefault.default.createElement(_movieViewMovieViewDefault.default, {
@@ -26400,7 +26416,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 64,
+            lineNumber: 86,
             columnNumber: 33
           }
         }) : movies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
@@ -26414,7 +26430,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 70,
+            lineNumber: 92,
             columnNumber: 33
           }
         }, /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCardDefault.default, {
@@ -26425,33 +26441,28 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 71,
+            lineNumber: 93,
             columnNumber: 37
           }
-        })))), favorites.length > 0 ? /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
+        })))), favorites.length > 0 && !selectedMovie ? /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
           title: "My Favorites",
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 79,
-            columnNumber: 44
+            lineNumber: 101,
+            columnNumber: 63
           }
         }) : null)
       );
     }
     componentDidMount() {
-      _axiosDefault.default.get("https://myflix-0001.herokuapp.com/movies", {
-        headers: {
-          "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk`
-        }
-      }).then(res => {
-        console.log(res.data);
+      let accessToken = localStorage.getItem('token');
+      if (accessToken) {
         this.setState({
-          movies: res.data
+          user: localStorage.getItem('user')
         });
-      }).catch(e => {
-        console.log(e);
-      });
+        this.getMovies(accessToken);
+      }
     }
   }
   helpers.postlude(module);
@@ -42525,8 +42536,9 @@ try {
         }
       }).then(res => {
         setGenreInfo(res.data.Description);
+        console.log(res.data.Description);
       }).catch(e => console.log(e));
-    }, [setGenreInfo]);
+    }, []);
     _react.useEffect(() => {
       _axiosDefault.default.get(`https://myflix-0001.herokuapp.com/directors/${movieData.Director.Name}`, {
         headers: {
@@ -42535,7 +42547,7 @@ try {
       }).then(res => {
         setDirectorInfo(res.data.Bio);
       }).catch(e => console.log(e));
-    }, [setDirectorInfo]);
+    }, []);
     return (
       /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         md: 12,
@@ -42697,11 +42709,12 @@ try {
           columnNumber: 25
         }
       }, movieData.Actors.map(actor => /*#__PURE__*/_reactDefault.default.createElement("li", {
+        key: actor,
         __self: this,
         __source: {
           fileName: _jsxFileName,
           lineNumber: 95,
-          columnNumber: 61
+          columnNumber: 60
         }
       }, actor)))))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         md: 12,
@@ -42792,10 +42805,10 @@ try {
     const handleSubmit = e => {
       e.preventDefault();
       _axiosDefault.default.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`).then(res => {
-        console.info("Login successfull");
+        console.log(res.data);
         onLoggedIn(res.data);
       }).catch(e => {
-        console.log(e + " No such user");
+        console.log(e);
       });
     };
     return (
@@ -43129,9 +43142,7 @@ try {
   var _reactBootstrapNavDefault = _parcelHelpers.interopDefault(_reactBootstrapNav);
   require('./bootstrap-navbar.scss');
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/bootstrap-navbar/bootstrap-navbar.jsx";
-  function BootstrapNavbar() {
-    /*const { isloggedIn, setLogInState } = useState(true);
-    */
+  function BootstrapNavbar({logOut}) {
     return (
       /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavbarDefault.default, {
         className: "bs-navbar",
@@ -43153,7 +43164,6 @@ try {
         }
       }, "MyFlix"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default, {
         className: "bs-navbar",
-        defaultActiveKey: "#profile",
         as: "ul",
         __self: this,
         __source: {
@@ -43178,7 +43188,25 @@ try {
           lineNumber: 15,
           columnNumber: 25
         }
-      }, "Profile")))))
+      }, "Profile")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Item, {
+        className: "bs-navbar",
+        as: "li",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 17,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Link, {
+        onClick: logOut,
+        href: "#logout",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18,
+          columnNumber: 25
+        }
+      }, "Logout")))))
     );
   }
   _c = BootstrapNavbar;

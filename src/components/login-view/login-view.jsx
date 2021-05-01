@@ -15,10 +15,10 @@ export function LoginView({ onLoggedIn }) {
         e.preventDefault();
         axios.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`)
             .then((res => {
-                console.info("Login successfull");
+                console.log(res.data);
                 onLoggedIn(res.data);
             })).catch((e) => {
-                console.log(e + " No such user")
+                console.log(e)
             })
     }
 

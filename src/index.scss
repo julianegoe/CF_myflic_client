@@ -13,8 +13,13 @@ $font-color: white;
   font-size: $font-size;
 }
 
-.app-container {
+html {
   color: $font-color;
   background-color: $primary-color;
 
+}
+
+.app-container {
+  color: $font-color;
+  background-color: $primary-color;
 }
