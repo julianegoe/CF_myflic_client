@@ -54,20 +54,14 @@ export class MainView extends React.Component {
     render() {
         const { movies, user } = this.state;
 
-        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-
-        if (movies.length === 0) { return <div>Loading...</div> }
         return (
             <Router>
-                <BootstrapNavbar logOut={() => this.logOut()} />
-                <Divider title="All Movies" />
-                <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
-
-                    <Route path="/movies/:movieId" render={({ match, history }) => {
-                        return <MovieView movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
-                    }} />
+                <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
+                <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
 
                     <Route exact path="/" render={() => {
+                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                        if (movies.length === 0) { return <div>Loading...</div> }
                         return movies.map(movie => (
                             <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
                                 <MovieCard movieData={movie} />
@@ -75,6 +69,15 @@ export class MainView extends React.Component {
                         ))
                     }} />
 
+                    <Route exact path="/register" render={() => {
+                        return <RegistrationView />
+                    }} />
+
+                    <Route path="/movies/:movieId" render={({ match, history }) => {
+                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                        if (movies.length === 0) return <div className="main-view" />;
+                        return <MovieView movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                    }} />
                 </Row >
             </Router>
         )

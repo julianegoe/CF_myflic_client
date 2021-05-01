@@ -7,6 +7,8 @@ import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { FormCheck } from 'react-bootstrap';
+import { Link } from "react-router-dom";
+
 
 export function LoginView({ onLoggedIn }) {
     const [username, setUsername] = useState("");
@@ -30,7 +32,7 @@ export function LoginView({ onLoggedIn }) {
     }
 
     return (
-        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-around justify-content-lg-around">
+        <>
             <Col xs={8} md={"auto"} className="mr-5">
                 <h1>MyFlix</h1>
                 <p className="tag-line">Discover some of the best movies in cinema history.</p>
@@ -50,9 +52,14 @@ export function LoginView({ onLoggedIn }) {
                     <Button onClick={handleSubmit} variant="dark" type="submit">
                         Login
                     </Button>
+                    <Link to="/register">
+                        <Button as="div" variant="dark" type="submit" className="m-3">
+                            Register
+                    </Button>
+                    </Link>
                 </Form>
             </Col>
-        </Row>)
+        </>)
 
 }
 
