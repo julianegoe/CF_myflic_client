@@ -5,8 +5,9 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
 import "./movie-card.scss";
 import Image from 'react-bootstrap/Image';
+import { Link } from "react-router-dom";
 
-export default function MovieCard({ movieData, onMovieClick }) {
+export default function MovieCard({ movieData }) {
 
     return (
         <>
@@ -19,7 +20,9 @@ export default function MovieCard({ movieData, onMovieClick }) {
                     </Tooltip>
                 }
             >
-                <Image onClick={() => { onMovieClick(movieData) }} className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+                <Link to={`/movies/${movieData._id}`}>
+                    <Image className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+                </Link>
             </OverlayTrigger>
         </>
     );
@@ -44,6 +47,5 @@ MovieCard.propTypes = {
         _id: PropTypes.string.isRequired,
         ImageUrl: PropTypes.string.isRequired,
         Featured: PropTypes.bool.isRequired
-    }).isRequired,
-    onClick: PropTypes.func
+    }).isRequired
 }

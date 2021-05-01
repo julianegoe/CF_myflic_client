@@ -18560,12 +18560,6 @@ hr.solid {
 .categories {
   font-weight: bolder;
 }
-.category {
-  cursor: pointer;
-}
-.category:hover {
-  font-weight: bold;
-}
 
 
 

@@ -8,47 +8,12 @@ import Popover from 'react-bootstrap/Popover';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 
+
 import './movie-view.scss';
 
-export default function MovieView({ movieData, goBack }) {
+export default function MovieView({ movieData, onBackClick }) {
     const [genreInfo, setGenreInfo] = useState("");
     const [directorInfo, setDirectorInfo] = useState("");
-
-    {/* defining the popover elements */ }
-    const popoverGenre = (<Popover id="popover-basic">
-        <Popover.Title as="h3">{movieData.Genre.Name}</Popover.Title>
-        <Popover.Content>
-            {genreInfo}
-        </Popover.Content>
-    </Popover>);
-
-    const popoverDirector = (<Popover id="popover-basic">
-        <Popover.Title as="h3">{movieData.Director.Name}</Popover.Title>
-        <Popover.Content>
-            {directorInfo}
-        </Popover.Content>
-    </Popover>);
-
-    {/* requesting data from the genre and director endpoints */ }
-    useEffect(() => {
-        axios
-            .get(`https://myflix-0001.herokuapp.com/genres/${movieData.Genre.Name}`, { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk` } })
-            .then((res) => {
-                setGenreInfo(res.data.Description);
-                console.log(res.data.Description)
-            })
-            .catch((e) => console.log(e));
-    }, []);
-
-    useEffect(() => {
-        axios
-            .get(`https://myflix-0001.herokuapp.com/directors/${movieData.Director.Name}`, { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk` } })
-            .then((res) => {
-                setDirectorInfo(res.data.Bio);
-
-            })
-            .catch((e) => console.log(e));
-    }, []);
 
     return (
         <>
@@ -70,22 +35,17 @@ export default function MovieView({ movieData, goBack }) {
                     <Col sm={4} md={4}>
                         <div className="font-weight-bold">Director</div>
 
-                        {/* Clicking the director name will open a popover */}
-                        <OverlayTrigger trigger="click" placement="bottom" overlay={popoverDirector}>
-                            <div className="category">
-                                {movieData.Director.Name}
-                            </div>
-                        </OverlayTrigger>
+                        <div className="category">
+                            {movieData.Director.Name}
+                        </div>
+                        <p>{movieData.Director.Bio}</p>
                     </Col>
 
-                    {/* Clicking the genre name will open a popover */}
                     <Col sm={4} md={4}>
                         <div className="categories">Genre</div>
-                        <OverlayTrigger trigger="click" placement="bottom" overlay={popoverGenre}>
-                            <div className="category">
-                                {movieData.Genre.Name}
-                            </div>
-                        </OverlayTrigger>
+                        <div className="category">
+                            {movieData.Genre.Name}
+                        </div>
                     </Col>
 
                     {/* ToDo: Adding a cast list to data in MongoDB */}
@@ -100,7 +60,7 @@ export default function MovieView({ movieData, goBack }) {
 
             {/* This is the back button spanning all Bootstrap columns */}
             <Col md={12}>
-                <Button className="bg-button" variant="dark" onClick={() => { goBack(null) }}>Back</Button>
+                <Button onClick={() => { onBackClick() }} className="bg-button" variant="dark">Back</Button>
             </Col>
         </>
     )
@@ -127,5 +87,5 @@ MovieView.propTypes = {
         ImageUrl: PropTypes.string.isRequired,
         Featured: PropTypes.bool.isRequired
     }).isRequired,
-    goBack: PropTypes.func
+    onBackClick: PropTypes.func.isRequired
 }

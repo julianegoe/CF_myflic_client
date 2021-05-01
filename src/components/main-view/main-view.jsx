@@ -1,5 +1,6 @@
 import React from "react";
 import axios from 'axios';
+import { BrowserRouter as Router, Route } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieCard from "../movie-card/movie-card";
 import MovieView from "../movie-view/movie-view";
@@ -17,18 +18,8 @@ export class MainView extends React.Component {
         super();
         this.state = {
             movies: [],
-            selectedMovie: null,
             user: null,
-            registered: false,
-            isLoggedIn: true,
-            favorites: []
         };
-    }
-
-    setSelectedMovie(clickedMovie) {
-        this.setState({
-            selectedMovie: clickedMovie
-        })
     }
 
     onLoggedIn(authData) {
@@ -40,12 +31,6 @@ export class MainView extends React.Component {
         this.getMovies(authData.token);
         console.info("user logged in")
     }
-
-    onRegistered(event) {
-        this.setState({
-            registered: true
-        });
-    };
 
     getMovies(token) {
         axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
@@ -67,40 +52,31 @@ export class MainView extends React.Component {
     }
 
     render() {
-        const { movies, selectedMovie, user, registered, favorites } = this.state;
+        const { movies, user } = this.state;
 
         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
 
         if (movies.length === 0) { return <div>Loading...</div> }
         return (
-            <>
+            <Router>
                 <BootstrapNavbar logOut={() => this.logOut()} />
-                {
-                    !selectedMovie ? <Divider title="All Movies" /> : null
-                }
+                <Divider title="All Movies" />
                 <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
-                    {
-                        selectedMovie ?
-                            (
 
-                                <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} />
-                            )
-                            :
+                    <Route path="/movies/:movieId" render={({ match, history }) => {
+                        return <MovieView movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                    }} />
 
-                            movies.map(movie => (
+                    <Route exact path="/" render={() => {
+                        return movies.map(movie => (
+                            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
+                                <MovieCard movieData={movie} />
+                            </Col>
+                        ))
+                    }} />
 
-                                <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
-                                    <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
-                                </Col>
-                            ))
-
-
-                    }
                 </Row >
-                {
-                    favorites.length > 0 && !selectedMovie ? (<Divider title="My Favorites" />) : null
-                }
-            </>
+            </Router>
         )
     }
 
