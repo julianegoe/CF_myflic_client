@@ -1,15 +1,22 @@
 import axios from 'axios';
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import PropTypes from 'prop-types';
 import './login-view.scss';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { FormCheck } from 'react-bootstrap';
 
 export function LoginView({ onLoggedIn }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
+    const form = useRef('form');
+
+    const validate = () => {
+        console.log("Validation");
+        return form.current.reportValidity()
+    }
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -23,17 +30,22 @@ export function LoginView({ onLoggedIn }) {
     }
 
     return (
-        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-around justify-content-lg-around">
+            <Col xs={8} md={"auto"} className="mr-5">
+                <h1>MyFlix</h1>
+                <p className="tag-line">Discover some of the best movies in cinema history.</p>
+            </Col>
+
             <Col xs={8} md={6} className="p-1">
-                <Form>
+                <Form ref={form} >
                     <Form.Group controlId="email">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+                        <Form.Control onBlur={() => { validate() }} type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} required />
                     </Form.Group>
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                        <Form.Control onBlur={() => { validate() }} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength="8" />
                     </Form.Group>
                     <Button onClick={handleSubmit} variant="dark" type="submit">
                         Login

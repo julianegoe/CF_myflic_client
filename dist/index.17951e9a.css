@@ -5,6 +5,7 @@
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+@import url("https://fonts.googleapis.com/css2?family=Freckle+Face&display=swap");
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -9252,6 +9253,16 @@ html {
 .app-container {
   color: white;
   background-color: #1A1A1D;
+}
+h1 {
+  font-family: "Freckle Face", cursive;
+  color: #C3073F;
+  text-shadow: 3px 3px #410f19;
+  font-size: x-large;
+}
+.tag-line {
+  font-size: 1.25rem;
+  font-weight: lighter;
 }
 .movie-image {
   object-fit: contain;
@@ -9273,6 +9284,7 @@ html {
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+@import url("https://fonts.googleapis.com/css2?family=Freckle+Face&display=swap");
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -18520,6 +18532,16 @@ html {
 .app-container {
   color: white;
   background-color: #1A1A1D;
+}
+h1 {
+  font-family: "Freckle Face", cursive;
+  color: #C3073F;
+  text-shadow: 3px 3px #410f19;
+  font-size: x-large;
+}
+.tag-line {
+  font-size: 1.25rem;
+  font-weight: lighter;
 }
 ul {
   list-style-type: none;
@@ -18554,6 +18576,7 @@ hr.solid {
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+@import url("https://fonts.googleapis.com/css2?family=Freckle+Face&display=swap");
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -27801,6 +27824,16 @@ html {
 .app-container {
   color: white;
   background-color: #1A1A1D;
+}
+h1 {
+  font-family: "Freckle Face", cursive;
+  color: #C3073F;
+  text-shadow: 3px 3px #410f19;
+  font-size: x-large;
+}
+.tag-line {
+  font-size: 1.25rem;
+  font-weight: lighter;
 }
 .bs-navbar {
   background-color: #C3073F;
@@ -27815,6 +27848,7 @@ hr.solid {
  * Copyright 2011-2021 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
  */
+@import url("https://fonts.googleapis.com/css2?family=Freckle+Face&display=swap");
 :root {
   --blue: #007bff;
   --indigo: #6610f2;
@@ -37062,5 +37096,15 @@ html {
 .app-container {
   color: white;
   background-color: #1A1A1D;
+}
+h1 {
+  font-family: "Freckle Face", cursive;
+  color: #C3073F;
+  text-shadow: 3px 3px #410f19;
+  font-size: x-large;
+}
+.tag-line {
+  font-size: 1.25rem;
+  font-weight: lighter;
 }
 /*# sourceMappingURL=index.17951e9a.css.map */

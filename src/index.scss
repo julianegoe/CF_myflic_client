@@ -1,8 +1,10 @@
 @import "bootstrap/scss/bootstrap";
+@import url('https://fonts.googleapis.com/css2?family=Freckle+Face&display=swap');
+
 $font-size: 1rem;
 $primary-color: #1A1A1D;
 $secondary-color: #950740;
-$tertiary-color: #6F2232;
+$tertiary-color: #410f19;
 $quariary-color: #4E4E50;
 $auxiliary-color: #C3073F;
 $font-color: white;
@@ -23,3 +25,16 @@ html {
   color: $font-color;
   background-color: $primary-color;
 }
+
+h1 {
+  font-family: 'Freckle Face', cursive;
+  color: $auxiliary-color;
+  text-shadow: 3px 3px $tertiary-color;
+  font-size: x-large;
+}
+
+.tag-line{
+  font-size: 1.25rem;
+  font-weight: lighter;
+}
+
