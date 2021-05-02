@@ -5,7 +5,6 @@ import ReactDom, { render } from "react-dom";
 import MovieCard from "../movie-card/movie-card";
 import MovieView from "../movie-view/movie-view";
 import ProfileView from "../profile-view/profile-view";
-import ProfileEditView from "../profile-edit-view/profile-edit-view";
 import { LoginView } from "../login-view/login-view";
 import { RegistrationView } from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
@@ -60,7 +59,6 @@ export class MainView extends React.Component {
             <Router>
                 <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
                 <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
-
                     <Route exact path="/" render={() => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) { return <div>Loading...</div> }
@@ -83,11 +81,7 @@ export class MainView extends React.Component {
                     }} />
 
                     <Route exact path="/profile" render={() => {
-                        return <ProfileView />
-                    }} />
-
-                    <Route exact path="/profile/edit" render={() => {
-                        return <ProfileEditView />
+                        return <ProfileView movies={movies} />
                     }} />
                 </Row >
             </Router>

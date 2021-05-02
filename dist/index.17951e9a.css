@@ -9245,6 +9245,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
+  overflow: hidden;
 }
 html {
   color: white;
@@ -18524,6 +18525,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
+  overflow: hidden;
 }
 html {
   color: white;
@@ -27810,6 +27812,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
+  overflow: hidden;
 }
 html {
   color: white;
@@ -27832,10 +27835,10 @@ h1 {
 .bs-navbar {
   background-color: #C3073F;
 }
-
 hr.solid {
   border-top: 1px solid white;
 }
+
 @charset "UTF-8";
 /*!
  * Bootstrap v4.6.0 (https://getbootstrap.com/)
