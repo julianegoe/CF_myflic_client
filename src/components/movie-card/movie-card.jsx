@@ -3,9 +3,10 @@ import PropTypes from "prop-types";
 import { Container, Card } from "react-bootstrap";
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 import Tooltip from 'react-bootstrap/Tooltip';
-import "./movie-card.scss";
 import Image from 'react-bootstrap/Image';
 import { Link } from "react-router-dom";
+
+import "./movie-card.scss";
 
 export default function MovieCard({ movieData }) {
 

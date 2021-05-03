@@ -9245,7 +9245,6 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: auto;
 }
 html {
   color: white;
@@ -18525,7 +18524,6 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: auto;
 }
 html {
   color: white;
@@ -18562,8 +18560,22 @@ hr.solid {
 .categories {
   font-weight: bolder;
 }
+.favstar {
+  cursor: pointer;
+  transition: transform 200ms;
+}
+.favstar:hover {
+  transform: scale(1.08);
+}
+.favstar_item {
+  object-fit: contain;
+  height: 30px;
+  margin: 10px;
+}
 
-
+hr.solid {
+  border-top: 1px solid white;
+}
 
 @charset "UTF-8";
 /*!
@@ -27812,7 +27824,6 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: auto;
 }
 html {
   color: white;
@@ -27835,9 +27846,7 @@ h1 {
 .bs-navbar {
   background-color: #C3073F;
 }
-hr.solid {
-  border-top: 1px solid white;
-}
+
 
 @charset "UTF-8";
 /*!

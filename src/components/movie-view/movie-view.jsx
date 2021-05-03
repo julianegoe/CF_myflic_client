@@ -10,10 +10,16 @@ import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 
 import './movie-view.scss';
+import { propTypes } from 'react-bootstrap/esm/Image';
 
-export default function MovieView({ movieData, onBackClick }) {
+export default function MovieView({ bla, movieData, onBackClick }) {
     const [genreInfo, setGenreInfo] = useState("");
     const [directorInfo, setDirectorInfo] = useState("");
+
+    const handleFaveClick = () => {
+        bla()
+    }
+
 
     return (
         <>
@@ -24,7 +30,11 @@ export default function MovieView({ movieData, onBackClick }) {
 
             {/* This is the image element  */}
             <Col md="auto" className="p-3">
-                <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} />
+                <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} /><br />
+                <div onClick={() => { handleFaveClick() }} className="favstar">
+                    <img className="favstar_item" src="https://img.icons8.com/flat-round/64/000000/star--v1.png" />
+                    <span>Add to Favorites</span>
+                </div>
             </Col>
 
             {/* This is the info colums containing nested columns for genre, director and cast */}

@@ -23,7 +23,8 @@ export default function ProfileView({ movies }) {
     const email = localStorage.getItem('email')
     const password = localStorage.getItem('password') */
     /* const birthday = localStorage.getItem('birthday').substring(0, 10) */
-    const [favorites, setFavorites] = useState([{ Title: "none" }])
+    const [favorites, setFavorites] = useState([{ Title: "none" }]);
+    const [favIds, setFavIds] = useState([]);
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
@@ -41,6 +42,10 @@ export default function ProfileView({ movies }) {
         setFavorites(favoriteMovieList)
     };
 
+    const onFavClick = () => {
+        console.log("clicked fav")
+    }
+
 
     useEffect(() => {
         console.log("getting user data...")
@@ -52,11 +57,15 @@ export default function ProfileView({ movies }) {
                 setPassword(res.data.Password);
                 const date = res.data.Birthday.substring(0, 10)
                 setBirthday(date);
-                getFavs(res.data.FavoriteMovies)
+                setFavIds(res.data.FavoriteMovies)
             }).catch((e) => {
                 console.log(e)
             })
     }, [])
+
+    useEffect(() => {
+        getFavs(favIds)
+    }, [favIds])
 
     const updateUserData = (e) => {
         e.preventDefault();
@@ -83,13 +92,13 @@ export default function ProfileView({ movies }) {
     return (
         <>
             {favorites.length > 0 &&
-                <Col xs={12} sm={6} md={6} lg={6} xl={6} className="p-3">
+                <Col xs={12} sm={8} md={6} lg={6} xl={6} className="p-3 m-2">
                     <Divider title="My Favorites" isVisible={true} />
                     <Row>
                         {favorites.map((fav) => {
                             return (
 
-                                <Col xs={12} sm={6} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
+                                <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
                                     <MovieCard movieData={fav} />
                                 </Col>
 
@@ -99,7 +108,7 @@ export default function ProfileView({ movies }) {
                 </Col>}
 
 
-            <Col xs={8} md={4} className="p-3">
+            <Col xs={12} sm={8} md={4} lg={4} className="p-3 m-2">
                 <Divider title="Profile Settings" isVisible={true} />
                 <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
                 <Form>

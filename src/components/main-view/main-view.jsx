@@ -50,7 +50,9 @@ export class MainView extends React.Component {
             user: null
         });
         console.info("user logged out")
-    }
+    };
+
+
 
     render() {
         const { movies, user } = this.state;
@@ -78,7 +80,7 @@ export class MainView extends React.Component {
                     <Route exact path="/movies/:movieId" render={({ match, history }) => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) return <div className="main-view" />;
-                        return <MovieView movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                        return <MovieView bla={() => { console.info("fav clicked") }} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
                     }} />
 
                     <Route exact path="/profile" render={() => {

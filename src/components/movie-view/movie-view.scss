@@ -22,3 +22,18 @@ hr.solid {
 .categories {
     font-weight: bolder;
 }
+
+.favstar {
+    cursor: pointer;
+    transition: transform 200ms;
+}
+
+.favstar:hover {
+    transform: scale(1.08);
+}
+
+.favstar_item {
+    object-fit: contain;
+    height: 30px;
+    margin: 10px;
+  }
