@@ -80,7 +80,7 @@ export class MainView extends React.Component {
                     <Route exact path="/movies/:movieId" render={({ match, history }) => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) return <div className="main-view" />;
-                        return <MovieView bla={() => { console.info("fav clicked") }} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                        return <MovieView bla={() => { alert("fav clicked") }} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
                     }} />
 
                     <Route exact path="/profile" render={() => {
