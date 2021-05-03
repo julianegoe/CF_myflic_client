@@ -22,6 +22,7 @@ export function LoginView({ onLoggedIn }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log("logging in...")
         axios.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`)
             .then((res => {
                 console.log(res.data);
