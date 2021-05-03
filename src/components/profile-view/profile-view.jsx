@@ -77,7 +77,6 @@ export default function ProfileView({ movies }) {
 
     return (
         <>
-
             {favorites.map((fav) => {
                 return (
                     <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={fav._id}>
