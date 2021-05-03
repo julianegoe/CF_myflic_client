@@ -9245,7 +9245,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: hidden;
+  overflow: auto;
 }
 html {
   color: white;
@@ -18525,7 +18525,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: hidden;
+  overflow: auto;
 }
 html {
   color: white;
@@ -27812,7 +27812,7 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: hidden;
+  overflow: auto;
 }
 html {
   color: white;
@@ -37086,7 +37086,6 @@ h3 {
 * {
   box-sizing: border-box;
   font-size: 1rem;
-  overflow: auto;
 }
 html {
   color: white;

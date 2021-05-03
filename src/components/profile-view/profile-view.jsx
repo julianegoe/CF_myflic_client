@@ -5,7 +5,8 @@ import FormGroup from 'react-bootstrap/FormGroup';
 import FormLabel from 'react-bootstrap/FormLabel';
 import FormControl from 'react-bootstrap/FormControl';
 import Col from 'react-bootstrap/Col';
-import Row from 'react-bootstrap/row'
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import Divider from '../divider-component/divider-component';
@@ -75,16 +76,30 @@ export default function ProfileView({ movies }) {
         })
     }
 
+
+
+
     return (
         <>
-            {favorites.map((fav) => {
-                return (
-                    <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={fav._id}>
-                        <MovieCard movieData={fav} />
-                    </Col>)
-            })}
+            {favorites.length > 0 &&
+                <Col xs={12} sm={6} md={6} lg={6} xl={6} className="p-3">
+                    <Divider title="My Favorites" isVisible={true} />
+                    <Row>
+                        {favorites.map((fav) => {
+                            return (
+
+                                <Col xs={12} sm={6} md={4} lg={3} xl={3} className="p-3">
+                                    <MovieCard movieData={fav} />
+                                </Col>
+
+                            )
+                        })}
+                    </Row>
+                </Col>}
+
 
             <Col xs={8} md={4} className="p-1">
+                <Divider title="Profile Settings" isVisible={true} />
                 <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
                 <Form>
                     <Form.Group controlId="Name">
