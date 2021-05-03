@@ -43,6 +43,7 @@ export default function ProfileView({ movies }) {
 
 
     useEffect(() => {
+        console.log("getting user data...")
         axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
                 setName(res.data.Name);
@@ -88,7 +89,7 @@ export default function ProfileView({ movies }) {
                         {favorites.map((fav) => {
                             return (
 
-                                <Col xs={12} sm={6} md={4} lg={3} xl={3} className="p-3">
+                                <Col xs={12} sm={6} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
                                     <MovieCard movieData={fav} />
                                 </Col>
 
@@ -98,7 +99,7 @@ export default function ProfileView({ movies }) {
                 </Col>}
 
 
-            <Col xs={8} md={4} className="p-1">
+            <Col xs={8} md={4} className="p-3">
                 <Divider title="Profile Settings" isVisible={true} />
                 <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
                 <Form>

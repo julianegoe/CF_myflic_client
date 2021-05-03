@@ -62,6 +62,7 @@ export class MainView extends React.Component {
                     <Route exact path="/" render={() => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) { return <div>Loading...</div> }
+                        { movies.length > 0 && <Divider title="All Movies" /> }
                         return movies.map(movie => (
                             <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
                                 <MovieCard movieData={movie} />
