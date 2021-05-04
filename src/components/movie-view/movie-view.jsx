@@ -4,22 +4,31 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Popover from 'react-bootstrap/Popover';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 
 
 import './movie-view.scss';
 import { propTypes } from 'react-bootstrap/esm/Image';
 
-export default function MovieView({ bla, movieData, onBackClick }) {
+export default function MovieView({ setFavState, user, movieData, onBackClick }) {
     const [genreInfo, setGenreInfo] = useState("");
     const [directorInfo, setDirectorInfo] = useState("");
 
-    const handleFaveClick = () => {
-        bla()
+/* After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
+ */    const addFav = (movieId) => {
+        alert("You clicked fav")
+        /* const token = localStorage.getItem('token');
+        console.log(token);
+        console.log(user);
+        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieId}`, { headers: { "Authorization": `Bearer ${token}` } }
+        ).then((res) => {
+            setFavState({
+                favorites: res.data.FavoriteMovies
+            });
+        }).catch((e) => {
+            console.log(e)
+        }) */
     }
-
 
     return (
         <>
@@ -31,7 +40,7 @@ export default function MovieView({ bla, movieData, onBackClick }) {
             {/* This is the image element  */}
             <Col md="auto" className="p-3">
                 <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} /><br />
-                <div onClick={() => { handleFaveClick() }} className="favstar">
+                <div onClick={() => { addFav(movieData._id) }} className="favstar">
                     <img className="favstar_item" src="https://img.icons8.com/flat-round/64/000000/star--v1.png" />
                     <span>Add to Favorites</span>
                 </div>

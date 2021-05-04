@@ -20,12 +20,16 @@ export class MainView extends React.Component {
         this.state = {
             movies: [],
             user: null,
+            favorites: []
         };
     }
 
     onLoggedIn(authData) {
         this.setState({
             user: authData.user.Username
+        });
+        this.setState({
+            favorites: authData.user.FavoriteMovies
         });
         localStorage.setItem('token', authData.token);
         localStorage.setItem('user', authData.user.Username);
@@ -51,7 +55,6 @@ export class MainView extends React.Component {
         });
         console.info("user logged out")
     };
-
 
 
     render() {
@@ -80,7 +83,7 @@ export class MainView extends React.Component {
                     <Route exact path="/movies/:movieId" render={({ match, history }) => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) return <div className="main-view" />;
-                        return <MovieView bla={() => { alert("fav clicked") }} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                        return <MovieView setFavState={this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} user={user} onBackClick={() => history.goBack()} />
                     }} />
 
                     <Route exact path="/profile" render={() => {
@@ -97,7 +100,7 @@ export class MainView extends React.Component {
             this.setState({
                 user: localStorage.getItem('user')
             });
-            this.getMovies(accessToken)
+            this.getMovies(accessToken);
         }
     }
 

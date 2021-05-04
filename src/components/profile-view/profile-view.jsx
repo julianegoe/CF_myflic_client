@@ -37,15 +37,10 @@ export default function ProfileView({ movies }) {
     const getFavs = (favs) => {
         let favoriteMovieList = [];
         movies.forEach((movie) => {
-            favs.includes(movie._id) ? favoriteMovieList.push(movie) : console.log("didn't find it")
+            favs.includes(movie._id) ? favoriteMovieList.push(movie) : null
         });
         setFavorites(favoriteMovieList)
     };
-
-    const onFavClick = () => {
-        console.log("clicked fav")
-    }
-
 
     useEffect(() => {
         console.log("getting user data...")
@@ -64,7 +59,8 @@ export default function ProfileView({ movies }) {
     }, [])
 
     useEffect(() => {
-        getFavs(favIds)
+        favIds ? getFavs(favIds) : setFavorites({})
+        console.log("favs in favIds: " + favIds)
     }, [favIds])
 
     const updateUserData = (e) => {
@@ -86,6 +82,14 @@ export default function ProfileView({ movies }) {
         })
     }
 
+    const deleteFav = (favId) => {
+        console.log(username);
+        axios.delete(`https://myflix-0001.herokuapp.com/users/${username}/movies/${favId}`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) => {
+                setFavIds(res.data.FavoriteMovies)
+
+            }).catch((e) => { console.log(e) })
+    }
 
 
 
@@ -100,6 +104,7 @@ export default function ProfileView({ movies }) {
 
                                 <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
                                     <MovieCard movieData={fav} />
+                                    <Button onClick={() => deleteFav(fav._id)} type="submit " className="mt-3" size="sm" variant="outline-danger">Delete</Button>
                                 </Col>
 
                             )
