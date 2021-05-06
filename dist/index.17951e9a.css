@@ -18572,10 +18572,23 @@ hr.solid {
   height: 30px;
   margin: 10px;
 }
+.genre-accordion {
+  font-size: smaller;
+}
+.director-accordion {
+  font-size: smaller;
+}
 hr.solid {
   border-top: 1px solid white;
 }
-
+.toast {
+  position: absolute;
+  z-index: 1;
+}
+.snackbar {
+  position: relative;
+  z-index: 1;
+}
 
 
 @charset "UTF-8";

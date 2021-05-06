@@ -23,8 +23,6 @@ export function LoginView({ onLoggedIn }) {
     const handleSubmit = (e) => {
         e.preventDefault();
         console.log("logging in...")
-        console.log(username);
-        console.log(password);
         axios.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`)
             .then((res => {
                 console.log(res.data);
@@ -52,11 +50,11 @@ export function LoginView({ onLoggedIn }) {
                         <Form.Label>Password</Form.Label>
                         <Form.Control onBlur={() => { validate() }} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength="8" />
                     </Form.Group>
-                    <Button onClick={handleSubmit} variant="dark" type="submit">
+                    <Button onClick={handleSubmit} variant="primary" type="submit">
                         Login
                     </Button>
                     <Link to="/register">
-                        <Button as="div" variant="dark" type="submit" className="m-3">
+                        <Button as="div" variant="secondary" type="submit" className="m-3">
                             Register
                     </Button>
                     </Link>

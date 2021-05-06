@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
+import GenreView from "../genre-view/genre-view";
+import DirectorView from "../director-view/director-view"
 
 
 
@@ -14,20 +16,21 @@ export default function MovieView({ setFavState, user, movieData, onBackClick })
     const [genreInfo, setGenreInfo] = useState("");
     const [directorInfo, setDirectorInfo] = useState("");
 
+
 /* After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
- */    const addFav = (movieId) => {
+ */    const addFav = () => {
         alert("You clicked fav")
-        /* const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
         console.log(token);
         console.log(user);
-        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieId}`, { headers: { "Authorization": `Bearer ${token}` } }
+        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
             setFavState({
                 favorites: res.data.FavoriteMovies
             });
         }).catch((e) => {
             console.log(e)
-        }) */
+        })
     }
 
     return (
@@ -40,10 +43,16 @@ export default function MovieView({ setFavState, user, movieData, onBackClick })
             {/* This is the image element  */}
             <Col md="auto" className="p-3">
                 <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} /><br />
-                <div onClick={() => { addFav(movieData._id) }} className="favstar">
-                    <img className="favstar_item" src="https://img.icons8.com/flat-round/64/000000/star--v1.png" />
+                <div onClick={() => { addFav() }} className="favstar mt-2">
+                    <i class="bi bi-star m-3"></i>
                     <span>Add to Favorites</span>
                 </div>
+                {/* This is the back button spanning all Bootstrap columns */}
+                <Row>
+                    <Col md={12} className="mt-3">
+                        <Button onClick={() => { onBackClick() }} className="bg-button" variant="dark">Back</Button>
+                    </Col>
+                </Row>
             </Col>
 
             {/* This is the info colums containing nested columns for genre, director and cast */}
@@ -53,34 +62,26 @@ export default function MovieView({ setFavState, user, movieData, onBackClick })
                 <Row>
                     <Col sm={4} md={4}>
                         <div className="font-weight-bold">Director</div>
+                        <DirectorView movieData={movieData} />
 
-                        <div className="category">
-                            {movieData.Director.Name}
-                        </div>
-                        <p>{movieData.Director.Bio}</p>
+
                     </Col>
 
                     <Col sm={4} md={4}>
                         <div className="categories">Genre</div>
-                        <div className="category">
-                            {movieData.Genre.Name}
-                        </div>
+                        <GenreView movieData={movieData} />
                     </Col>
 
                     {/* ToDo: Adding a cast list to data in MongoDB */}
                     <Col sm={4} md={4}>
                         <div className="categories">Cast</div>
-                        <ul>
+                        <ul className="mt-2">
                             {movieData.Actors.map(actor => <li key={actor}>{actor}</li>)}
                         </ul>
                     </Col>
                 </Row>
             </Col>
 
-            {/* This is the back button spanning all Bootstrap columns */}
-            <Col md={12}>
-                <Button onClick={() => { onBackClick() }} className="bg-button" variant="dark">Back</Button>
-            </Col>
         </>
     )
 

@@ -35,43 +35,49 @@ export function RegistrationView() {
     };
 
     return (
-        <Col xs={8} md={6} className="p-1">
-            <Form>
-                <Form.Group controlId="fullName">
-                    <Form.Label>Full Name</Form.Label>
-                    <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
-                </Form.Group>
+        <>
+            <Col xs={8} md={"auto"} className="mr-5">
+                <h1>MyFlix</h1>
+                <p className="tag-line">Register to create a new user account.</p>
+            </Col>
+            <Col xs={8} md={6} className="p-1">
+                <Form>
+                    <Form.Group controlId="fullName">
+                        <Form.Label>Full Name</Form.Label>
+                        <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
+                    </Form.Group>
 
-                <Form.Group controlId="username">
-                    <Form.Label>Username</Form.Label>
-                    <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
-                </Form.Group>
+                    <Form.Group controlId="username">
+                        <Form.Label>Username</Form.Label>
+                        <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+                    </Form.Group>
 
-                <Form.Group controlId="email">
-                    <Form.Label>Email Address</Form.Label>
-                    <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
-                </Form.Group>
+                    <Form.Group controlId="email">
+                        <Form.Label>Email Address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+                    </Form.Group>
 
-                <Form.Group controlId="password">
-                    <Form.Label>Password</Form.Label>
-                    <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
-                </Form.Group>
+                    <Form.Group controlId="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                    </Form.Group>
 
-                <Form.Group controlId="birthday">
-                    <Form.Label>Birthday</Form.Label>
-                    <Form.Control type="text" placeholder="dd.mm.yyyy" value={birthday} onChange={e => setBirthday(e.target.value)} />
-                </Form.Group>
-                <Button onClick={handleSubmit} variant="dark" type="submit">
-                    Register
+                    <Form.Group controlId="birthday">
+                        <Form.Label>Birthday</Form.Label>
+                        <Form.Control type="text" placeholder="dd.mm.yyyy" value={birthday} onChange={e => setBirthday(e.target.value)} />
+                    </Form.Group>
+                    <Button onClick={handleSubmit} variant="primary" type="submit">
+                        Register
                     </Button>
-                <Link to="/">
-                    <Button as="div" variant="dark" type="submit" className="m-3">
-                        Login
+                    <Link to="/">
+                        <Button as="div" variant="secondary" type="submit" className="m-3">
+                            Login
                     </Button>
-                </Link>
+                    </Link>
 
-            </Form>
-        </Col>
+                </Form>
+            </Col>
+        </>
 
     )
 }

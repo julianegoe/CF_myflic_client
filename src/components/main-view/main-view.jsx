@@ -87,7 +87,7 @@ export class MainView extends React.Component {
                     }} />
 
                     <Route exact path="/profile" render={() => {
-                        return <ProfileView movies={movies} />
+                        return <ProfileView logOut={() => this.logOut()} movies={movies} />
                     }} />
                 </Row >
             </Router>

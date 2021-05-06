@@ -12,11 +12,13 @@ import { Link } from "react-router-dom";
 import Divider from '../divider-component/divider-component';
 import Snackbar from '../snackbar-component/snackbar-component'
 import MovieCard from '../movie-card/movie-card';
+import ModalComponent from '../modal-component/modal-component';
+
+import './profile-view.scss'
 
 
 
-
-export default function ProfileView({ movies }) {
+export default function ProfileView({ movies, logOut }) {
     const [isSuccessful, setisSuccessful] = useState(false);
     /* const name = localStorage.getItem('name');
     const username = localStorage.getItem('user')
@@ -91,10 +93,18 @@ export default function ProfileView({ movies }) {
             }).catch((e) => { console.log(e) })
     }
 
-
+    const handleAccountDelete = () => {
+        axios.delete(`https://myflix-0001.herokuapp.com/users/${username}`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) => {
+                console.log(res.data)
+                logOut()
+            })
+    }
 
     return (
         <>
+            <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
+
             {favorites.length > 0 &&
                 <Col xs={12} sm={8} md={6} lg={6} xl={6} className="p-3 m-2">
                     <Divider title="My Favorites" isVisible={true} />
@@ -112,14 +122,13 @@ export default function ProfileView({ movies }) {
                     </Row>
                 </Col>}
 
-
             <Col xs={12} sm={8} md={4} lg={4} className="p-3 m-2">
                 <Divider title="Profile Settings" isVisible={true} />
-                <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
                 <Form>
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
+
                     </Form.Group>
 
                     <Form.Group controlId="username">
@@ -146,6 +155,7 @@ export default function ProfileView({ movies }) {
                             Save Changes
                     </Button>
                     </Link>
+                    <ModalComponent handleAccountDelete={() => handleAccountDelete()}>></ModalComponent>
 
                 </Form>
             </Col>
