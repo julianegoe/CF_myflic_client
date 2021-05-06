@@ -155,7 +155,7 @@ export default function ProfileView({ movies, logOut }) {
                             Save Changes
                     </Button>
                     </Link>
-                    <ModalComponent handleAccountDelete={() => handleAccountDelete()}>></ModalComponent>
+                    <ModalComponent handleAccountDelete={() => handleAccountDelete()}></ModalComponent>
 
                 </Form>
             </Col>
