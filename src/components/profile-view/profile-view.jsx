@@ -20,23 +20,30 @@ import './profile-view.scss'
 
 
 export default function ProfileView({ movies, logOut }) {
-    const [isSuccessful, setisSuccessful] = useState(false);
-    /* const name = localStorage.getItem('name');
-    const username = localStorage.getItem('user')
-    const email = localStorage.getItem('email')
-    const password = localStorage.getItem('password') */
-    /* const birthday = localStorage.getItem('birthday').substring(0, 10) */
-    const [favorites, setFavorites] = useState([{ Title: "none" }]);
-    const [favIds, setFavIds] = useState([]);
+    const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
+
+    const [favorites, setFavorites] = useState([{ Title: "none" }]); // array of movie objects that have been added to FavoriteMovies Array
+    const [favIds, setFavIds] = useState([]); // an Array of movie IDs that have been added to FavoriteMovies
+
+    /* Values from input fields and/or fetched use data */
     const [name, setName] = useState("");
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const [passwordRepeat, setPasswordRepeat] = useState("");
     const [birthday, setBirthday] = useState("");
-    const localUsername = localStorage.getItem('user');
-    const token = localStorage.getItem('token');
 
+    const localUsername = localStorage.getItem('user'); // real username to make axios requests
+    const token = localStorage.getItem('token'); // jwt token to make axios requests
 
+    /* Objects that include error messages as a result from formValidation() */
+    const [nameErr, setNameErr] = useState({});
+    const [usernameErr, setUsernameErr] = useState({});
+    const [emailErr, setEmailErr] = useState({});
+    const [passwordErr, setPasswordErr] = useState({});
+    const [birthdayErr, setBirthdayErr] = useState({});
+
+    /* converts Array of IDs into Object on movies */
     const getFavs = (favs) => {
         let favoriteMovieList = [];
         movies.forEach((movie) => {
@@ -45,8 +52,8 @@ export default function ProfileView({ movies, logOut }) {
         setFavorites(favoriteMovieList)
     };
 
+    /* When component renders for the first time, this fetches user data */
     useEffect(() => {
-        console.log("getting user data...")
         axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
                 setName(res.data.Name);
@@ -61,32 +68,36 @@ export default function ProfileView({ movies, logOut }) {
             })
     }, [])
 
+    /* When Array of IDs change and are not empty, convert to a array of movie objects  */
     useEffect(() => {
         favIds ? getFavs(favIds) : setFavorites({})
-        console.log("favs in favIds: " + favIds)
     }, [favIds])
 
+
+    /* Event handler for updating user data*/
     const updateUserData = (e) => {
         e.preventDefault();
-        axios.put(`https://myflix-0001.herokuapp.com/users/${username}`, {
-            Name: name,
-            Username: username,
-            Email: email,
-            Password: password,
-            Birthday: birthday
+        let isValid = formValidation();
+        if (isValid) {
+            axios.put(`https://myflix-0001.herokuapp.com/users/${username}`, {
+                Name: name,
+                Username: username,
+                Email: email,
+                Password: password,
+                Birthday: birthday
 
-        }, { headers: { "Authorization": `Bearer ${token}` } },
-        ).then((res) => {
-            console.log(res.data);
-            res.status == 200 ? setisSuccessful(true) : setisSuccessful(false)
-        }).catch((e) => {
-            console.log(name);
-            console.error("error during editing: " + e)
-        })
+            }, { headers: { "Authorization": `Bearer ${token}` } },
+            ).then((res) => {
+                res.status == 200 ? setisSuccessful(true) : setisSuccessful(false)
+            }).catch((e) => {
+                console.error("error during editing: " + e)
+            })
+        }
+
     }
 
+    /* Deletes Favrorite from List of favorites*/
     const deleteFav = (favId) => {
-        console.log(username);
         axios.delete(`https://myflix-0001.herokuapp.com/users/${username}/movies/${favId}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
                 setFavIds(res.data.FavoriteMovies)
@@ -94,12 +105,63 @@ export default function ProfileView({ movies, logOut }) {
             }).catch((e) => { console.log(e) })
     }
 
+    /* Event handle for account deletion */
     const handleAccountDelete = () => {
         axios.delete(`https://myflix-0001.herokuapp.com/users/${username}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
-                console.log(res.data)
                 logOut()
             })
+    };
+
+    /* Function that validates certain inputs*/
+    const formValidation = () => {
+        const nameErr = {};
+        const usernameErr = {};
+        const emailErr = {};
+        const passwordErr = {};
+        const birthdayErr = {};
+        let isValid = true;
+
+        if (name.trim().length === 0) {
+            nameErr.nameIsEmpty = "Please enter a name.";
+            isValid = false;
+        }
+
+        if (username.trim().length < 3) {
+            usernameErr.usernameTooShort = "Username must be at least 3 characters long";
+            isValid = false;
+        };
+
+        if (!email.includes("@")) {
+            emailErr.noEmail = "This is not a valid e-mail.";
+            isValid = false
+        };
+
+        if (password.trim().length < 8) {
+            passwordErr.passwordTooShort = "Password must be at least 8 characters long";
+            isValid = false
+        };
+
+        if (password !== passwordRepeat) {
+            passwordErr.passwordNoMatch = "Passwords don't match.";
+            isValid = false
+        };
+
+        if (birthday.trim().length === 0) {
+            birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
+            isValid = false
+        };
+
+        setNameErr(nameErr);
+        setUsernameErr(usernameErr);
+        setEmailErr(emailErr);
+        setPasswordErr(passwordErr);
+        setBirthdayErr(birthdayErr)
+
+        return isValid
+
+
+
     }
 
     return (
@@ -125,6 +187,8 @@ export default function ProfileView({ movies, logOut }) {
 
             <Col xs={12} sm={8} md={5} lg={4} className="p-3 m-2">
                 <Divider title="Profile Settings" isVisible={true} />
+                <p className="tag-line">Update your user information.</p>
+
                 <Form>
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
@@ -132,25 +196,51 @@ export default function ProfileView({ movies, logOut }) {
 
                     </Form.Group>
 
+                    {Object.keys(nameErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{nameErr[key]}</div>
+                    })}
+
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
                         <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
                     </Form.Group>
+
+                    {Object.keys(usernameErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{usernameErr[key]}</div>
+                    })}
 
                     <Form.Group controlId="email">
                         <Form.Label>Email Address</Form.Label>
                         <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
                     </Form.Group>
 
+                    {Object.keys(emailErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{emailErr[key]}</div>
+                    })}
+
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
                         <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
                     </Form.Group>
 
+                    <Form.Group controlId="password-repeat">
+                        <Form.Label>Repeat Password</Form.Label>
+                        <Form.Control type="password" placeholder="Repeat Password" value={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
+                    </Form.Group>
+
+                    {Object.keys(passwordErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{passwordErr[key]}</div>
+                    })}
+
                     <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="text" placeholder="yyyy-mm-dd" value={birthday} onChange={e => setBirthday(e.target.value)} />
+                        <Form.Control type="date" placeholder="yyyy-mm-dd" value={birthday} onChange={e => setBirthday(e.target.value)} />
                     </Form.Group>
+
+                    {Object.keys(birthdayErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{birthdayErr[key]}</div>
+                    })}
+
                     <Link to="/profile">
                         <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="mt-3">
                             Save Changes

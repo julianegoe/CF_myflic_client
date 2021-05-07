@@ -13,23 +13,47 @@ import { Link } from "react-router-dom";
 export function LoginView({ onLoggedIn }) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
-    const form = useRef('form');
 
-    const validate = () => {
-        console.log("Validation");
-        return form.current.reportValidity()
-    }
+    const [usernameErr, setUsernameErr] = useState({});
+    const [passwordErr, setPasswordErr] = useState({});
+
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("logging in...")
-        axios.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`)
-            .then((res => {
-                console.log(res.data);
-                onLoggedIn(res.data);
-            })).catch((e) => {
-                console.log(e)
-            })
+        let isValid = formValidation()
+        if (isValid) {
+            axios.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`)
+                .then((res => {
+                    onLoggedIn(res.data);
+                })).catch((e) => {
+                    console.log(e)
+                })
+        }
+    };
+
+    const formValidation = () => {
+        const usernameErr = {};
+        const passwordErr = {};
+        let isValid = true;
+
+        if (username.trim().length < 3) {
+            usernameErr.usernameTooShort = "Username must be at least 3 characters long";
+            isValid = false;
+        };
+
+
+        if (password.trim().length < 8) {
+            passwordErr.passwordTooShort = "Password must be at least 8 characters long";
+            isValid = false
+        };
+
+        setUsernameErr(usernameErr);
+        setPasswordErr(passwordErr);
+
+        return isValid
+
+
+
     }
 
     return (
@@ -40,16 +64,25 @@ export function LoginView({ onLoggedIn }) {
             </Col>
 
             <Col xs={8} md={6} className="p-1">
-                <Form ref={form} >
+                <Form>
                     <Form.Group controlId="email">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control onBlur={() => { validate() }} type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} required />
+                        <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} required />
                     </Form.Group>
+
+                    {Object.keys(usernameErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{usernameErr[key]}</div>
+                    })}
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control onBlur={() => { validate() }} type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength="8" />
+                        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} required minLength="8" />
                     </Form.Group>
+
+                    {Object.keys(passwordErr).map((key) => {
+                        return <div className="m-1" style={{ color: "red" }}>{passwordErr[key]}</div>
+                    })}
+
                     <Button onClick={handleSubmit} variant="primary" type="submit">
                         Login
                     </Button>

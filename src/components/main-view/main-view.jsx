@@ -34,13 +34,11 @@ export class MainView extends React.Component {
         localStorage.setItem('token', authData.token);
         localStorage.setItem('user', authData.user.Username);
         this.getMovies(authData.token);
-        console.info("user logged in")
     }
 
     getMovies(token) {
         axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
-            console.log(res.data);
             this.setState({ movies: res.data })
         }).catch((e) => {
             console.log(e)
@@ -53,7 +51,6 @@ export class MainView extends React.Component {
         this.setState({
             user: null
         });
-        console.info("user logged out")
     };
 
 
