@@ -30,9 +30,7 @@ export function BootstrapNavbar({ userState, logOut }) {
                                             </Tooltip>
                                         }
                                     >
-                                        <Link to="/profile" className="text-decoration-none">
-                                            <Nav.Link as="div"><i className="bi bi-person-circle"></i></Nav.Link>
-                                        </Link>
+                                        <Nav.Link as="div"> <i className="bi bi-person-circle"></i></Nav.Link>
                                     </OverlayTrigger>
                                 </Link>
 

@@ -8,7 +8,7 @@ export default function ModalComponent({ handleAccountDelete }) {
 
     return (
         <>
-            <Button onClick={setSmShow} as="div" variant="danger" type="submit" className="mt-3 ml-3">
+            <Button onClick={() => setSmShow(true)} as="div" variant="danger" type="submit" className="mt-3 ml-3">
                 <i className="bi bi-trash-fill mr-2"></i>
                             Delete Account
                     </Button>

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import PropTypes from 'prop-types';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import FormGroup from 'react-bootstrap/FormGroup';
@@ -122,7 +123,7 @@ export default function ProfileView({ movies, logOut }) {
                     </Row>
                 </Col>}
 
-            <Col xs={12} sm={8} md={4} lg={4} className="p-3 m-2">
+            <Col xs={12} sm={8} md={5} lg={4} className="p-3 m-2">
                 <Divider title="Profile Settings" isVisible={true} />
                 <Form>
                     <Form.Group controlId="Name">
@@ -163,4 +164,26 @@ export default function ProfileView({ movies, logOut }) {
 
     )
 
+}
+
+ProfileView.propTypes = {
+    movies: PropTypes.arrayOf(PropTypes.shape({
+        Title: PropTypes.string.isRequired,
+        Description: PropTypes.string.isRequired,
+        Director: PropTypes.shape({
+            Name: PropTypes.string.isRequired,
+            Bio: PropTypes.string.isRequired,
+            Birth: PropTypes.string
+        }).isRequired,
+        Year: PropTypes.number.isRequired,
+        Genre: PropTypes.shape({
+            Name: PropTypes.string.isRequired,
+            Description: PropTypes.string.isRequired
+        }).isRequired,
+        Actors: PropTypes.array.isRequired,
+        _id: PropTypes.string.isRequired,
+        ImageUrl: PropTypes.string.isRequired,
+        Featured: PropTypes.bool.isRequired
+    })).isRequired,
+    logOut: PropTypes.func.isRequired
 }

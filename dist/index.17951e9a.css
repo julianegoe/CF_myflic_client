@@ -18578,12 +18578,12 @@ hr.solid {
 .director-accordion {
   font-size: smaller;
 }
-hr.solid {
-  border-top: 1px solid white;
-}
 .toast {
   position: absolute;
   z-index: 1;
+}
+hr.solid {
+  border-top: 1px solid white;
 }
 .snackbar {
   position: relative;

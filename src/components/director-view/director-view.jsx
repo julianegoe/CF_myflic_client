@@ -15,7 +15,7 @@ export default function DirectorView({ movieData }) {
             <div>
                 <div>
                     <Accordion.Toggle as={Button} variant="link" eventKey="0" className="p-0 mt-2" onClick={handleClick}>
-                        {movieData.Director.Name} {isCollapsed ? <i class="bi bi-caret-up-fill"> </i> : <i class="bi bi-caret-down-fill"></i>}
+                        {movieData.Director.Name} {isCollapsed ? <i className="bi bi-caret-up-fill"> </i> : <i className="bi bi-caret-down-fill"></i>}
                     </Accordion.Toggle>
                 </div>
                 <Accordion.Collapse eventKey="0">

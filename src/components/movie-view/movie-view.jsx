@@ -5,7 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import GenreView from "../genre-view/genre-view";
-import DirectorView from "../director-view/director-view"
+import DirectorView from "../director-view/director-view";
+import Snackbar from '../snackbar-component/snackbar-component'
 
 
 
@@ -13,23 +14,21 @@ import './movie-view.scss';
 import { propTypes } from 'react-bootstrap/esm/Image';
 
 export default function MovieView({ setFavState, user, movieData, onBackClick }) {
-    const [genreInfo, setGenreInfo] = useState("");
-    const [directorInfo, setDirectorInfo] = useState("");
+
 
 
 /* After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
  */    const addFav = () => {
-        alert("You clicked fav")
         const token = localStorage.getItem('token');
-        console.log(token);
-        console.log(user);
-        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, { headers: { "Authorization": `Bearer ${token}` } }
+        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
+            const favData = res.data.FavoriteMovies
             setFavState({
-                favorites: res.data.FavoriteMovies
+                favorites: favData
             });
+            alert("Movies was added to Favorites")
         }).catch((e) => {
-            console.log(e)
+            console.log(e.message)
         })
     }
 
@@ -44,7 +43,7 @@ export default function MovieView({ setFavState, user, movieData, onBackClick })
             <Col md="auto" className="p-3">
                 <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} /><br />
                 <div onClick={() => { addFav() }} className="favstar mt-2">
-                    <i class="bi bi-star m-3"></i>
+                    <i className="bi bi-star m-3"></i>
                     <span>Add to Favorites</span>
                 </div>
                 {/* This is the back button spanning all Bootstrap columns */}
