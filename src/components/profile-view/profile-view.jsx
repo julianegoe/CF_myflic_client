@@ -1,10 +1,9 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { UpdateUser } from '../../actions/actions';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
-import FormGroup from 'react-bootstrap/FormGroup';
-import FormLabel from 'react-bootstrap/FormLabel';
-import FormControl from 'react-bootstrap/FormControl';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row'
 import Container from 'react-bootstrap/Container'
@@ -17,21 +16,18 @@ import ModalComponent from '../modal-component/modal-component';
 
 import './profile-view.scss'
 
+const mapStateToProps = (state) => {
+    return { user: state.user }
+}
 
-
-export default function ProfileView({ movies, logOut }) {
+function ProfileView({ movies, logOut, UpdateUser, user }) {
     const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
 
     const [favorites, setFavorites] = useState([{ Title: "none" }]); // array of movie objects that have been added to FavoriteMovies Array
     const [favIds, setFavIds] = useState([]); // an Array of movie IDs that have been added to FavoriteMovies
 
-    /* Values from input fields and/or fetched use data */
-    const [name, setName] = useState("");
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    const [birthday, setBirthday] = useState("");
+    /* const [birthday, setBirthday] = useState(""); */
 
     const localUsername = localStorage.getItem('user'); // real username to make axios requests
     const token = localStorage.getItem('token'); // jwt token to make axios requests
@@ -56,13 +52,11 @@ export default function ProfileView({ movies, logOut }) {
     useEffect(() => {
         axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
-                setName(res.data.Name);
-                setUsername(res.data.Username);
-                setEmail(res.data.Email);
-                setPassword(res.data.Password);
+                UpdateUser(res.data)
+                /* 
                 const date = res.data.Birthday.substring(0, 10)
                 setBirthday(date);
-                setFavIds(res.data.FavoriteMovies)
+                setFavIds(res.data.FavoriteMovies) */
             }).catch((e) => {
                 console.log(e)
             })
@@ -79,15 +73,17 @@ export default function ProfileView({ movies, logOut }) {
         e.preventDefault();
         let isValid = formValidation();
         if (isValid) {
-            axios.put(`https://myflix-0001.herokuapp.com/users/${username}`, {
-                Name: name,
-                Username: username,
-                Email: email,
-                Password: password,
-                Birthday: birthday
+            axios.put(`https://myflix-0001.herokuapp.com/users/${user.Username}`, {
+                Name: user.Name,
+                Username: user.Username,
+                Email: user.Email,
+                Password: user.Password,
+                Birthday: "1989-11-19"
 
             }, { headers: { "Authorization": `Bearer ${token}` } },
             ).then((res) => {
+                console.log(res.data);
+                UpdateUser(res.data);
                 res.status == 200 ? setisSuccessful(true) : setisSuccessful(false)
             }).catch((e) => {
                 console.error("error during editing: " + e)
@@ -107,8 +103,9 @@ export default function ProfileView({ movies, logOut }) {
 
     /* Event handle for account deletion */
     const handleAccountDelete = () => {
-        axios.delete(`https://myflix-0001.herokuapp.com/users/${username}`, { headers: { "Authorization": `Bearer ${token}` } })
+        axios.delete(`https://myflix-0001.herokuapp.com/users/${user.Username}`, { headers: { "Authorization": `Bearer ${token}` } })
             .then((res) => {
+                console.info(res)
                 logOut()
             })
     };
@@ -122,35 +119,38 @@ export default function ProfileView({ movies, logOut }) {
         const birthdayErr = {};
         let isValid = true;
 
-        if (name.trim().length === 0) {
+        if (user.Name.trim().length === 0) {
+            console.log(user.Name)
             nameErr.nameIsEmpty = "Please enter a name.";
             isValid = false;
         }
 
-        if (username.trim().length < 3) {
+        if (user.Username.trim().length < 3) {
             usernameErr.usernameTooShort = "Username must be at least 3 characters long";
             isValid = false;
         };
 
-        if (!email.includes("@")) {
+        if (!user.Email.includes("@")) {
             emailErr.noEmail = "This is not a valid e-mail.";
             isValid = false
         };
 
-        if (password.trim().length < 8) {
+        if (user.Password.trim().length < 8) {
             passwordErr.passwordTooShort = "Password must be at least 8 characters long";
             isValid = false
         };
 
-        if (password !== passwordRepeat) {
+        if (user.Password !== passwordRepeat) {
             passwordErr.passwordNoMatch = "Passwords don't match.";
             isValid = false
         };
 
+        /*
         if (birthday.trim().length === 0) {
             birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
             isValid = false
         };
+        */
 
         setNameErr(nameErr);
         setUsernameErr(usernameErr);
@@ -192,7 +192,7 @@ export default function ProfileView({ movies, logOut }) {
                 <Form>
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter full name" defaultValue={user.Name} onChange={e => UpdateUser(e.target.value, "Name")} />
 
                     </Form.Group>
 
@@ -202,7 +202,7 @@ export default function ProfileView({ movies, logOut }) {
 
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter username" defaultValue={user.Username} onChange={e => UpdateUser(e.target.value, "Username")} />
                     </Form.Group>
 
                     {Object.keys(usernameErr).map((key) => {
@@ -211,7 +211,7 @@ export default function ProfileView({ movies, logOut }) {
 
                     <Form.Group controlId="email">
                         <Form.Label>Email Address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <Form.Control type="email" placeholder="Enter email" defaultValue={user.Email} onChange={e => UpdateUser(e.target.value, "Email")} />
                     </Form.Group>
 
                     {Object.keys(emailErr).map((key) => {
@@ -220,26 +220,26 @@ export default function ProfileView({ movies, logOut }) {
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                        <Form.Control type="password" placeholder="Password" defaultValue="" onChange={e => UpdateUser(e.target.value, "Password")} />
                     </Form.Group>
 
                     <Form.Group controlId="password-repeat">
                         <Form.Label>Repeat Password</Form.Label>
-                        <Form.Control type="password" placeholder="Repeat Password" value={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
+                        <Form.Control type="password" placeholder="Repeat Password" defaultValue={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
                     </Form.Group>
 
                     {Object.keys(passwordErr).map((key) => {
                         return <div className="m-1" style={{ color: "red" }}>{passwordErr[key]}</div>
                     })}
 
-                    <Form.Group controlId="birthday">
+                    {/* <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" placeholder="yyyy-mm-dd" value={birthday} onChange={e => setBirthday(e.target.value)} />
-                    </Form.Group>
+                        <Form.Control type="date" placeholder="yyyy-mm-dd" value={user.Birthday} onChange={e => UpdateUser(e.target.value)} />
+                    </Form.Group> */}
 
-                    {Object.keys(birthdayErr).map((key) => {
+                    {/* {Object.keys(birthdayErr).map((key) => {
                         return <div className="m-1" style={{ color: "red" }}>{birthdayErr[key]}</div>
-                    })}
+                    })} */}
 
                     <Link to="/profile">
                         <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="mt-3">
@@ -254,7 +254,8 @@ export default function ProfileView({ movies, logOut }) {
 
     )
 
-}
+};
+
 
 ProfileView.propTypes = {
     movies: PropTypes.arrayOf(PropTypes.shape({
@@ -276,4 +277,6 @@ ProfileView.propTypes = {
         Featured: PropTypes.bool.isRequired
     })).isRequired,
     logOut: PropTypes.func.isRequired
-}
+};
+
+export default connect(mapStateToProps, { UpdateUser })(ProfileView)

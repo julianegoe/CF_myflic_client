@@ -52,9 +52,10 @@ export const LoginUser = (user) => ({
 	user
 });
 
-export const UpdateUser = (user) => ({
+export const UpdateUser = (value, field = null) => ({
 	type: UPDATE_USER,
-	user
+	value, 
+	field
 
 });
 

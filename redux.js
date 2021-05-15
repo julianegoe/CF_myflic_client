@@ -35,7 +35,7 @@ const GeFavorites = () => ({
 });
 
 const ToggleFavorites = (favId) => ({
-	type: TOGGLE_FAVORITE;
+	type: TOGGLE_FAVORITE,
 	favId
 });
 
