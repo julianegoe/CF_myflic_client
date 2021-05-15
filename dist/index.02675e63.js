@@ -26322,21 +26322,19 @@ try {
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/main-view/main-view.jsx";
   let mapStateToProps = state => {
     return {
-      movies: state.movies
+      movies: state.movies,
+      user: state.user
     };
   };
   class MainView extends _reactDefault.default.Component {
     constructor() {
       super();
       this.state = {
-        user: null,
         favorites: []
       };
     }
     onLoggedIn(authData) {
-      this.setState({
-        user: authData.user.Username
-      });
+      this.props.LoginUser(authData.user);
       this.setState({
         favorites: authData.user.FavoriteMovies
       });
@@ -26359,19 +26357,17 @@ try {
     logOut() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      this.setState({
-        user: null
-      });
+      this.props.LoginUser(null);
     }
     render() {
       const {movies} = this.props;
-      const {user} = this.state;
+      const {user} = this.props;
       return (
         /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.BrowserRouter, {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 66,
+            lineNumber: 64,
             columnNumber: 13
           }
         }, /*#__PURE__*/_reactDefault.default.createElement(_bootstrapNavbarBootstrapNavbar.BootstrapNavbar, {
@@ -26380,7 +26376,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 67,
+            lineNumber: 65,
             columnNumber: 17
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
@@ -26388,7 +26384,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 68,
+            lineNumber: 66,
             columnNumber: 17
           }
         }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
@@ -26401,7 +26397,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 70,
+                  lineNumber: 68,
                   columnNumber: 43
                 }
               })
@@ -26412,7 +26408,7 @@ try {
                   __self: this,
                   __source: {
                     fileName: _jsxFileName,
-                    lineNumber: 71,
+                    lineNumber: 69,
                     columnNumber: 59
                   }
                 }, "Loading...")
@@ -26424,7 +26420,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 72,
+                  lineNumber: 70,
                   columnNumber: 32
                 }
               })
@@ -26433,7 +26429,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 69,
+            lineNumber: 67,
             columnNumber: 21
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
@@ -26446,7 +26442,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 76,
+                  lineNumber: 74,
                   columnNumber: 42
                 }
               })
@@ -26456,7 +26452,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 77,
+                  lineNumber: 75,
                   columnNumber: 32
                 }
               })
@@ -26465,7 +26461,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 75,
+            lineNumber: 73,
             columnNumber: 21
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
@@ -26478,7 +26474,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 81,
+                  lineNumber: 79,
                   columnNumber: 43
                 }
               })
@@ -26489,7 +26485,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 82,
+                  lineNumber: 80,
                   columnNumber: 57
                 }
               })
@@ -26503,7 +26499,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 83,
+                  lineNumber: 81,
                   columnNumber: 32
                 }
               })
@@ -26512,7 +26508,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 80,
+            lineNumber: 78,
             columnNumber: 21
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
@@ -26526,7 +26522,7 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 87,
+                  lineNumber: 85,
                   columnNumber: 32
                 }
               })
@@ -26535,7 +26531,7 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 86,
+            lineNumber: 84,
             columnNumber: 21
           }
         })))
@@ -26552,7 +26548,8 @@ try {
     }
   }
   exports.default = _reactRedux.connect(mapStateToProps, {
-    SetMovies: _actionsActions.SetMovies
+    SetMovies: _actionsActions.SetMovies,
+    LoginUser: _actionsActions.LoginUser
   })(MainView);
   helpers.postlude(module);
 } finally {
@@ -49387,10 +49384,9 @@ const ToggleFavorites = favId => ({
   favId
 });
 _c4 = ToggleFavorites;
-const LoginUser = (username, password) => ({
+const LoginUser = user => ({
   type: LOGIN_USER,
-  username,
-  password
+  user
 });
 _c5 = LoginUser;
 const UpdateUser = user => ({
@@ -50259,9 +50255,18 @@ const movies = (state = [], action) => {
       return state;
   }
 };
+const user = (state = {}, action) => {
+  switch (action.type) {
+    case _actionsActions.LOGIN_USER:
+      return action.user;
+    default:
+      return state;
+  }
+};
 const movieApp = _redux.combineReducers({
   visibilityFilter,
-  movies
+  movies,
+  user
 });
 exports.default = movieApp;
 

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { SetMovies } from '../../actions/actions';
+import { SetMovies, LoginUser } from '../../actions/actions';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieView from "../movie-view/movie-view";
@@ -15,22 +15,22 @@ import Row from 'react-bootstrap/Row';
 import './main-view.scss';
 
 let mapStateToProps = state => {
-    return { movies: state.movies }
+    return {
+        movies: state.movies,
+        user: state.user
+    }
 }
 
 export class MainView extends React.Component {
     constructor() {
         super();
         this.state = {
-            user: null,
             favorites: []
         };
     }
 
     onLoggedIn(authData) {
-        this.setState({
-            user: authData.user.Username
-        });
+        this.props.LoginUser(authData.user)
         this.setState({
             favorites: authData.user.FavoriteMovies
         });
@@ -52,15 +52,13 @@ export class MainView extends React.Component {
     logOut() {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
-        this.setState({
-            user: null
-        });
+        this.props.LoginUser(null)
     };
 
 
     render() {
         const { movies } = this.props;
-        const { user } = this.state
+        const { user } = this.props
 
         return (
             <Router>
@@ -104,4 +102,4 @@ export class MainView extends React.Component {
 }
 
 
-export default connect(mapStateToProps, { SetMovies })(MainView);
+export default connect(mapStateToProps, { SetMovies, LoginUser })(MainView);

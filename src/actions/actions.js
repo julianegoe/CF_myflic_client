@@ -47,10 +47,9 @@ export const ToggleFavorites = (favId) => ({
 	favId
 });
 
-export const LoginUser = (username, password) => ({
+export const LoginUser = (user) => ({
 	type: LOGIN_USER,
-	username,
-	password
+	user
 });
 
 export const UpdateUser = (user) => ({
