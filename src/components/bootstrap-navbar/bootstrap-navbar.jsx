@@ -6,8 +6,10 @@ import './bootstrap-navbar.scss'
 import { Link } from "react-router-dom";
 
 
-export function BootstrapNavbar({ userState, logOut }) {
 
+export function BootstrapNavbar(props) {
+    const { userState, logOut } = props;
+    const { visibilityFilter } = props;
 
     return (
         <>
@@ -18,7 +20,7 @@ export function BootstrapNavbar({ userState, logOut }) {
                             <Navbar.Brand as="div" >MyFlix</Navbar.Brand>
                         </Link>
 
-                        <Nav className="bs-navbar" as="ul">
+                        <Nav className="justify-content-end" as="ul">
                             <Nav.Item className="bs-navbar" as="li">
                                 <Link to="/profile" className="text-decoration-none">
                                     <OverlayTrigger
@@ -49,3 +51,4 @@ export function BootstrapNavbar({ userState, logOut }) {
         </>
     )
 }
+

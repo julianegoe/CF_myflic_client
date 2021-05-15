@@ -1,24 +1,27 @@
 import React from "react";
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { SetMovies } from '../../actions/actions';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
-import MovieCard from "../movie-card/movie-card";
 import MovieView from "../movie-view/movie-view";
 import ProfileView from "../profile-view/profile-view";
 import { LoginView } from "../login-view/login-view";
+import MoviesList from "../movie-list/movie-list";
 import { RegistrationView } from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
-import Divider from "../divider-component/divider-component";
 
 import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import './main-view.scss';
+
+let mapStateToProps = state => {
+    return { movies: state.movies }
+}
 
 export class MainView extends React.Component {
     constructor() {
         super();
         this.state = {
-            movies: [],
             user: null,
             favorites: []
         };
@@ -39,7 +42,8 @@ export class MainView extends React.Component {
     getMovies(token) {
         axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
-            this.setState({ movies: res.data })
+            console.log(res.data)
+            this.props.SetMovies(res.data);
         }).catch((e) => {
             console.log(e)
         })
@@ -55,21 +59,17 @@ export class MainView extends React.Component {
 
 
     render() {
-        const { movies, user } = this.state;
+        const { movies } = this.props;
+        const { user } = this.state
 
         return (
             <Router>
                 <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
-                <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+                <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
                     <Route exact path="/" render={() => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) { return <div>Loading...</div> }
-                        { movies.length > 0 && <Divider title="All Movies" /> }
-                        return movies.map(movie => (
-                            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
-                                <MovieCard movieData={movie} />
-                            </Col>
-                        ))
+                        return <MoviesList movies={movies} />
                     }} />
 
                     <Route exact path="/register" render={() => {
@@ -103,3 +103,5 @@ export class MainView extends React.Component {
 
 }
 
+
+export default connect(mapStateToProps, { SetMovies })(MainView);
