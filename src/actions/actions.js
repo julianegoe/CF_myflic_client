@@ -12,6 +12,7 @@ export const TOGGLE_FAVORITE = "Toggle favorite";
 
 /* Users */
 
+export const REGISTER_USER = "Register User"
 export const LOGIN_USER = "Login user";
 export const LOGOUT_USER = "Logout user"
 export const UPDATE_USER = "Update user";
@@ -46,6 +47,12 @@ export const GeFavorites = () => ({
 export const ToggleFavorites = (favId) => ({
 	type: TOGGLE_FAVORITE,
 	favId
+});
+
+export const RegisterUser = (value, field = null) => ({
+	type: REGISTER_USER,
+	value,
+	field
 });
 
 export const LoginUser = (value) => ({

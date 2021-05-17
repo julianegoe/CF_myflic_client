@@ -1,7 +1,7 @@
 // src/reducers/reducers.js
 import { combineReducers } from 'redux';
 
-import { LOGIN_USER, SET_FILTER, SET_MOVIES, UPDATE_USER, LOGOUT_USER } from '../actions/actions';
+import { LOGIN_USER, SET_FILTER, SET_MOVIES, UPDATE_USER, LOGOUT_USER, REGISTER_USER } from '../actions/actions';
 
 const visibilityFilter = (state = '', action) => {
     switch (action.type) {
@@ -19,14 +19,20 @@ const movies = (state = [], action) => {
     }
 };
 
-const user = (state = {}, action) => {
+const user = (state = null, action) => {
+    const { field, value } = action;
     switch (action.type) {
+        case REGISTER_USER: 
+        return {
+            ...state,
+            [field] : value
+          };
+
         case LOGIN_USER: return action.value;
 
         case LOGOUT_USER: return null;
 
         case UPDATE_USER: 
-        const { field, value } = action;
         return {
             ...state,
             [field] : value

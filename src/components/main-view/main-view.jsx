@@ -8,7 +8,7 @@ import MovieView from "../movie-view/movie-view";
 import ProfileView from "../profile-view/profile-view";
 import { LoginView } from "../login-view/login-view";
 import MoviesList from "../movie-list/movie-list";
-import { RegistrationView } from "../registration-view/registration-view";
+import RegistrationView from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
 
 import Row from 'react-bootstrap/Row';
@@ -62,19 +62,20 @@ export class MainView extends React.Component {
     render() {
         const { movies } = this.props;
         const { user } = this.props
+        const localUser = localStorage.getItem('user')
 
         return (
             <Router>
                 <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
                 <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
                     <Route exact path="/" render={() => {
-                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                        if (!localUser) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) { return <div>Loading...</div> }
                         return <MoviesList movies={movies} />
                     }} />
 
                     <Route exact path="/register" render={() => {
-                        if (user) return <Redirect to="/" />
+                        if (localUser) return <Redirect to="/" />
                         return <RegistrationView />
                     }} />
 
@@ -85,7 +86,7 @@ export class MainView extends React.Component {
                     }} />
 
                     <Route exact path="/profile" render={() => {
-                        return <ProfileView logOut={() => this.logOut()} movies={movies} />
+                        return <ProfileView logOut={() => this.logOut()} movies={movies} user={user} />
                     }} />
                 </Row >
             </Router>

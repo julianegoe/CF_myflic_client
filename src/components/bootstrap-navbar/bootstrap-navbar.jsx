@@ -8,13 +8,12 @@ import { Link } from "react-router-dom";
 
 
 export function BootstrapNavbar(props) {
-    const { userState, logOut } = props;
-    const { visibilityFilter } = props;
+    const localUser = localStorage.getItem('user')
 
     return (
         <>
             <Navbar className="bs-navbar" variant="dark" role="navigation">
-                {userState ? (
+                {localUser ? (
                     <>
                         <Link to="/">
                             <Navbar.Brand as="div" >MyFlix</Navbar.Brand>
@@ -39,7 +38,7 @@ export function BootstrapNavbar(props) {
                             </Nav.Item>
                             <Nav.Item className="bs-navbar" as="li">
                                 <Link to="/" className="text-decoration-none">
-                                    <Nav.Link as="div" onClick={() => { logOut() }}>Logout</Nav.Link>
+                                    <Nav.Link as="div" onClick={() => { props.logOut() }}>Logout</Nav.Link>
                                 </Link>
                             </Nav.Item>
                         </Nav>
