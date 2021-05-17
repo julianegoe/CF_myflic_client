@@ -26339,7 +26339,7 @@ try {
         ...authData.user,
         Birthday: authData.user.Birthday.substring(0, 10)
       };
-      this.props.LoginUser(userData);
+      this.props.SetUser(userData);
       console.log(this.props.user);
       this.setState({
         favorites: authData.user.FavoriteMovies
@@ -26558,7 +26558,7 @@ try {
   }
   exports.default = _reactRedux.connect(mapStateToProps, {
     SetMovies: _actionsActions.SetMovies,
-    LoginUser: _actionsActions.LoginUser,
+    SetUser: _actionsActions.SetUser,
     LogoutUser: _actionsActions.LogoutUser
   })(MainView);
   helpers.postlude(module);
@@ -46301,7 +46301,7 @@ try {
       movies: state.movies
     };
   };
-  function ProfileView({movies, logOut, UpdateUser, user}) {
+  function ProfileView({movies, logOut, UpdateUser, SetUser, user}) {
     _s();
     const [isSuccessful, setisSuccessful] = _react.useState(false);
     // used for Snackback that appears when update is successful
@@ -46323,6 +46323,23 @@ try {
     const [emailErr, setEmailErr] = _react.useState({});
     const [passwordErr, setPasswordErr] = _react.useState({});
     const [birthdayErr, setBirthdayErr] = _react.useState({});
+    /*When component renders for the first time, this fetches user data*/
+    _react.useEffect(() => {
+      _axiosDefault.default.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }).then(res => {
+        const userData = {
+          ...res.data,
+          Birthday: res.data.Birthday.substring(0, 10)
+        };
+        SetUser(userData);
+        setFavIds(res.data.FavoriteMovies);
+      }).catch(e => {
+        console.log(e);
+      });
+    }, []);
     /*converts Array of IDs into Object on movies*/
     const getFavs = favs => {
       let favoriteMovieList = [];
@@ -46333,7 +46350,6 @@ try {
     };
     /*When Array of IDs change and are not empty, convert to a array of movie objects*/
     _react.useEffect(() => {
-      console.log(user);
       favIds ? getFavs(favIds) : setFavorites({});
     }, [favIds]);
     /*Event handler for updating user data*/
@@ -46390,7 +46406,6 @@ try {
       const birthdayErr = {};
       let isValid = true;
       if (user.Name.trim().length === 0) {
-        console.log(user.Name);
         nameErr.nameIsEmpty = "Please enter a name.";
         isValid = false;
       }
@@ -46433,7 +46448,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 157,
+          lineNumber: 167,
           columnNumber: 13
         }
       }), favorites.length > 0 && /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
@@ -46446,7 +46461,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 160,
+          lineNumber: 170,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
@@ -46455,14 +46470,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 161,
+          lineNumber: 171,
           columnNumber: 21
         }
       }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 162,
+          lineNumber: 172,
           columnNumber: 21
         }
       }, favorites.map(fav => {
@@ -46478,7 +46493,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 166,
+              lineNumber: 176,
               columnNumber: 33
             }
           }, /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCardDefault.default, {
@@ -46486,7 +46501,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 167,
+              lineNumber: 177,
               columnNumber: 37
             }
           }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
@@ -46498,7 +46513,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 168,
+              lineNumber: 178,
               columnNumber: 37
             }
           }, "Delete"))
@@ -46512,7 +46527,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 176,
+          lineNumber: 186,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
@@ -46521,7 +46536,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 177,
+          lineNumber: 187,
           columnNumber: 17
         }
       }), /*#__PURE__*/_reactDefault.default.createElement("p", {
@@ -46529,59 +46544,19 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 178,
+          lineNumber: 188,
           columnNumber: 17
         }
       }, "Update your user information."), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default, {
+        autocomplete: "off",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 180,
+          lineNumber: 190,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
         controlId: "Name",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 181,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 182,
-          columnNumber: 25
-        }
-      }, "Name"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
-        type: "text",
-        placeholder: "Enter full name",
-        defaultValue: user.Name,
-        onChange: e => UpdateUser(e.target.value, "Name"),
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 183,
-          columnNumber: 25
-        }
-      })), Object.keys(nameErr).map(key => {
-        return (
-          /*#__PURE__*/_reactDefault.default.createElement("div", {
-            className: "m-1",
-            style: {
-              color: "red"
-            },
-            __self: this,
-            __source: {
-              fileName: _jsxFileName,
-              lineNumber: 188,
-              columnNumber: 32
-            }
-          }, nameErr[key])
-        );
-      }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
-        controlId: "username",
         __self: this,
         __source: {
           fileName: _jsxFileName,
@@ -46595,6 +46570,47 @@ try {
           lineNumber: 192,
           columnNumber: 25
         }
+      }, "Name"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
+        type: "text",
+        placeholder: "Enter full name",
+        defaultValue: user.Name,
+        onChange: e => UpdateUser(e.target.value, "Name"),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 193,
+          columnNumber: 25
+        }
+      })), Object.keys(nameErr).map(key => {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "m-1",
+            style: {
+              color: "red"
+            },
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 198,
+              columnNumber: 32
+            }
+          }, nameErr[key])
+        );
+      }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
+        controlId: "username",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 201,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 202,
+          columnNumber: 25
+        }
       }, "Username"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter username",
@@ -46603,7 +46619,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 193,
+          lineNumber: 203,
           columnNumber: 25
         }
       })), Object.keys(usernameErr).map(key => {
@@ -46616,7 +46632,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 197,
+              lineNumber: 207,
               columnNumber: 32
             }
           }, usernameErr[key])
@@ -46626,14 +46642,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 200,
+          lineNumber: 210,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 201,
+          lineNumber: 211,
           columnNumber: 25
         }
       }, "Email Address"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
@@ -46644,7 +46660,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 202,
+          lineNumber: 212,
           columnNumber: 25
         }
       })), Object.keys(emailErr).map(key => {
@@ -46657,7 +46673,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 206,
+              lineNumber: 216,
               columnNumber: 32
             }
           }, emailErr[key])
@@ -46667,14 +46683,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 209,
+          lineNumber: 219,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 210,
+          lineNumber: 220,
           columnNumber: 25
         }
       }, "Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
@@ -46684,7 +46700,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 211,
+          lineNumber: 221,
           columnNumber: 25
         }
       })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
@@ -46692,14 +46708,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 214,
+          lineNumber: 224,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 215,
+          lineNumber: 225,
           columnNumber: 25
         }
       }, "Repeat Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
@@ -46710,7 +46726,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 216,
+          lineNumber: 226,
           columnNumber: 25
         }
       })), Object.keys(passwordErr).map(key => {
@@ -46723,7 +46739,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 220,
+              lineNumber: 230,
               columnNumber: 32
             }
           }, passwordErr[key])
@@ -46733,14 +46749,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 223,
+          lineNumber: 233,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 224,
+          lineNumber: 234,
           columnNumber: 25
         }
       }, "Birthday"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
@@ -46750,7 +46766,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 225,
+          lineNumber: 235,
           columnNumber: 25
         }
       })), Object.keys(birthdayErr).map(key => {
@@ -46763,7 +46779,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 229,
+              lineNumber: 239,
               columnNumber: 32
             }
           }, birthdayErr[key])
@@ -46773,7 +46789,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 232,
+          lineNumber: 242,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
@@ -46785,7 +46801,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 233,
+          lineNumber: 243,
           columnNumber: 25
         }
       }, "Save Changes")), /*#__PURE__*/_reactDefault.default.createElement(_modalComponentModalComponentDefault.default, {
@@ -46793,13 +46809,13 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 237,
+          lineNumber: 247,
           columnNumber: 21
         }
       }))))
     );
   }
-  _s(ProfileView, "E0WcdqvVcvZKDF9qafmLFPEbnQk=");
+  _s(ProfileView, "+R3Wz+0slfQW4zE88tDgeC5kLXw=");
   _c = ProfileView;
   ;
   ProfileView.propTypes = {
@@ -46825,7 +46841,7 @@ try {
   };
   exports.default = _reactRedux.connect(mapStateToProps, {
     UpdateUser: _actionsActions.UpdateUser,
-    LoginUser: _actionsActions.LoginUser
+    SetUser: _actionsActions.SetUser
   })(ProfileView);
   var _c;
   $RefreshReg$(_c, "ProfileView");
@@ -48517,8 +48533,8 @@ _parcelHelpers.export(exports, "TOGGLE_FAVORITE", function () {
 _parcelHelpers.export(exports, "REGISTER_USER", function () {
   return REGISTER_USER;
 });
-_parcelHelpers.export(exports, "LOGIN_USER", function () {
-  return LOGIN_USER;
+_parcelHelpers.export(exports, "SET_USER", function () {
+  return SET_USER;
 });
 _parcelHelpers.export(exports, "LOGOUT_USER", function () {
   return LOGOUT_USER;
@@ -48544,8 +48560,8 @@ _parcelHelpers.export(exports, "ToggleFavorites", function () {
 _parcelHelpers.export(exports, "RegisterUser", function () {
   return RegisterUser;
 });
-_parcelHelpers.export(exports, "LoginUser", function () {
-  return LoginUser;
+_parcelHelpers.export(exports, "SetUser", function () {
+  return SetUser;
 });
 _parcelHelpers.export(exports, "LogoutUser", function () {
   return LogoutUser;
@@ -48561,7 +48577,7 @@ const SET_FILTER = 'Set filter';
 const GET_FAVORITES = "Get favorites";
 const TOGGLE_FAVORITE = "Toggle favorite";
 const REGISTER_USER = "Register User";
-const LOGIN_USER = "Login user";
+const SET_USER = "Set user";
 const LOGOUT_USER = "Logout user";
 const UPDATE_USER = "Update user";
 const DELETE_USER = "Delete user";
@@ -48599,11 +48615,11 @@ const RegisterUser = (value = {
   field
 });
 _c5 = RegisterUser;
-const LoginUser = value => ({
-  type: LOGIN_USER,
+const SetUser = value => ({
+  type: SET_USER,
   value
 });
-_c6 = LoginUser;
+_c6 = SetUser;
 const LogoutUser = () => ({
   type: LOGOUT_USER
 });
@@ -48625,7 +48641,7 @@ $RefreshReg$(_c2, "SetFilter");
 $RefreshReg$(_c3, "GeFavorites");
 $RefreshReg$(_c4, "ToggleFavorites");
 $RefreshReg$(_c5, "RegisterUser");
-$RefreshReg$(_c6, "LoginUser");
+$RefreshReg$(_c6, "SetUser");
 $RefreshReg$(_c7, "LogoutUser");
 $RefreshReg$(_c8, "UpdateUser");
 $RefreshReg$(_c9, "DeleteUser");
@@ -50297,7 +50313,7 @@ const user = (state = {
         ...state,
         [field]: value
       };
-    case _actionsActions.LOGIN_USER:
+    case _actionsActions.SET_USER:
       return value;
     case _actionsActions.LOGOUT_USER:
       return null;

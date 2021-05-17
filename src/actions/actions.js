@@ -13,7 +13,7 @@ export const TOGGLE_FAVORITE = "Toggle favorite";
 /* Users */
 
 export const REGISTER_USER = "Register User"
-export const LOGIN_USER = "Login user";
+export const SET_USER = "Set user";
 export const LOGOUT_USER = "Logout user"
 export const UPDATE_USER = "Update user";
 export const DELETE_USER = "Delete user";
@@ -55,8 +55,8 @@ export const RegisterUser = (value = {Username: "", Name: "", Email: "", Passwor
 	field
 });
 
-export const LoginUser = (value) => ({
-	type: LOGIN_USER,
+export const SetUser = (value) => ({
+	type: SET_USER,
 	value
 });
 

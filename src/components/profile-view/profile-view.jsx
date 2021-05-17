@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { UpdateUser, LoginUser } from '../../actions/actions';
+import { UpdateUser, SetUser } from '../../actions/actions';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-function ProfileView({ movies, logOut, UpdateUser, user }) {
+function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
     const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
 
     const [favorites, setFavorites] = useState([{ Title: "none" }]); // array of movie objects that have been added to FavoriteMovies Array
@@ -42,6 +42,18 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
     const [passwordErr, setPasswordErr] = useState({});
     const [birthdayErr, setBirthdayErr] = useState({});
 
+    /* When component renders for the first time, this fetches user data */
+    useEffect(() => {
+        axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
+            .then((res) => {
+                const userData = { ...res.data, Birthday: res.data.Birthday.substring(0, 10) }
+                SetUser(userData);
+                setFavIds(res.data.FavoriteMovies)
+            }).catch((e) => {
+                console.log(e)
+            })
+    }, [])
+
     /* converts Array of IDs into Object on movies */
     const getFavs = (favs) => {
         let favoriteMovieList = [];
@@ -53,7 +65,6 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
 
     /* When Array of IDs change and are not empty, convert to a array of movie objects  */
     useEffect(() => {
-        console.log(user)
         favIds ? getFavs(favIds) : setFavorites({})
     }, [favIds]);
 
@@ -109,7 +120,6 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
         let isValid = true;
 
         if (user.Name.trim().length === 0) {
-            console.log(user.Name)
             nameErr.nameIsEmpty = "Please enter a name.";
             isValid = false;
         }
@@ -177,7 +187,7 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
                 <Divider title="Profile Settings" isVisible={true} />
                 <p className="tag-line">Update your user information.</p>
 
-                <Form>
+                <Form autocomplete="off">
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="Enter full name" defaultValue={user.Name} onChange={e => UpdateUser(e.target.value, "Name")} />
@@ -267,4 +277,4 @@ ProfileView.propTypes = {
     logOut: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, { UpdateUser, LoginUser })(ProfileView)
+export default connect(mapStateToProps, { UpdateUser, SetUser })(ProfileView)

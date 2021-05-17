@@ -1,7 +1,7 @@
 import React from "react";
 import axios from 'axios';
 import { connect } from 'react-redux';
-import { SetMovies, LoginUser, LogoutUser } from '../../actions/actions';
+import { SetMovies, SetUser, LogoutUser } from '../../actions/actions';
 import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieView from "../movie-view/movie-view";
@@ -31,7 +31,7 @@ export class MainView extends React.Component {
 
     onLoggedIn(authData) {
         let userData = { ...authData.user, Birthday: authData.user.Birthday.substring(0, 10) }
-        this.props.LoginUser(userData);
+        this.props.SetUser(userData);
         console.log(this.props.user)
         this.setState({
             favorites: authData.user.FavoriteMovies
@@ -106,4 +106,4 @@ export class MainView extends React.Component {
 }
 
 
-export default connect(mapStateToProps, { SetMovies, LoginUser, LogoutUser })(MainView);
+export default connect(mapStateToProps, { SetMovies, SetUser, LogoutUser })(MainView);
