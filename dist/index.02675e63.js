@@ -47876,9 +47876,7 @@ try {
     _s();
     const [isSuccessful, setisSuccessful] = _react.useState(false);
     // used for Snackback that appears when update is successful
-    const [favorites, setFavorites] = _react.useState([{
-      Title: "none"
-    }]);
+    const [favorites, setFavorites] = _react.useState([{}]);
     // array of movie objects that have been added to FavoriteMovies Array
     const [passwordRepeat, setPasswordRepeat] = _react.useState("");
     const localUsername = localStorage.getItem('user');
@@ -47903,7 +47901,7 @@ try {
           Birthday: res.data.Birthday.substring(0, 10)
         };
         SetUser(userData);
-        getFavs(res.data.FavoriteMovies);
+        getFavs(userData.FavoriteMovies);
       }).catch(e => {
         console.log(e);
       });
@@ -47915,7 +47913,7 @@ try {
         favs.includes(movie._id) ? favoriteMovieList.push(movie) : favoriteMovieList;
       });
       setFavorites(favoriteMovieList);
-      console.log(favorites);
+      console.log(favoriteMovieList);
     };
     /*Event handler for updating user data*/
     const updateUserData = e => {
@@ -48091,7 +48089,7 @@ try {
               columnNumber: 37
             }
           }, /*#__PURE__*/_reactDefault.default.createElement("i", {
-            class: "bi bi-star-fill mr-3 mt-3",
+            className: "bi bi-star-fill mr-3 mt-3",
             __self: this,
             __source: {
               fileName: _jsxFileName,
@@ -48552,7 +48550,7 @@ try {
       }))))
     );
   }
-  _s(ProfileView, "C137D7e4jVUlRU4c1322XLLEZio=");
+  _s(ProfileView, "rDDfbAczu4rNDxreyGhJWpcGeR0=");
   _c = ProfileView;
   ;
   ProfileView.propTypes = {
@@ -49395,7 +49393,7 @@ try {
       }, "Repeat Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "password",
         placeholder: "Repeat Password",
-        value: passwordRepeat,
+        defaultValue: passwordRepeat,
         onChange: e => setPasswordRepeat(e.target.value),
         __self: this,
         __source: {
@@ -49435,7 +49433,6 @@ try {
         }
       }, "Birthday"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "date",
-        placeholder: "yyyy.mm.dd",
         onChange: e => RegisterUser(e.target.value, "Birthday"),
         __self: this,
         __source: {

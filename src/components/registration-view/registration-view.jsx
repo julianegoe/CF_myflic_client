@@ -141,7 +141,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="password-repeat">
                         <Form.Label>Repeat Password</Form.Label>
-                        <Form.Control type="password" placeholder="Repeat Password" value={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
+                        <Form.Control type="password" placeholder="Repeat Password" defaultValue={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
                     </Form.Group>
 
                     {Object.keys(passwordErr).map((key) => {
@@ -150,7 +150,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" placeholder="yyyy.mm.dd" onChange={e => RegisterUser(e.target.value, "Birthday")} />
+                        <Form.Control type="date" onChange={e => RegisterUser(e.target.value, "Birthday")} />
                     </Form.Group>
 
                     {Object.keys(birthdayErr).map((key) => {

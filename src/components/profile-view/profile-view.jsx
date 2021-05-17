@@ -26,7 +26,7 @@ const mapStateToProps = (state) => {
 function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorites }) {
     const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
 
-    const [favorites, setFavorites] = useState([{ Title: "none" }]); // array of movie objects that have been added to FavoriteMovies Array
+    const [favorites, setFavorites] = useState([{}]); // array of movie objects that have been added to FavoriteMovies Array
 
     const [passwordRepeat, setPasswordRepeat] = useState("");
 
@@ -46,7 +46,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
             .then((res) => {
                 const userData = { ...res.data, Birthday: res.data.Birthday.substring(0, 10) }
                 SetUser(userData);
-                getFavs(res.data.FavoriteMovies)
+                getFavs(userData.FavoriteMovies)
             }).catch((e) => {
                 console.log(e)
             })
@@ -59,7 +59,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
             favs.includes(movie._id) ? favoriteMovieList.push(movie) : favoriteMovieList
         });
         setFavorites(favoriteMovieList)
-        console.log(favorites)
+        console.log(favoriteMovieList)
     };
 
 
@@ -183,7 +183,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
                                 <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
                                     <MovieCard movieData={fav} />
                                     <div onClick={() => toggleFav(fav._id)} className="favstar mt-2">
-                                        <i class="bi bi-star-fill mr-3 mt-3"></i>
+                                        <i className="bi bi-star-fill mr-3 mt-3"></i>
                                         <span>Remove</span>
                                     </div>
                                 </Col>
