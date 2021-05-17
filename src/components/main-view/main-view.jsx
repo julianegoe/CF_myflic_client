@@ -32,7 +32,6 @@ export class MainView extends React.Component {
     onLoggedIn(authData) {
         let userData = { ...authData.user, Birthday: authData.user.Birthday.substring(0, 10) }
         this.props.SetUser(userData);
-        console.log(this.props.user)
         this.setState({
             favorites: authData.user.FavoriteMovies
         });
@@ -44,7 +43,6 @@ export class MainView extends React.Component {
     getMovies(token) {
         axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
-            console.log(res.data)
             this.props.SetMovies(res.data);
         }).catch((e) => {
             console.log(e)
@@ -55,7 +53,6 @@ export class MainView extends React.Component {
         localStorage.removeItem('token');
         localStorage.removeItem('user');
         this.props.LogoutUser();
-        console.log(this.props.user)
     };
 
 
@@ -82,7 +79,7 @@ export class MainView extends React.Component {
                     <Route exact path="/movies/:movieId" render={({ match, history }) => {
                         if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
                         if (movies.length === 0) return <div className="main-view" />;
-                        return <MovieView setFavState={() => this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} user={user} onBackClick={() => history.goBack()} />
+                        return <MovieView setFavState={() => this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
                     }} />
 
                     <Route exact path="/profile" render={() => {

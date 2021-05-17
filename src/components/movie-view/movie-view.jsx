@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { connect } from 'react-redux';
+import { ToggleFavorites } from '../../actions/actions';
 import React, { useEffect, useState } from "react";
 import PropTypes from 'prop-types';
 import Button from 'react-bootstrap/Button';
@@ -13,24 +15,48 @@ import Snackbar from '../snackbar-component/snackbar-component'
 import './movie-view.scss';
 import { propTypes } from 'react-bootstrap/esm/Image';
 
-export default function MovieView({ setFavState, user, movieData, onBackClick }) {
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+    }
+}
+
+function MovieView({ user, movieData, onBackClick, ToggleFavorites }) {
 
 
+    const toggleFav = () => {
+        const token = localStorage.getItem('token');
+        const localUser = localStorage.getItem('user');
+        user.FavoriteMovies.includes(movieData._id) ?
+            axios.delete(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, { headers: { "Authorization": `Bearer ${token}` } }
+            ).then((res) => {
+                console.log(res.data.FavoriteMovies);
+                ToggleFavorites(res.data.FavoriteMovies);
+            }).catch((e) => { console.log(e) })
+
+            :
+
+            axios.put(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
+            ).then((res) => {
+                console.log(res.data.FavoriteMovies);
+                ToggleFavorites(res.data.FavoriteMovies)
+            }).catch((e) => {
+                console.log(e.message)
+            })
+    }
 
 /* After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
  */    const addFav = () => {
         const token = localStorage.getItem('token');
+        const user = localStorage.getItem('user');
         axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
-            const favData = res.data.FavoriteMovies
-            setFavState({
-                favorites: favData
-            });
             alert("Movies was added to Favorites")
         }).catch((e) => {
             console.log(e.message)
         })
-    }
+    };
+
 
     return (
         <>
@@ -42,10 +68,18 @@ export default function MovieView({ setFavState, user, movieData, onBackClick })
             {/* This is the image element  */}
             <Col md="auto" className="p-3">
                 <img className="movie-view" src={movieData.ImageUrl} alt={movieData.Title} /><br />
-                <div onClick={() => { addFav() }} className="favstar mt-2">
-                    <i className="bi bi-star m-3"></i>
-                    <span>Add to Favorites</span>
-                </div>
+                <div onClick={toggleFav} className="favstar mt-2">{
+                    user.FavoriteMovies.includes(movieData._id) ?
+                        <>
+                            <i className="bi bi-star-fill m-3"></i>
+                            <span>Remove Favorite</span>
+                        </> : <>
+                            <i className="bi bi-star m-3"></i>
+                            <span>Add Favorite</span>
+                        </>
+
+                }</div>
+
                 {/* This is the back button spanning all Bootstrap columns */}
                 <Row>
                     <Col md={12} className="mt-3">
@@ -108,3 +142,5 @@ MovieView.propTypes = {
     }).isRequired,
     onBackClick: PropTypes.func.isRequired
 }
+
+export default connect(mapStateToProps, { ToggleFavorites })(MovieView)

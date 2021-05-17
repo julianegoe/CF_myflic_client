@@ -44,9 +44,10 @@ export const GeFavorites = () => ({
 	token
 });
 
-export const ToggleFavorites = (favId) => ({
+export const ToggleFavorites = (value, field = "FavoriteMovies") => ({
 	type: TOGGLE_FAVORITE,
-	favId
+	value,
+	field
 });
 
 export const RegisterUser = (value = {Username: "", Name: "", Email: "", Password: "", Birthday: ""}, field = null) => ({

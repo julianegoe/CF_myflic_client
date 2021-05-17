@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { UpdateUser, SetUser } from '../../actions/actions';
+import { UpdateUser, SetUser, ToggleFavorites } from '../../actions/actions';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -23,14 +23,12 @@ const mapStateToProps = (state) => {
     }
 }
 
-function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
+function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorites }) {
     const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
 
     const [favorites, setFavorites] = useState([{ Title: "none" }]); // array of movie objects that have been added to FavoriteMovies Array
-    const [favIds, setFavIds] = useState([]); // an Array of movie IDs that have been added to FavoriteMovies
 
     const [passwordRepeat, setPasswordRepeat] = useState("");
-    /* const [birthday, setBirthday] = useState(""); */
 
     const localUsername = localStorage.getItem('user'); // real username to make axios requests
     const token = localStorage.getItem('token'); // jwt token to make axios requests
@@ -48,7 +46,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
             .then((res) => {
                 const userData = { ...res.data, Birthday: res.data.Birthday.substring(0, 10) }
                 SetUser(userData);
-                setFavIds(res.data.FavoriteMovies)
+                getFavs(res.data.FavoriteMovies)
             }).catch((e) => {
                 console.log(e)
             })
@@ -58,15 +56,11 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
     const getFavs = (favs) => {
         let favoriteMovieList = [];
         movies.forEach((movie) => {
-            favs.includes(movie._id) ? favoriteMovieList.push(movie) : null
+            favs.includes(movie._id) ? favoriteMovieList.push(movie) : favoriteMovieList
         });
         setFavorites(favoriteMovieList)
+        console.log(favorites)
     };
-
-    /* When Array of IDs change and are not empty, convert to a array of movie objects  */
-    useEffect(() => {
-        favIds ? getFavs(favIds) : setFavorites({})
-    }, [favIds]);
 
 
     /* Event handler for updating user data*/
@@ -91,13 +85,26 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
 
     }
 
-    /* Deletes Favrorite from List of favorites*/
-    const deleteFav = (favId) => {
-        axios.delete(`https://myflix-0001.herokuapp.com/users/${username}/movies/${favId}`, { headers: { "Authorization": `Bearer ${token}` } })
-            .then((res) => {
-                setFavIds(res.data.FavoriteMovies)
-
+    const toggleFav = (movieId) => {
+        console.log(movieId);
+        user.FavoriteMovies.includes(movieId) ?
+            axios.delete(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, { headers: { "Authorization": `Bearer ${token}` } }
+            ).then((res) => {
+                console.log(res.data.FavoriteMovies);
+                ToggleFavorites(res.data.FavoriteMovies);
+                getFavs(res.data.FavoriteMovies)
             }).catch((e) => { console.log(e) })
+
+            :
+
+            axios.put(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
+            ).then((res) => {
+                console.log(res.data.FavoriteMovies);
+                ToggleFavorites(res.data.FavoriteMovies)
+                getFavs(res.data.FavoriteMovies)
+            }).catch((e) => {
+                console.log(e.message)
+            })
     }
 
     /* Event handle for account deletion */
@@ -166,7 +173,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
         <>
             <Snackbar close={setisSuccessful} isVisible={isSuccessful} />
 
-            {favorites.length > 0 &&
+            {favorites.length > 0 ?
                 <Col xs={12} sm={8} md={6} lg={6} xl={6} className="p-3 m-2">
                     <Divider title="My Favorites" isVisible={true} />
                     <Row>
@@ -175,19 +182,53 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user }) {
 
                                 <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key={fav._id}>
                                     <MovieCard movieData={fav} />
-                                    <Button onClick={() => deleteFav(fav._id)} type="submit " className="mt-3" size="sm" variant="outline-danger">Delete</Button>
+                                    <div onClick={() => toggleFav(fav._id)} className="favstar mt-2">
+                                        <i class="bi bi-star-fill mr-3 mt-3"></i>
+                                        <span>Remove</span>
+                                    </div>
                                 </Col>
 
                             )
                         })}
                     </Row>
-                </Col>}
+                </Col>
+                :
+                <>
+                    <Col xs={12} sm={8} md={6} lg={6} xl={6} className="p-3 m-2">
+                        <Divider title="My Favorites" isVisible={true} />
+                        <p className="tag-line">Add Movies to your Favorites List.</p>
+
+                        <Row>
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                                <div className="placeholder-favorite">
+                                    <div></div>
+                                </div>
+                            </Col>
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                                <div className="placeholder-favorite">
+                                    <div></div>
+                                </div>
+                            </Col>
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                                <div className="placeholder-favorite">
+                                    <div></div>
+                                </div>
+                            </Col>
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                                <div className="placeholder-favorite">
+                                    <div></div>
+                                </div>
+                            </Col>
+                        </Row>
+                    </Col>
+                </>}
+
 
             <Col xs={12} sm={8} md={5} lg={4} className="p-3 m-2">
                 <Divider title="Profile Settings" isVisible={true} />
                 <p className="tag-line">Update your user information.</p>
 
-                <Form autocomplete="off">
+                <Form>
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
                         <Form.Control type="text" placeholder="Enter full name" defaultValue={user.Name} onChange={e => UpdateUser(e.target.value, "Name")} />
@@ -277,4 +318,4 @@ ProfileView.propTypes = {
     logOut: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, { UpdateUser, SetUser })(ProfileView)
+export default connect(mapStateToProps, { UpdateUser, SetUser, ToggleFavorites })(ProfileView)
