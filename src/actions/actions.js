@@ -49,7 +49,7 @@ export const ToggleFavorites = (favId) => ({
 	favId
 });
 
-export const RegisterUser = (value, field = null) => ({
+export const RegisterUser = (value = {Username: "", Name: "", Email: "", Password: "", Birthday: ""}, field = null) => ({
 	type: REGISTER_USER,
 	value,
 	field

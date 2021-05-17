@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { UpdateUser } from '../../actions/actions';
+import { UpdateUser, LoginUser } from '../../actions/actions';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -72,7 +72,6 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
 
             }, { headers: { "Authorization": `Bearer ${token}` } },
             ).then((res) => {
-                UpdateUser(res.data);
                 res.status == 200 ? setisSuccessful(true) : setisSuccessful(false)
             }).catch((e) => {
                 console.error("error during editing: " + e)
@@ -101,12 +100,7 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
 
     /* Function that validates certain inputs*/
     const formValidation = () => {
-        let userData = {
-            username: localStorage.getItem('user'),
-            name: localStorage.getItem('name'),
-            email: localStorage.getItem('email'),
-            birthday: localStorage.getItem('birthday')
-        }
+
         const nameErr = {};
         const usernameErr = {};
         const emailErr = {};
@@ -273,4 +267,4 @@ ProfileView.propTypes = {
     logOut: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, { UpdateUser })(ProfileView)
+export default connect(mapStateToProps, { UpdateUser, LoginUser })(ProfileView)

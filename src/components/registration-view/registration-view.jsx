@@ -28,6 +28,7 @@ function RegistrationView({ user, RegisterUser }) {
         e.preventDefault();
         let isValid = formValidation();
         if (isValid) {
+            console.log(user)
             axios.post("https://myflix-0001.herokuapp.com/users",
                 {
                     Name: user.Name,

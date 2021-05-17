@@ -19,7 +19,7 @@ const movies = (state = [], action) => {
     }
 };
 
-const user = (state = null, action) => {
+const user = (state = {Username: "", Name: "", Email: "", Password: "", Birthday: ""}, action) => {
     const { field, value } = action;
     switch (action.type) {
         case REGISTER_USER: 
@@ -28,7 +28,7 @@ const user = (state = null, action) => {
             [field] : value
           };
 
-        case LOGIN_USER: return action.value;
+        case LOGIN_USER: return value;
 
         case LOGOUT_USER: return null;
 
