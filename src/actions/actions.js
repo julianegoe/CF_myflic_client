@@ -13,6 +13,7 @@ export const TOGGLE_FAVORITE = "Toggle favorite";
 /* Users */
 
 export const LOGIN_USER = "Login user";
+export const LOGOUT_USER = "Logout user"
 export const UPDATE_USER = "Update user";
 export const DELETE_USER = "Delete user";
 
@@ -47,9 +48,13 @@ export const ToggleFavorites = (favId) => ({
 	favId
 });
 
-export const LoginUser = (user) => ({
+export const LoginUser = (value) => ({
 	type: LOGIN_USER,
-	user
+	value
+});
+
+export const LogoutUser = () => ({
+	type: LOGOUT_USER
 });
 
 export const UpdateUser = (value, field = null) => ({

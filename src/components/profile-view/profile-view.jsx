@@ -17,7 +17,10 @@ import ModalComponent from '../modal-component/modal-component';
 import './profile-view.scss'
 
 const mapStateToProps = (state) => {
-    return { user: state.user }
+    return {
+        user: state.user,
+        movies: state.movies
+    }
 }
 
 function ProfileView({ movies, logOut, UpdateUser, user }) {
@@ -48,24 +51,11 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
         setFavorites(favoriteMovieList)
     };
 
-    /* When component renders for the first time, this fetches user data */
-    useEffect(() => {
-        axios.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, { headers: { "Authorization": `Bearer ${token}` } })
-            .then((res) => {
-                UpdateUser(res.data)
-                /* 
-                const date = res.data.Birthday.substring(0, 10)
-                setBirthday(date);
-                setFavIds(res.data.FavoriteMovies) */
-            }).catch((e) => {
-                console.log(e)
-            })
-    }, [])
-
     /* When Array of IDs change and are not empty, convert to a array of movie objects  */
     useEffect(() => {
+        console.log(user)
         favIds ? getFavs(favIds) : setFavorites({})
-    }, [favIds])
+    }, [favIds]);
 
 
     /* Event handler for updating user data*/
@@ -78,11 +68,10 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
                 Username: user.Username,
                 Email: user.Email,
                 Password: user.Password,
-                Birthday: "1989-11-19"
+                Birthday: user.Birthday
 
             }, { headers: { "Authorization": `Bearer ${token}` } },
             ).then((res) => {
-                console.log(res.data);
                 UpdateUser(res.data);
                 res.status == 200 ? setisSuccessful(true) : setisSuccessful(false)
             }).catch((e) => {
@@ -112,6 +101,12 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
 
     /* Function that validates certain inputs*/
     const formValidation = () => {
+        let userData = {
+            username: localStorage.getItem('user'),
+            name: localStorage.getItem('name'),
+            email: localStorage.getItem('email'),
+            birthday: localStorage.getItem('birthday')
+        }
         const nameErr = {};
         const usernameErr = {};
         const emailErr = {};
@@ -145,12 +140,11 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
             isValid = false
         };
 
-        /*
-        if (birthday.trim().length === 0) {
+        if (user.Birthday.trim().length === 0) {
             birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
             isValid = false
         };
-        */
+
 
         setNameErr(nameErr);
         setUsernameErr(usernameErr);
@@ -220,7 +214,7 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" defaultValue="" onChange={e => UpdateUser(e.target.value, "Password")} />
+                        <Form.Control type="password" placeholder="Password" onChange={e => UpdateUser(e.target.value, "Password")} />
                     </Form.Group>
 
                     <Form.Group controlId="password-repeat">
@@ -232,14 +226,14 @@ function ProfileView({ movies, logOut, UpdateUser, user }) {
                         return <div className="m-1" style={{ color: "red" }}>{passwordErr[key]}</div>
                     })}
 
-                    {/* <Form.Group controlId="birthday">
+                    <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" placeholder="yyyy-mm-dd" value={user.Birthday} onChange={e => UpdateUser(e.target.value)} />
-                    </Form.Group> */}
+                        <Form.Control type="date" value={user.Birthday} onChange={e => UpdateUser(e.target.value, "Birthday")} />
+                    </Form.Group>
 
-                    {/* {Object.keys(birthdayErr).map((key) => {
+                    {Object.keys(birthdayErr).map((key) => {
                         return <div className="m-1" style={{ color: "red" }}>{birthdayErr[key]}</div>
-                    })} */}
+                    })}
 
                     <Link to="/profile">
                         <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="mt-3">
