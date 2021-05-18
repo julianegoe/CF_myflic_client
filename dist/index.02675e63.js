@@ -26419,7 +26419,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","axios":"7rA65","react-dom":"2sg1U","../movie-card/movie-card":"7v6h3","../movie-view/movie-view":"3xBbr","../login-view/login-view":"6M7fu","../registration-view/registration-view":"7gvH2","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"7rA65":[function(require,module,exports) {
+},{"react":"3b2NM","axios":"7rA65","react-dom":"2sg1U","../movie-view/movie-view":"3xBbr","../login-view/login-view":"6M7fu","../registration-view/registration-view":"7gvH2","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","../movie-card/movie-card":"7v6h3"}],"7rA65":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 },{"./lib/axios":"4qfhW"}],"4qfhW":[function(require,module,exports) {
 'use strict';
@@ -28164,7 +28164,7 @@ module.exports = function isAxiosError(payload) {
   return (typeof payload === 'object') && (payload.isAxiosError === true);
 };
 
-},{}],"7v6h3":[function(require,module,exports) {
+},{}],"3xBbr":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -28172,73 +28172,92 @@ helpers.prelude(module);
 try {
   var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
   _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "MovieCard", function () {
-    return MovieCard;
+  _parcelHelpers.export(exports, "MovieView", function () {
+    return MovieView;
   });
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
   var _propTypes = require('prop-types');
   var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
-  class MovieCard extends _reactDefault.default.Component {
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-view/movie-view.jsx";
+  class MovieView extends _reactDefault.default.Component {
     render() {
-      const {movieData, onMovieClick} = this.props;
+      const {movieData, goBack} = this.props;
       return (
         /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-card",
-          onClick: () => {
-            onMovieClick(movieData);
-          },
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 7,
-            columnNumber: 16
-          }
-        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
+          className: "movie-view",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 8,
-            columnNumber: 13
+            columnNumber: 16
           }
-        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("img", {
-          className: "movie-poster",
-          src: movieData.ImageUrl,
-          alt: "movie poster",
+        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
+          className: "movie-title",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 9,
             columnNumber: 13
           }
-        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-info",
+        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("span", {
+          className: "movie-year",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 10,
             columnNumber: 13
           }
-        }, /*#__PURE__*/_reactDefault.default.createElement("p", {
+        }, movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("span", {
+          className: "movie-director",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 11,
-            columnNumber: 17
+            columnNumber: 13
           }
-        }, "Year: " + movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("p", {
+        }, " Directed by " + movieData.Director.Name), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-section",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 12,
+            columnNumber: 13
+          }
+        }, /*#__PURE__*/_reactDefault.default.createElement("img", {
+          className: "movie-poster",
+          src: movieData.ImageUrl,
+          alt: "movie poster",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 13,
             columnNumber: 17
           }
-        }, "Director: " + movieData.Director.Name)))
+        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-description",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 14,
+            columnNumber: 17
+          }
+        }, movieData.Description)), /*#__PURE__*/_reactDefault.default.createElement("button", {
+          className: "back-button",
+          onClick: () => {
+            goBack(null);
+          },
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 16,
+            columnNumber: 13
+          }
+        }, "Back"))
       );
     }
   }
-  MovieCard.propTypes = {
+  MovieView.propTypes = {
     movieData: _propTypesDefault.default.exact({
       Title: _propTypesDefault.default.string.isRequired,
       Description: _propTypesDefault.default.string.isRequired,
@@ -28257,7 +28276,7 @@ try {
       ImageUrl: _propTypesDefault.default.string.isRequired,
       Featured: _propTypesDefault.default.bool.isRequired
     }).isRequired,
-    onClick: _propTypesDefault.default.func
+    goBack: _propTypesDefault.default.func
   };
   helpers.postlude(module);
 } finally {
@@ -29274,127 +29293,7 @@ function registerExportsForReactRefresh(module) {
   }
 }
 
-},{"react-refresh/runtime":"592mh"}],"3xBbr":[function(require,module,exports) {
-var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-try {
-  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-  _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "MovieView", function () {
-    return MovieView;
-  });
-  var _react = require("react");
-  var _reactDefault = _parcelHelpers.interopDefault(_react);
-  var _propTypes = require('prop-types');
-  var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-view/movie-view.jsx";
-  class MovieView extends _reactDefault.default.Component {
-    render() {
-      const {movieData, goBack} = this.props;
-      return (
-        /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-view",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 8,
-            columnNumber: 16
-          }
-        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
-          className: "movie-title",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 9,
-            columnNumber: 13
-          }
-        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("span", {
-          className: "movie-year",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 10,
-            columnNumber: 13
-          }
-        }, movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("span", {
-          className: "movie-director",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 11,
-            columnNumber: 13
-          }
-        }, " Directed by " + movieData.Director.Name), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-section",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 12,
-            columnNumber: 13
-          }
-        }, /*#__PURE__*/_reactDefault.default.createElement("img", {
-          className: "movie-poster",
-          src: movieData.ImageUrl,
-          alt: "movie poster",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 13,
-            columnNumber: 17
-          }
-        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
-          className: "movie-description",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 14,
-            columnNumber: 17
-          }
-        }, movieData.Description)), /*#__PURE__*/_reactDefault.default.createElement("button", {
-          className: "back-button",
-          onClick: () => {
-            goBack(null);
-          },
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 16,
-            columnNumber: 13
-          }
-        }, "Back"))
-      );
-    }
-  }
-  MovieView.propTypes = {
-    movieData: _propTypesDefault.default.exact({
-      Title: _propTypesDefault.default.string.isRequired,
-      Description: _propTypesDefault.default.string.isRequired,
-      Director: _propTypesDefault.default.shape({
-        Name: _propTypesDefault.default.string.isRequired,
-        Bio: _propTypesDefault.default.string.isRequired,
-        Birth: _propTypesDefault.default.string
-      }).isRequired,
-      Year: _propTypesDefault.default.number.isRequired,
-      Genre: _propTypesDefault.default.shape({
-        Name: _propTypesDefault.default.string.isRequired,
-        Description: _propTypesDefault.default.string.isRequired
-      }).isRequired,
-      Actors: _propTypesDefault.default.array.isRequired,
-      _id: _propTypesDefault.default.string.isRequired,
-      ImageUrl: _propTypesDefault.default.string.isRequired,
-      Featured: _propTypesDefault.default.bool.isRequired
-    }).isRequired,
-    goBack: _propTypesDefault.default.func
-  };
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-
-},{"react":"3b2NM","prop-types":"4dfy5","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"6M7fu":[function(require,module,exports) {
+},{"react-refresh/runtime":"592mh"}],"6M7fu":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -29771,6 +29670,107 @@ try {
   };
   var _c;
   $RefreshReg$(_c, "RegistrationView");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","prop-types":"4dfy5","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"7v6h3":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  _parcelHelpers.export(exports, "MovieCard", function () {
+    return MovieCard;
+  });
+  var _react = require("react");
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _propTypes = require('prop-types');
+  var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
+  class MovieCard extends _reactDefault.default.Component {
+    render() {
+      const {movieData, onMovieClick} = this.props;
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-card",
+          onClick: () => {
+            onMovieClick(movieData);
+          },
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 7,
+            columnNumber: 16
+          }
+        }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 8,
+            columnNumber: 13
+          }
+        }, movieData.Title), /*#__PURE__*/_reactDefault.default.createElement("img", {
+          className: "movie-poster",
+          src: movieData.ImageUrl,
+          alt: "movie poster",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 9,
+            columnNumber: 13
+          }
+        }), /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "movie-info",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 10,
+            columnNumber: 13
+          }
+        }, /*#__PURE__*/_reactDefault.default.createElement("p", {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 11,
+            columnNumber: 17
+          }
+        }, "Year: " + movieData.Year), /*#__PURE__*/_reactDefault.default.createElement("p", {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 12,
+            columnNumber: 17
+          }
+        }, "Director: " + movieData.Director.Name)))
+      );
+    }
+  }
+  MovieCard.propTypes = {
+    movieData: _propTypesDefault.default.exact({
+      Title: _propTypesDefault.default.string.isRequired,
+      Description: _propTypesDefault.default.string.isRequired,
+      Director: _propTypesDefault.default.shape({
+        Name: _propTypesDefault.default.string.isRequired,
+        Bio: _propTypesDefault.default.string.isRequired,
+        Birth: _propTypesDefault.default.string
+      }).isRequired,
+      Year: _propTypesDefault.default.number.isRequired,
+      Genre: _propTypesDefault.default.shape({
+        Name: _propTypesDefault.default.string.isRequired,
+        Description: _propTypesDefault.default.string.isRequired
+      }).isRequired,
+      Actors: _propTypesDefault.default.array.isRequired,
+      _id: _propTypesDefault.default.string.isRequired,
+      ImageUrl: _propTypesDefault.default.string.isRequired,
+      Featured: _propTypesDefault.default.bool.isRequired
+    }).isRequired,
+    onClick: _propTypesDefault.default.func
+  };
   helpers.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
