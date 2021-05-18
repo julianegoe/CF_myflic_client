@@ -1,0 +1,39 @@
+@import '../../index.scss';
+
+ul {
+    list-style-type: none;
+    padding: 0px;
+}
+
+hr.solid {
+    border: 1px solid black;
+
+}
+
+.bg-button {
+    background-color: $quariary-color;
+}
+
+.movie-view {
+    object-fit: contain;
+    max-height: 300px;
+}
+
+.categories {
+    font-weight: bolder;
+}
+
+.favstar {
+    cursor: pointer;
+    transition: transform 200ms;
+}
+
+.favstar:hover {
+    transform: scale(1.08);
+}
+
+.favstar_item {
+    object-fit: contain;
+    height: 30px;
+    margin: 10px;
+  }

@@ -1,23 +1,37 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { Container, Card } from "react-bootstrap";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import Image from 'react-bootstrap/Image';
+import { Link } from "react-router-dom";
 
-export class MovieCard extends React.Component {
-    render() {
-        const { movieData, onMovieClick } = this.props;
-        return <div className="movie-card" onClick={() => { onMovieClick(movieData) }}>
-            <h1>{movieData.Title}</h1>
-            <img className="movie-poster" src={movieData.ImageUrl} alt="movie poster" />
-            <div className="movie-info">
-                <p>{"Year: " + movieData.Year}</p>
-                <p>{"Director: " + movieData.Director.Name}</p>
-            </div>
-        </div >
+import "./movie-card.scss";
 
-    }
+export default function MovieCard({ movieData }) {
+
+    return (
+        <>
+            <OverlayTrigger
+                delay="100"
+                placement={'top'}
+                overlay={
+                    <Tooltip id='tooltip-top'>
+                        {movieData.Title} ({movieData.Year})
+                    </Tooltip>
+                }
+            >
+                <Link to={`/movies/${movieData._id}`}>
+                    <Image className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+                </Link>
+            </OverlayTrigger>
+        </>
+    );
 }
 
+
 MovieCard.propTypes = {
-    movieData: PropTypes.exact({
+    movieData: PropTypes.shape({
         Title: PropTypes.string.isRequired,
         Description: PropTypes.string.isRequired,
         Director: PropTypes.shape({
@@ -34,6 +48,5 @@ MovieCard.propTypes = {
         _id: PropTypes.string.isRequired,
         ImageUrl: PropTypes.string.isRequired,
         Featured: PropTypes.bool.isRequired
-    }).isRequired,
-    onClick: PropTypes.func
+    }).isRequired
 }

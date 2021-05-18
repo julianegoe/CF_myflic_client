@@ -1,0 +1,20 @@
+@import '../../index.scss';
+
+.snackbar {
+    position: relative;
+    z-index: 1;
+}
+
+
+.placeholder-favorite {
+    position: relative;
+    width: 100%;
+   
+}
+
+.placeholder-favorite div {
+    padding-bottom: calc(100% * 4 / 3 );
+    box-shadow: inset 2px 2px 20px black;
+
+}
+      
