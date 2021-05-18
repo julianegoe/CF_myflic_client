@@ -314,7 +314,7 @@ ProfileView.propTypes = {
         ImageUrl: PropTypes.string.isRequired,
         Featured: PropTypes.bool.isRequired
     })).isRequired,
-    users: PropTypes.shape({
+    user: PropTypes.shape({
         Name: PropTypes.string.isRequired,
         Username: PropTypes.string.isRequired,
         Email: PropTypes.string.isRequired,

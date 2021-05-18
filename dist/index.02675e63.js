@@ -48555,7 +48555,7 @@ try {
       ImageUrl: _propTypesDefault.default.string.isRequired,
       Featured: _propTypesDefault.default.bool.isRequired
     })).isRequired,
-    users: _propTypesDefault.default.shape({
+    user: _propTypesDefault.default.shape({
       Name: _propTypesDefault.default.string.isRequired,
       Username: _propTypesDefault.default.string.isRequired,
       Email: _propTypesDefault.default.string.isRequired,
