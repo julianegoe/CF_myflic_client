@@ -186,4 +186,4 @@ RegistrationView.propTypes = {
     })
 }
 
-export default connect(mapStateToProps, { RegisterUser, SetUser, ValidateUser })(RegistrationView)
+export default connect(mapStateToProps, { SetUser, ValidateUser })(RegistrationView)
