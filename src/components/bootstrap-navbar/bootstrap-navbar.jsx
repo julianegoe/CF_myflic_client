@@ -6,19 +6,20 @@ import './bootstrap-navbar.scss'
 import { Link } from "react-router-dom";
 
 
-export function BootstrapNavbar({ userState, logOut }) {
 
+export function BootstrapNavbar(props) {
+    const localUser = localStorage.getItem('user')
 
     return (
         <>
             <Navbar className="bs-navbar" variant="dark" role="navigation">
-                {userState ? (
+                {localUser ? (
                     <>
                         <Link to="/">
                             <Navbar.Brand as="div" >MyFlix</Navbar.Brand>
                         </Link>
 
-                        <Nav className="bs-navbar" as="ul">
+                        <Nav className="justify-content-end" as="ul">
                             <Nav.Item className="bs-navbar" as="li">
                                 <Link to="/profile" className="text-decoration-none">
                                     <OverlayTrigger
@@ -37,7 +38,7 @@ export function BootstrapNavbar({ userState, logOut }) {
                             </Nav.Item>
                             <Nav.Item className="bs-navbar" as="li">
                                 <Link to="/" className="text-decoration-none">
-                                    <Nav.Link as="div" onClick={() => { logOut() }}>Logout</Nav.Link>
+                                    <Nav.Link as="div" onClick={() => { props.logOut() }}>Logout</Nav.Link>
                                 </Link>
                             </Nav.Item>
                         </Nav>
@@ -49,3 +50,4 @@ export function BootstrapNavbar({ userState, logOut }) {
         </>
     )
 }
+

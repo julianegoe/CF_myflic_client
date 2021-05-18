@@ -1053,21 +1053,35 @@ try {
   var _reactDom = require('react-dom');
   var _reactDomDefault = _parcelHelpers.interopDefault(_reactDom);
   var _componentsMainViewMainView = require("./components/main-view/main-view");
-  require('react-bootstrap/Container');
+  var _componentsMainViewMainViewDefault = _parcelHelpers.interopDefault(_componentsMainViewMainView);
+  var _redux = require('redux');
+  var _reactRedux = require('react-redux');
+  var _reducersReducers = require('./reducers/reducers');
+  var _reducersReducersDefault = _parcelHelpers.interopDefault(_reducersReducers);
+  var _reduxDevtoolsExtension = require('redux-devtools-extension');
   require('./index.scss');
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/index.jsx";
+  const store = _redux.createStore(_reducersReducersDefault.default, _reduxDevtoolsExtension.devToolsEnhancer());
   // Main component (will eventually use all the others)
   class MyFlixApplication extends _reactDefault.default.Component {
     render() {
       return (
-        /*#__PURE__*/_reactDefault.default.createElement(_componentsMainViewMainView.MainView, {
+        /*#__PURE__*/_reactDefault.default.createElement(_reactRedux.Provider, {
+          store: store,
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 15,
+            lineNumber: 18,
             columnNumber: 13
           }
-        })
+        }, /*#__PURE__*/_reactDefault.default.createElement(_componentsMainViewMainViewDefault.default, {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 19,
+            columnNumber: 17
+          }
+        }))
       );
     }
   }
@@ -1081,7 +1095,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","react-dom":"2sg1U","./components/main-view/main-view":"67PhB","react-bootstrap/Container":"3Mt3t","./index.scss":"5iJih","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"3b2NM":[function(require,module,exports) {
+},{"react":"3b2NM","react-dom":"2sg1U","./components/main-view/main-view":"67PhB","./index.scss":"5iJih","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","redux":"7panR","react-redux":"7GDa4","./reducers/reducers":"2736c","redux-devtools-extension":"3vUkb"}],"3b2NM":[function(require,module,exports) {
 "use strict";
 if ("development" === 'production') {
   module.exports = require('./cjs/react.production.min.js');
@@ -26289,41 +26303,40 @@ try {
   var _reactDefault = _parcelHelpers.interopDefault(_react);
   var _axios = require('axios');
   var _axiosDefault = _parcelHelpers.interopDefault(_axios);
+  var _reactRedux = require('react-redux');
+  var _actionsActions = require('../../actions/actions');
   var _reactRouterDom = require("react-router-dom");
   require("react-dom");
-  var _movieCardMovieCard = require("../movie-card/movie-card");
-  var _movieCardMovieCardDefault = _parcelHelpers.interopDefault(_movieCardMovieCard);
   var _movieViewMovieView = require("../movie-view/movie-view");
   var _movieViewMovieViewDefault = _parcelHelpers.interopDefault(_movieViewMovieView);
   var _profileViewProfileView = require("../profile-view/profile-view");
   var _profileViewProfileViewDefault = _parcelHelpers.interopDefault(_profileViewProfileView);
   var _loginViewLoginView = require("../login-view/login-view");
+  var _loginViewLoginViewDefault = _parcelHelpers.interopDefault(_loginViewLoginView);
+  var _movieListMovieList = require("../movie-list/movie-list");
+  var _movieListMovieListDefault = _parcelHelpers.interopDefault(_movieListMovieList);
   var _registrationViewRegistrationView = require("../registration-view/registration-view");
+  var _registrationViewRegistrationViewDefault = _parcelHelpers.interopDefault(_registrationViewRegistrationView);
   var _bootstrapNavbarBootstrapNavbar = require("../bootstrap-navbar/bootstrap-navbar");
-  var _dividerComponentDividerComponent = require("../divider-component/divider-component");
-  var _dividerComponentDividerComponentDefault = _parcelHelpers.interopDefault(_dividerComponentDividerComponent);
-  var _reactBootstrapRow = require('react-bootstrap/Row');
-  var _reactBootstrapRowDefault = _parcelHelpers.interopDefault(_reactBootstrapRow);
-  var _reactBootstrapCol = require('react-bootstrap/Col');
-  var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
+  var _reactBootstrap = require('react-bootstrap');
   require('./main-view.scss');
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/main-view/main-view.jsx";
+  let mapStateToProps = state => {
+    return {
+      movies: state.movies,
+      user: state.user
+    };
+  };
   class MainView extends _reactDefault.default.Component {
     constructor() {
       super();
-      this.state = {
-        movies: [],
-        user: null,
-        favorites: []
-      };
     }
     onLoggedIn(authData) {
-      this.setState({
-        user: authData.user.Username
-      });
-      this.setState({
-        favorites: authData.user.FavoriteMovies
-      });
+      let userData = {
+        ...authData.user,
+        Birthday: authData.user.Birthday.substring(0, 10)
+      };
+      this.props.SetUser(userData);
       localStorage.setItem('token', authData.token);
       localStorage.setItem('user', authData.user.Username);
       this.getMovies(authData.token);
@@ -26334,9 +26347,7 @@ try {
           "Authorization": `Bearer ${token}`
         }
       }).then(res => {
-        this.setState({
-          movies: res.data
-        });
+        this.props.SetMovies(res.data);
       }).catch(e => {
         console.log(e);
       });
@@ -26344,18 +26355,18 @@ try {
     logOut() {
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      this.setState({
-        user: null
-      });
+      this.props.LogoutUser();
     }
     render() {
-      const {movies, user} = this.state;
+      const {movies} = this.props;
+      const {user} = this.props;
+      const localUser = localStorage.getItem('user');
       return (
         /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.BrowserRouter, {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 61,
+            lineNumber: 60,
             columnNumber: 13
           }
         }, /*#__PURE__*/_reactDefault.default.createElement(_bootstrapNavbarBootstrapNavbar.BootstrapNavbar, {
@@ -26364,29 +26375,36 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
+            lineNumber: 61,
+            columnNumber: 17
+          }
+        }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Container, {
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
             lineNumber: 62,
             columnNumber: 17
           }
-        }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
-          className: "m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center",
+        }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Row, {
+          className: "justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start",
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 63,
-            columnNumber: 17
+            columnNumber: 21
           }
         }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
           exact: true,
           path: "/",
           render: () => {
-            if (!user) return (
-              /*#__PURE__*/_reactDefault.default.createElement(_loginViewLoginView.LoginView, {
+            if (!localUser) return (
+              /*#__PURE__*/_reactDefault.default.createElement(_loginViewLoginViewDefault.default, {
                 onLoggedIn: user => this.onLoggedIn(user),
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
                   lineNumber: 65,
-                  columnNumber: 43
+                  columnNumber: 52
                 }
               })
             );
@@ -26397,74 +26415,51 @@ try {
                   __source: {
                     fileName: _jsxFileName,
                     lineNumber: 66,
-                    columnNumber: 59
+                    columnNumber: 63
                   }
                 }, "Loading...")
               );
             }
-            {
-              movies.length > 0 && /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
-                title: "All Movies",
+            return (
+              /*#__PURE__*/_reactDefault.default.createElement(_movieListMovieListDefault.default, {
+                movies: movies,
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
                   lineNumber: 67,
-                  columnNumber: 48
+                  columnNumber: 36
                 }
-              });
-            }
-            return movies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-              xs: 12,
-              sm: 6,
-              md: 4,
-              lg: 3,
-              xl: 2,
-              className: "p-3",
-              key: movie._id,
-              __self: this,
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 69,
-                columnNumber: 29
-              }
-            }, /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCardDefault.default, {
-              movieData: movie,
-              __self: this,
-              __source: {
-                fileName: _jsxFileName,
-                lineNumber: 70,
-                columnNumber: 33
-              }
-            })));
+              })
+            );
           },
           __self: this,
           __source: {
             fileName: _jsxFileName,
             lineNumber: 64,
-            columnNumber: 21
+            columnNumber: 25
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
           exact: true,
           path: "/register",
           render: () => {
-            if (user) return (
+            if (localUser) return (
               /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Redirect, {
                 to: "/",
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 76,
-                  columnNumber: 42
+                  lineNumber: 71,
+                  columnNumber: 51
                 }
               })
             );
             return (
-              /*#__PURE__*/_reactDefault.default.createElement(_registrationViewRegistrationView.RegistrationView, {
+              /*#__PURE__*/_reactDefault.default.createElement(_registrationViewRegistrationViewDefault.default, {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 77,
-                  columnNumber: 32
+                  lineNumber: 72,
+                  columnNumber: 36
                 }
               })
             );
@@ -26472,21 +26467,21 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 75,
-            columnNumber: 21
+            lineNumber: 70,
+            columnNumber: 25
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
           exact: true,
           path: "/movies/:movieId",
           render: ({match, history}) => {
             if (!user) return (
-              /*#__PURE__*/_reactDefault.default.createElement(_loginViewLoginView.LoginView, {
+              /*#__PURE__*/_reactDefault.default.createElement(_loginViewLoginViewDefault.default, {
                 onLoggedIn: user => this.onLoggedIn(user),
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 81,
-                  columnNumber: 43
+                  lineNumber: 76,
+                  columnNumber: 47
                 }
               })
             );
@@ -26496,8 +26491,8 @@ try {
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 82,
-                  columnNumber: 57
+                  lineNumber: 77,
+                  columnNumber: 61
                 }
               })
             );
@@ -26505,13 +26500,12 @@ try {
               /*#__PURE__*/_reactDefault.default.createElement(_movieViewMovieViewDefault.default, {
                 setFavState: () => this.setState,
                 movieData: movies.find(movie => movie._id === match.params.movieId),
-                user: user,
                 onBackClick: () => history.goBack(),
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 83,
-                  columnNumber: 32
+                  lineNumber: 78,
+                  columnNumber: 36
                 }
               })
             );
@@ -26519,8 +26513,8 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 80,
-            columnNumber: 21
+            lineNumber: 75,
+            columnNumber: 25
           }
         }), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Route, {
           exact: true,
@@ -26530,11 +26524,12 @@ try {
               /*#__PURE__*/_reactDefault.default.createElement(_profileViewProfileViewDefault.default, {
                 logOut: () => this.logOut(),
                 movies: movies,
+                user: user,
                 __self: this,
                 __source: {
                   fileName: _jsxFileName,
-                  lineNumber: 87,
-                  columnNumber: 32
+                  lineNumber: 82,
+                  columnNumber: 36
                 }
               })
             );
@@ -26542,10 +26537,10 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 86,
-            columnNumber: 21
+            lineNumber: 81,
+            columnNumber: 25
           }
-        })))
+        }))))
       );
     }
     componentDidMount() {
@@ -26558,13 +26553,18 @@ try {
       }
     }
   }
+  exports.default = _reactRedux.connect(mapStateToProps, {
+    SetMovies: _actionsActions.SetMovies,
+    SetUser: _actionsActions.SetUser,
+    LogoutUser: _actionsActions.LogoutUser
+  })(MainView);
   helpers.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","axios":"7rA65","react-router-dom":"1PMSK","react-dom":"2sg1U","../movie-card/movie-card":"7v6h3","../movie-view/movie-view":"3xBbr","../profile-view/profile-view":"3CncI","../login-view/login-view":"6M7fu","../registration-view/registration-view":"7gvH2","../bootstrap-navbar/bootstrap-navbar":"7w6rl","../divider-component/divider-component":"5YjoE","react-bootstrap/Row":"3fzwD","react-bootstrap/Col":"2D0r8","./main-view.scss":"3X8QW","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"7rA65":[function(require,module,exports) {
+},{"react":"3b2NM","axios":"7rA65","react-router-dom":"1PMSK","react-dom":"2sg1U","../movie-view/movie-view":"3xBbr","../profile-view/profile-view":"3CncI","../login-view/login-view":"6M7fu","../registration-view/registration-view":"7gvH2","../bootstrap-navbar/bootstrap-navbar":"7w6rl","./main-view.scss":"3X8QW","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-redux":"7GDa4","../../actions/actions":"5S6cN","../movie-list/movie-list":"54YBA","react-bootstrap":"4n7hB"}],"7rA65":[function(require,module,exports) {
 module.exports = require('./lib/axios');
 },{"./lib/axios":"4qfhW"}],"4qfhW":[function(require,module,exports) {
 'use strict';
@@ -32245,7 +32245,7 @@ function hoistNonReactStatics(targetComponent, sourceComponent, blacklist) {
 
 module.exports = hoistNonReactStatics;
 
-},{"react-is":"68QIU"}],"7v6h3":[function(require,module,exports) {
+},{"react-is":"68QIU"}],"3xBbr":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -32253,64 +32253,284 @@ helpers.prelude(module);
 try {
   var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
   _parcelHelpers.defineInteropFlag(exports);
+  var _axios = require('axios');
+  var _axiosDefault = _parcelHelpers.interopDefault(_axios);
+  var _reactRedux = require('react-redux');
+  var _actionsActions = require('../../actions/actions');
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
-  var _propTypes = require("prop-types");
+  var _propTypes = require('prop-types');
   var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
-  require("react-bootstrap");
-  var _reactBootstrapOverlayTrigger = require('react-bootstrap/OverlayTrigger');
-  var _reactBootstrapOverlayTriggerDefault = _parcelHelpers.interopDefault(_reactBootstrapOverlayTrigger);
-  var _reactBootstrapTooltip = require('react-bootstrap/Tooltip');
-  var _reactBootstrapTooltipDefault = _parcelHelpers.interopDefault(_reactBootstrapTooltip);
-  var _reactBootstrapImage = require('react-bootstrap/Image');
-  var _reactBootstrapImageDefault = _parcelHelpers.interopDefault(_reactBootstrapImage);
-  var _reactRouterDom = require("react-router-dom");
-  require("./movie-card.scss");
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
-  function MovieCard({movieData}) {
+  var _reactBootstrapButton = require('react-bootstrap/Button');
+  var _reactBootstrapButtonDefault = _parcelHelpers.interopDefault(_reactBootstrapButton);
+  var _reactBootstrapCol = require('react-bootstrap/Col');
+  var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
+  var _reactBootstrapRow = require('react-bootstrap/Row');
+  var _reactBootstrapRowDefault = _parcelHelpers.interopDefault(_reactBootstrapRow);
+  var _genreViewGenreView = require("../genre-view/genre-view");
+  var _genreViewGenreViewDefault = _parcelHelpers.interopDefault(_genreViewGenreView);
+  var _directorViewDirectorView = require("../director-view/director-view");
+  var _directorViewDirectorViewDefault = _parcelHelpers.interopDefault(_directorViewDirectorView);
+  require('../snackbar-component/snackbar-component');
+  require('./movie-view.scss');
+  require('react-bootstrap/esm/Image');
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-view/movie-view.jsx";
+  const mapStateToProps = state => {
+    return {
+      user: state.user
+    };
+  };
+  function MovieView({user, movieData, onBackClick, ToggleFavorites}) {
+    const toggleFav = () => {
+      const token = localStorage.getItem('token');
+      const localUser = localStorage.getItem('user');
+      user.FavoriteMovies.includes(movieData._id) ? _axiosDefault.default.delete(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }).then(res => {
+        ToggleFavorites(res.data.FavoriteMovies);
+      }).catch(e => {
+        console.log(e);
+      }) : _axiosDefault.default.put(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, {}, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }).then(res => {
+        ToggleFavorites(res.data.FavoriteMovies);
+      }).catch(e => {
+        console.log(e.message);
+      });
+    };
     return (
-      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapOverlayTriggerDefault.default, {
-        delay: "100",
-        placement: 'top',
-        overlay: /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapTooltipDefault.default, {
-          id: "tooltip-top",
-          __self: this,
-          __source: {
-            fileName: _jsxFileName,
-            lineNumber: 19,
-            columnNumber: 21
-          }
-        }, movieData.Title, " (", movieData.Year, ")"),
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        className: "mt-5",
+        md: 12,
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 15,
+          lineNumber: 50,
           columnNumber: 13
         }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
-        to: `/movies/${movieData._id}`,
+      }, /*#__PURE__*/_reactDefault.default.createElement("h3", {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 24,
+          lineNumber: 51,
           columnNumber: 17
         }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapImageDefault.default, {
-        className: "movie-image",
+      }, movieData.Title, " (", movieData.Year, ")")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        md: "auto",
+        className: "p-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 55,
+          columnNumber: 13
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("img", {
+        className: "movie-view",
         src: movieData.ImageUrl,
         alt: movieData.Title,
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 25,
+          lineNumber: 56,
+          columnNumber: 17
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement("br", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 56,
+          columnNumber: 94
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement("div", {
+        onClick: toggleFav,
+        className: "favstar mt-2",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 57,
+          columnNumber: 17
+        }
+      }, user.FavoriteMovies.includes(movieData._id) ? /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement("i", {
+        className: "bi bi-star-fill m-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 60,
+          columnNumber: 29
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement("span", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 61,
+          columnNumber: 29
+        }
+      }, "Remove Favorite")) : /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement("i", {
+        className: "bi bi-star m-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 63,
+          columnNumber: 29
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement("span", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 64,
+          columnNumber: 29
+        }
+      }, "Add Favorite"))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 70,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        md: 12,
+        className: "mt-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 71,
           columnNumber: 21
         }
-      }))))
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
+        onClick: () => {
+          onBackClick();
+        },
+        className: "bg-button",
+        variant: "dark",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 72,
+          columnNumber: 25
+        }
+      }, "Back")))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        md: 8,
+        className: "right-column p-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 78,
+          columnNumber: 13
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("p", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 79,
+          columnNumber: 17
+        }
+      }, movieData.Description), /*#__PURE__*/_reactDefault.default.createElement("hr", {
+        className: "solid",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 80,
+          columnNumber: 17
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 81,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        sm: 4,
+        md: 4,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 82,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "font-weight-bold",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 83,
+          columnNumber: 25
+        }
+      }, "Director"), /*#__PURE__*/_reactDefault.default.createElement(_directorViewDirectorViewDefault.default, {
+        movieData: movieData,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 84,
+          columnNumber: 25
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        sm: 4,
+        md: 4,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 89,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "categories",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 90,
+          columnNumber: 25
+        }
+      }, "Genre"), /*#__PURE__*/_reactDefault.default.createElement(_genreViewGenreViewDefault.default, {
+        movieData: movieData,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 91,
+          columnNumber: 25
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        sm: 4,
+        md: 4,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 95,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "categories",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 96,
+          columnNumber: 25
+        }
+      }, "Cast"), /*#__PURE__*/_reactDefault.default.createElement("ul", {
+        className: "mt-2",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 97,
+          columnNumber: 25
+        }
+      }, movieData.Actors.map(actor => /*#__PURE__*/_reactDefault.default.createElement("li", {
+        key: actor,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 98,
+          columnNumber: 60
+        }
+      }, actor)))))))
     );
   }
-  exports.default = MovieCard;
-  _c = MovieCard;
-  MovieCard.propTypes = {
+  _c = MovieView;
+  MovieView.propTypes = {
     movieData: _propTypesDefault.default.shape({
       Title: _propTypesDefault.default.string.isRequired,
       Description: _propTypesDefault.default.string.isRequired,
@@ -32328,17 +32548,1039 @@ try {
       _id: _propTypesDefault.default.string.isRequired,
       ImageUrl: _propTypesDefault.default.string.isRequired,
       Featured: _propTypesDefault.default.bool.isRequired
-    }).isRequired
+    }).isRequired,
+    onBackClick: _propTypesDefault.default.func.isRequired
   };
+  exports.default = _reactRedux.connect(mapStateToProps, {
+    ToggleFavorites: _actionsActions.ToggleFavorites
+  })(MovieView);
   var _c;
-  $RefreshReg$(_c, "MovieCard");
+  $RefreshReg$(_c, "MovieView");
   helpers.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","prop-types":"4dfy5","react-bootstrap":"4n7hB","react-bootstrap/OverlayTrigger":"4VaCP","react-bootstrap/Tooltip":"2YAjd","react-bootstrap/Image":"5qrP5","react-router-dom":"1PMSK","./movie-card.scss":"43n4t","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"4n7hB":[function(require,module,exports) {
+},{"axios":"7rA65","react":"3b2NM","prop-types":"4dfy5","react-bootstrap/Button":"1ru0l","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","./movie-view.scss":"4iZ2Z","react-bootstrap/esm/Image":"rzPO3","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","../genre-view/genre-view":"6FLqj","../director-view/director-view":"7HF27","../snackbar-component/snackbar-component":"5o3zS","react-redux":"7GDa4","../../actions/actions":"5S6cN"}],"1ru0l":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ThemeProvider = require("./ThemeProvider");
+
+var _SafeAnchor = _interopRequireDefault(require("./SafeAnchor"));
+
+var defaultProps = {
+  variant: 'primary',
+  active: false,
+  disabled: false
+};
+
+var Button = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix,
+      variant = _ref.variant,
+      size = _ref.size,
+      active = _ref.active,
+      className = _ref.className,
+      block = _ref.block,
+      type = _ref.type,
+      as = _ref.as,
+      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "variant", "size", "active", "className", "block", "type", "as"]);
+  var prefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'btn');
+  var classes = (0, _classnames.default)(className, prefix, active && 'active', variant && prefix + "-" + variant, block && prefix + "-block", size && prefix + "-" + size);
+
+  if (props.href) {
+    return /*#__PURE__*/_react.default.createElement(_SafeAnchor.default, (0, _extends2.default)({}, props, {
+      as: as,
+      ref: ref,
+      className: (0, _classnames.default)(classes, props.disabled && 'disabled')
+    }));
+  }
+
+  if (ref) {
+    props.ref = ref;
+  }
+
+  if (type) {
+    props.type = type;
+  } else if (!as) {
+    props.type = 'button';
+  }
+
+  var Component = as || 'button';
+  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
+    className: classes
+  }));
+});
+
+Button.displayName = 'Button';
+Button.defaultProps = defaultProps;
+var _default = Button;
+exports.default = _default;
+module.exports = exports["default"];
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S","./SafeAnchor":"5VP5o"}],"4ttVj":[function(require,module,exports) {
+function _interopRequireDefault(obj) {
+  return obj && obj.__esModule ? obj : {
+    "default": obj
+  };
+}
+
+module.exports = _interopRequireDefault;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{}],"3krLJ":[function(require,module,exports) {
+function _extends() {
+  module.exports = _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  module.exports["default"] = module.exports, module.exports.__esModule = true;
+  return _extends.apply(this, arguments);
+}
+
+module.exports = _extends;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{}],"3Yx9V":[function(require,module,exports) {
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+
+  return target;
+}
+
+module.exports = _objectWithoutPropertiesLoose;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{}],"5aJRc":[function(require,module,exports) {
+var define;
+/*!
+Copyright (c) 2018 Jed Watson.
+Licensed under the MIT License (MIT), see
+http://jedwatson.github.io/classnames
+*/
+/*global define*/
+(function () {
+  "use strict";
+  var hasOwn = ({}).hasOwnProperty;
+  function classNames() {
+    var classes = [];
+    for (var i = 0; i < arguments.length; i++) {
+      var arg = arguments[i];
+      if (!arg) continue;
+      var argType = typeof arg;
+      if (argType === 'string' || argType === 'number') {
+        classes.push(arg);
+      } else if (Array.isArray(arg)) {
+        if (arg.length) {
+          var inner = classNames.apply(null, arg);
+          if (inner) {
+            classes.push(inner);
+          }
+        }
+      } else if (argType === 'object') {
+        if (arg.toString === Object.prototype.toString) {
+          for (var key in arg) {
+            if (hasOwn.call(arg, key) && arg[key]) {
+              classes.push(key);
+            }
+          }
+        } else {
+          classes.push(arg.toString());
+        }
+      }
+    }
+    return classes.join(' ');
+  }
+  if (typeof module !== 'undefined' && module.exports) {
+    classNames.default = classNames;
+    module.exports = classNames;
+  } else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
+    // register as 'classnames', consistent with npm package name
+    define('classnames', [], function () {
+      return classNames;
+    });
+  } else {
+    window.classNames = classNames;
+  }
+})();
+
+},{}],"4rz1S":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.useBootstrapPrefix = useBootstrapPrefix;
+exports.createBootstrapComponent = createBootstrapComponent;
+exports.default = exports.ThemeConsumer = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _react = _interopRequireWildcard(require("react"));
+
+var ThemeContext = /*#__PURE__*/_react.default.createContext({});
+
+var Consumer = ThemeContext.Consumer,
+    Provider = ThemeContext.Provider;
+exports.ThemeConsumer = Consumer;
+
+function ThemeProvider(_ref) {
+  var prefixes = _ref.prefixes,
+      children = _ref.children;
+  var copiedPrefixes = (0, _react.useMemo)(function () {
+    return (0, _extends2.default)({}, prefixes);
+  }, [prefixes]);
+  return /*#__PURE__*/_react.default.createElement(Provider, {
+    value: copiedPrefixes
+  }, children);
+}
+
+function useBootstrapPrefix(prefix, defaultPrefix) {
+  var prefixes = (0, _react.useContext)(ThemeContext);
+  return prefix || prefixes[defaultPrefix] || defaultPrefix;
+}
+
+function createBootstrapComponent(Component, opts) {
+  if (typeof opts === 'string') opts = {
+    prefix: opts
+  };
+  var isClassy = Component.prototype && Component.prototype.isReactComponent; // If it's a functional component make sure we don't break it with a ref
+
+  var _opts = opts,
+      prefix = _opts.prefix,
+      _opts$forwardRefAs = _opts.forwardRefAs,
+      forwardRefAs = _opts$forwardRefAs === void 0 ? isClassy ? 'ref' : 'innerRef' : _opts$forwardRefAs;
+
+  var Wrapped = /*#__PURE__*/_react.default.forwardRef(function (_ref2, ref) {
+    var props = (0, _extends2.default)({}, _ref2);
+    props[forwardRefAs] = ref;
+    var bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
+    return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
+      bsPrefix: bsPrefix
+    }));
+  });
+
+  Wrapped.displayName = "Bootstrap(" + (Component.displayName || Component.name) + ")";
+  return Wrapped;
+}
+
+var _default = ThemeProvider;
+exports.default = _default;
+},{"@babel/runtime/helpers/interopRequireWildcard":"28En5","@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","react":"3b2NM"}],"28En5":[function(require,module,exports) {
+var _typeof = require("@babel/runtime/helpers/typeof")["default"];
+
+function _getRequireWildcardCache() {
+  if (typeof WeakMap !== "function") return null;
+  var cache = new WeakMap();
+
+  _getRequireWildcardCache = function _getRequireWildcardCache() {
+    return cache;
+  };
+
+  return cache;
+}
+
+function _interopRequireWildcard(obj) {
+  if (obj && obj.__esModule) {
+    return obj;
+  }
+
+  if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") {
+    return {
+      "default": obj
+    };
+  }
+
+  var cache = _getRequireWildcardCache();
+
+  if (cache && cache.has(obj)) {
+    return cache.get(obj);
+  }
+
+  var newObj = {};
+  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
+
+  for (var key in obj) {
+    if (Object.prototype.hasOwnProperty.call(obj, key)) {
+      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
+
+      if (desc && (desc.get || desc.set)) {
+        Object.defineProperty(newObj, key, desc);
+      } else {
+        newObj[key] = obj[key];
+      }
+    }
+  }
+
+  newObj["default"] = obj;
+
+  if (cache) {
+    cache.set(obj, newObj);
+  }
+
+  return newObj;
+}
+
+module.exports = _interopRequireWildcard;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{"@babel/runtime/helpers/typeof":"3F8fn"}],"3F8fn":[function(require,module,exports) {
+function _typeof(obj) {
+  "@babel/helpers - typeof";
+
+  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
+    module.exports = _typeof = function _typeof(obj) {
+      return typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  } else {
+    module.exports = _typeof = function _typeof(obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+
+    module.exports["default"] = module.exports, module.exports.__esModule = true;
+  }
+
+  return _typeof(obj);
+}
+
+module.exports = _typeof;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{}],"5VP5o":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _createChainedFunction = _interopRequireDefault(require("./createChainedFunction"));
+
+function isTrivialHref(href) {
+  return !href || href.trim() === '#';
+}
+/**
+ * There are situations due to browser quirks or Bootstrap CSS where
+ * an anchor tag is needed, when semantically a button tag is the
+ * better choice. SafeAnchor ensures that when an anchor is used like a
+ * button its accessible. It also emulates input `disabled` behavior for
+ * links, which is usually desirable for Buttons, NavItems, DropdownItems, etc.
+ */
+
+
+var SafeAnchor = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
+  var _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'a' : _ref$as,
+      disabled = _ref.disabled,
+      onKeyDown = _ref.onKeyDown,
+      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["as", "disabled", "onKeyDown"]);
+
+  var handleClick = function handleClick(event) {
+    var href = props.href,
+        onClick = props.onClick;
+
+    if (disabled || isTrivialHref(href)) {
+      event.preventDefault();
+    }
+
+    if (disabled) {
+      event.stopPropagation();
+      return;
+    }
+
+    if (onClick) {
+      onClick(event);
+    }
+  };
+
+  var handleKeyDown = function handleKeyDown(event) {
+    if (event.key === ' ') {
+      event.preventDefault();
+      handleClick(event);
+    }
+  };
+
+  if (isTrivialHref(props.href)) {
+    props.role = props.role || 'button'; // we want to make sure there is a href attribute on the node
+    // otherwise, the cursor incorrectly styled (except with role='button')
+
+    props.href = props.href || '#';
+  }
+
+  if (disabled) {
+    props.tabIndex = -1;
+    props['aria-disabled'] = true;
+  }
+
+  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({
+    ref: ref
+  }, props, {
+    onClick: handleClick,
+    onKeyDown: (0, _createChainedFunction.default)(handleKeyDown, onKeyDown)
+  }));
+});
+
+SafeAnchor.displayName = 'SafeAnchor';
+var _default = SafeAnchor;
+exports.default = _default;
+module.exports = exports["default"];
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","react":"3b2NM","./createChainedFunction":"4RHiz"}],"4RHiz":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.default = void 0;
+
+/**
+ * Safe chained function
+ *
+ * Will only create a new function if needed,
+ * otherwise will pass back existing functions or null.
+ *
+ * @param {function} functions to chain
+ * @returns {function|null}
+ */
+function createChainedFunction() {
+  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+
+  return funcs.filter(function (f) {
+    return f != null;
+  }).reduce(function (acc, f) {
+    if (typeof f !== 'function') {
+      throw new Error('Invalid Argument Type, must only provide functions, undefined, or null.');
+    }
+
+    if (acc === null) return f;
+    return function chainedFunction() {
+      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
+        args[_key2] = arguments[_key2];
+      }
+
+      // @ts-ignore
+      acc.apply(this, args); // @ts-ignore
+
+      f.apply(this, args);
+    };
+  }, null);
+}
+
+var _default = createChainedFunction;
+exports.default = _default;
+module.exports = exports["default"];
+},{}],"2D0r8":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ThemeProvider = require("./ThemeProvider");
+
+var DEVICE_SIZES = ['xl', 'lg', 'md', 'sm', 'xs'];
+
+var Col = /*#__PURE__*/_react.default.forwardRef( // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
+function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix,
+      className = _ref.className,
+      _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'div' : _ref$as,
+      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "className", "as"]);
+  var prefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'col');
+  var spans = [];
+  var classes = [];
+  DEVICE_SIZES.forEach(function (brkPoint) {
+    var propValue = props[brkPoint];
+    delete props[brkPoint];
+    var span;
+    var offset;
+    var order;
+
+    if (typeof propValue === 'object' && propValue != null) {
+      var _propValue$span = propValue.span;
+      span = _propValue$span === void 0 ? true : _propValue$span;
+      offset = propValue.offset;
+      order = propValue.order;
+    } else {
+      span = propValue;
+    }
+
+    var infix = brkPoint !== 'xs' ? "-" + brkPoint : '';
+    if (span) spans.push(span === true ? "" + prefix + infix : "" + prefix + infix + "-" + span);
+    if (order != null) classes.push("order" + infix + "-" + order);
+    if (offset != null) classes.push("offset" + infix + "-" + offset);
+  });
+
+  if (!spans.length) {
+    spans.push(prefix); // plain 'col'
+  }
+
+  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
+    ref: ref,
+    className: _classnames.default.apply(void 0, [className].concat(spans, classes))
+  }));
+});
+
+Col.displayName = 'Col';
+var _default = Col;
+exports.default = _default;
+module.exports = exports["default"];
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S"}],"3fzwD":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.default = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+
+var _classnames = _interopRequireDefault(require("classnames"));
+
+var _react = _interopRequireDefault(require("react"));
+
+var _ThemeProvider = require("./ThemeProvider");
+
+var DEVICE_SIZES = ['xl', 'lg', 'md', 'sm', 'xs'];
+var defaultProps = {
+  noGutters: false
+};
+
+var Row = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix,
+      className = _ref.className,
+      noGutters = _ref.noGutters,
+      _ref$as = _ref.as,
+      Component = _ref$as === void 0 ? 'div' : _ref$as,
+      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "className", "noGutters", "as"]);
+  var decoratedBsPrefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'row');
+  var sizePrefix = decoratedBsPrefix + "-cols";
+  var classes = [];
+  DEVICE_SIZES.forEach(function (brkPoint) {
+    var propValue = props[brkPoint];
+    delete props[brkPoint];
+    var cols;
+
+    if (propValue != null && typeof propValue === 'object') {
+      cols = propValue.cols;
+    } else {
+      cols = propValue;
+    }
+
+    var infix = brkPoint !== 'xs' ? "-" + brkPoint : '';
+    if (cols != null) classes.push("" + sizePrefix + infix + "-" + cols);
+  });
+  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({
+    ref: ref
+  }, props, {
+    className: _classnames.default.apply(void 0, [className, decoratedBsPrefix, noGutters && 'no-gutters'].concat(classes))
+  }));
+});
+
+Row.displayName = 'Row';
+Row.defaultProps = defaultProps;
+var _default = Row;
+exports.default = _default;
+module.exports = exports["default"];
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S"}],"4iZ2Z":[function() {},{}],"rzPO3":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "propTypes", function () {
+  return propTypes;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
+var _babelRuntimeHelpersEsmObjectWithoutPropertiesLooseDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutPropertiesLoose);
+var _classnames = require('classnames');
+var _classnamesDefault = _parcelHelpers.interopDefault(_classnames);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var _propTypes = require('prop-types');
+var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+var _ThemeProvider = require('./ThemeProvider');
+var propTypes = {
+  /**
+  * @default 'img'
+  */
+  bsPrefix: _propTypesDefault.default.string,
+  /**
+  * Sets image as fluid image.
+  */
+  fluid: _propTypesDefault.default.bool,
+  /**
+  * Sets image shape as rounded.
+  */
+  rounded: _propTypesDefault.default.bool,
+  /**
+  * Sets image shape as circle.
+  */
+  roundedCircle: _propTypesDefault.default.bool,
+  /**
+  * Sets image shape as thumbnail.
+  */
+  thumbnail: _propTypesDefault.default.bool
+};
+var defaultProps = {
+  fluid: false,
+  rounded: false,
+  roundedCircle: false,
+  thumbnail: false
+};
+var Image = /*#__PURE__*/_reactDefault.default.forwardRef(function (_ref, ref) {
+  var bsPrefix = _ref.bsPrefix, className = _ref.className, fluid = _ref.fluid, rounded = _ref.rounded, roundedCircle = _ref.roundedCircle, thumbnail = _ref.thumbnail, props = _babelRuntimeHelpersEsmObjectWithoutPropertiesLooseDefault.default(_ref, ["bsPrefix", "className", "fluid", "rounded", "roundedCircle", "thumbnail"]);
+  bsPrefix = _ThemeProvider.useBootstrapPrefix(bsPrefix, 'img');
+  var classes = _classnamesDefault.default(fluid && bsPrefix + "-fluid", rounded && "rounded", roundedCircle && "rounded-circle", thumbnail && bsPrefix + "-thumbnail");
+  return (
+    /*#__PURE__*/_reactDefault.default.createElement("img", _babelRuntimeHelpersEsmExtendsDefault.default({
+      // eslint-disable-line jsx-a11y/alt-text
+      ref: ref
+    }, props, {
+      className: _classnamesDefault.default(className, classes)
+    }))
+  );
+});
+Image.displayName = 'Image';
+Image.defaultProps = defaultProps;
+exports.default = Image;
+
+},{"@babel/runtime/helpers/esm/extends":"5qnVv","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"6rNIl","classnames":"5aJRc","react":"3b2NM","prop-types":"4dfy5","./ThemeProvider":"6Pzum","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5qnVv":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+function _extends() {
+  _extends = Object.assign || (function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  });
+  return _extends.apply(this, arguments);
+}
+exports.default = _extends;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5gA8y":[function(require,module,exports) {
+"use strict";
+
+exports.interopDefault = function (a) {
+  return a && a.__esModule ? a : {
+    default: a
+  };
+};
+
+exports.defineInteropFlag = function (a) {
+  Object.defineProperty(a, '__esModule', {
+    value: true
+  });
+};
+
+exports.exportAll = function (source, dest) {
+  Object.keys(source).forEach(function (key) {
+    if (key === 'default' || key === '__esModule') {
+      return;
+    } // Skip duplicate re-exports when they have the same value.
+
+
+    if (key in dest && dest[key] === source[key]) {
+      return;
+    }
+
+    Object.defineProperty(dest, key, {
+      enumerable: true,
+      get: function () {
+        return source[key];
+      }
+    });
+  });
+  return dest;
+};
+
+exports.export = function (dest, destName, get) {
+  Object.defineProperty(dest, destName, {
+    enumerable: true,
+    get: get
+  });
+};
+},{}],"6rNIl":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+function _objectWithoutPropertiesLoose(source, excluded) {
+  if (source == null) return {};
+  var target = {};
+  var sourceKeys = Object.keys(source);
+  var key, i;
+  for (i = 0; i < sourceKeys.length; i++) {
+    key = sourceKeys[i];
+    if (excluded.indexOf(key) >= 0) continue;
+    target[key] = source[key];
+  }
+  return target;
+}
+exports.default = _objectWithoutPropertiesLoose;
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6Pzum":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "useBootstrapPrefix", function () {
+  return useBootstrapPrefix;
+});
+_parcelHelpers.export(exports, "createBootstrapComponent", function () {
+  return createBootstrapComponent;
+});
+_parcelHelpers.export(exports, "ThemeConsumer", function () {
+  return Consumer;
+});
+var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
+var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
+var _react = require('react');
+var _reactDefault = _parcelHelpers.interopDefault(_react);
+var ThemeContext = /*#__PURE__*/_reactDefault.default.createContext({});
+var Consumer = ThemeContext.Consumer, Provider = ThemeContext.Provider;
+function ThemeProvider(_ref) {
+  var prefixes = _ref.prefixes, children = _ref.children;
+  var copiedPrefixes = _react.useMemo(function () {
+    return _babelRuntimeHelpersEsmExtendsDefault.default({}, prefixes);
+  }, [prefixes]);
+  return (
+    /*#__PURE__*/_reactDefault.default.createElement(Provider, {
+      value: copiedPrefixes
+    }, children)
+  );
+}
+function useBootstrapPrefix(prefix, defaultPrefix) {
+  var prefixes = _react.useContext(ThemeContext);
+  return prefix || prefixes[defaultPrefix] || defaultPrefix;
+}
+function createBootstrapComponent(Component, opts) {
+  if (typeof opts === 'string') opts = {
+    prefix: opts
+  };
+  var isClassy = Component.prototype && Component.prototype.isReactComponent;
+  // If it's a functional component make sure we don't break it with a ref
+  var _opts = opts, prefix = _opts.prefix, _opts$forwardRefAs = _opts.forwardRefAs, forwardRefAs = _opts$forwardRefAs === void 0 ? isClassy ? 'ref' : 'innerRef' : _opts$forwardRefAs;
+  var Wrapped = /*#__PURE__*/_reactDefault.default.forwardRef(function (_ref2, ref) {
+    var props = _babelRuntimeHelpersEsmExtendsDefault.default({}, _ref2);
+    props[forwardRefAs] = ref;
+    var bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({}, props, {
+        bsPrefix: bsPrefix
+      }))
+    );
+  });
+  Wrapped.displayName = "Bootstrap(" + (Component.displayName || Component.name) + ")";
+  return Wrapped;
+}
+exports.default = ThemeProvider;
+
+},{"@babel/runtime/helpers/esm/extends":"5qnVv","react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"4Jj4f":[function(require,module,exports) {
+"use strict";
+var Refresh = require('react-refresh/runtime');
+function debounce(func, delay) {
+  if ("development" === 'test') {
+    return function (args) {
+      func.call(null, args);
+    };
+  } else {
+    var timeout = undefined;
+    return function (args) {
+      clearTimeout(timeout);
+      timeout = setTimeout(function () {
+        timeout = undefined;
+        func.call(null, args);
+      }, delay);
+    };
+  }
+}
+var enqueueUpdate = debounce(function () {
+  Refresh.performReactRefresh();
+}, 30);
+// Everthing below is either adapted or copied from
+// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
+// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
+module.exports.prelude = function (module) {
+  window.$RefreshReg$ = function (type, id) {
+    Refresh.register(type, module.id + ' ' + id);
+  };
+  window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
+};
+module.exports.postlude = function (module) {
+  if (isReactRefreshBoundary(module.exports)) {
+    registerExportsForReactRefresh(module);
+    if (module.hot) {
+      module.hot.dispose(function (data) {
+        if (Refresh.hasUnrecoverableErrors()) {
+          window.location.reload();
+        }
+        data.prevExports = module.exports;
+      });
+      module.hot.accept(function (getParents) {
+        var prevExports = module.hot.data.prevExports;
+        var nextExports = module.exports;
+        // Since we just executed the code for it, it's possible
+        // that the new exports make it ineligible for being a boundary.
+        var isNoLongerABoundary = !isReactRefreshBoundary(nextExports);
+        // It can also become ineligible if its exports are incompatible
+        // with the previous exports.
+        // For example, if you add/remove/change exports, we'll want
+        // to re-execute the importing modules, and force those components
+        // to re-render. Similarly, if you convert a class component
+        // to a function, we want to invalidate the boundary.
+        var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
+        if (isNoLongerABoundary || didInvalidate) {
+          // We'll be conservative. The only case in which we won't do a full
+          // reload is if all parent modules are also refresh boundaries.
+          // In that case we'll add them to the current queue.
+          var parents = getParents();
+          if (parents.length === 0) {
+            // Looks like we bubbled to the root. Can't recover from that.
+            window.location.reload();
+            return;
+          }
+          return parents;
+        }
+        enqueueUpdate();
+      });
+    }
+  }
+};
+function isReactRefreshBoundary(exports) {
+  if (Refresh.isLikelyComponentType(exports)) {
+    return true;
+  }
+  if (exports == null || typeof exports !== 'object') {
+    // Exit if we can't iterate over exports.
+    return false;
+  }
+  var hasExports = false;
+  var areAllExportsComponents = true;
+  let isESM = ('__esModule' in exports);
+  for (var key in exports) {
+    hasExports = true;
+    if (key === '__esModule') {
+      continue;
+    }
+    var desc = Object.getOwnPropertyDescriptor(exports, key);
+    if (desc && desc.get && !isESM) {
+      // Don't invoke getters for CJS as they may have side effects.
+      return false;
+    }
+    var exportValue = exports[key];
+    if (!Refresh.isLikelyComponentType(exportValue)) {
+      areAllExportsComponents = false;
+    }
+  }
+  return hasExports && areAllExportsComponents;
+}
+function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
+  var prevSignature = getRefreshBoundarySignature(prevExports);
+  var nextSignature = getRefreshBoundarySignature(nextExports);
+  if (prevSignature.length !== nextSignature.length) {
+    return true;
+  }
+  for (var i = 0; i < nextSignature.length; i++) {
+    if (prevSignature[i] !== nextSignature[i]) {
+      return true;
+    }
+  }
+  return false;
+}
+// When this signature changes, it's unsafe to stop at this refresh boundary.
+function getRefreshBoundarySignature(exports) {
+  var signature = [];
+  signature.push(Refresh.getFamilyByType(exports));
+  if (exports == null || typeof exports !== 'object') {
+    // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return signature;
+  }
+  let isESM = ('__esModule' in exports);
+  for (var key in exports) {
+    if (key === '__esModule') {
+      continue;
+    }
+    var desc = Object.getOwnPropertyDescriptor(exports, key);
+    if (desc && desc.get && !isESM) {
+      // Don't invoke getters for CJS as they may have side effects.
+      continue;
+    }
+    var exportValue = exports[key];
+    signature.push(key);
+    signature.push(Refresh.getFamilyByType(exportValue));
+  }
+  return signature;
+}
+function registerExportsForReactRefresh(module) {
+  var exports = module.exports, id = module.id;
+  Refresh.register(exports, id + ' %exports%');
+  if (exports == null || typeof exports !== 'object') {
+    // Exit if we can't iterate over exports.
+    // (This is important for legacy environments.)
+    return;
+  }
+  let isESM = ('__esModule' in exports);
+  for (var key in exports) {
+    var desc = Object.getOwnPropertyDescriptor(exports, key);
+    if (desc && desc.get && !isESM) {
+      // Don't invoke getters for CJS as they may have side effects.
+      continue;
+    }
+    var exportValue = exports[key];
+    Refresh.register(exportValue, id + ' %exports% ' + key);
+  }
+}
+
+},{"react-refresh/runtime":"592mh"}],"6FLqj":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require("react");
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _reactBootstrap = require('react-bootstrap');
+  require('./genre-view.scss');
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/genre-view/genre-view.jsx", _s = $RefreshSig$();
+  function GenreView({movieData}) {
+    _s();
+    const [isCollapsed, setIsCollapsed] = _react.useState(false);
+    const handleClick = () => {
+      setIsCollapsed(!isCollapsed);
+    };
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 14,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 15,
+          columnNumber: 13
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 16,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion.Toggle, {
+        as: _reactBootstrap.Button,
+        variant: "link",
+        eventKey: "0",
+        className: "p-0 mt-2",
+        onClick: handleClick,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 17,
+          columnNumber: 21
+        }
+      }, movieData.Genre.Name, " ", isCollapsed ? /*#__PURE__*/_reactDefault.default.createElement("i", {
+        className: "bi bi-caret-up-fill",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18,
+          columnNumber: 63
+        }
+      }, " ") : /*#__PURE__*/_reactDefault.default.createElement("i", {
+        className: "bi bi-caret-down-fill",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18,
+          columnNumber: 106
+        }
+      }))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion.Collapse, {
+        eventKey: "0",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 21,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "genre-accordion mt-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 22,
+          columnNumber: 21
+        }
+      }, movieData.Genre.Description))))
+    );
+  }
+  exports.default = GenreView;
+  _s(GenreView, "XL80Ke9pMdZ2JRKLtHkkSCCoQZ0=");
+  _c = GenreView;
+  var _c;
+  $RefreshReg$(_c, "GenreView");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","react-bootstrap":"4n7hB","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","./genre-view.scss":"4iHPp"}],"4n7hB":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -32652,96 +33894,7 @@ exports.ToggleButtonGroup = _ToggleButtonGroup.default;
 var _Tooltip = _interopRequireDefault(require("./Tooltip"));
 
 exports.Tooltip = _Tooltip.default;
-},{"@babel/runtime/helpers/interopRequireWildcard":"28En5","@babel/runtime/helpers/interopRequireDefault":"4ttVj","./Accordion":"123ZC","./AccordionContext":"6cHdE","./AccordionCollapse":"6fr2G","./AccordionToggle":"2CEru","./Alert":"1oIYX","./Badge":"2aFSj","./Breadcrumb":"hcZkb","./BreadcrumbItem":"fGRyA","./Button":"1ru0l","./ButtonGroup":"2THBw","./ButtonToolbar":"5QGeS","./Card":"1CZWQ","./CardColumns":"48yv5","./CardDeck":"4fiZs","./CardImg":"68LPL","./CardGroup":"1B9U7","./Carousel":"2Zcjk","./CarouselItem":"2tnC3","./CloseButton":"yWShL","./Col":"2D0r8","./Collapse":"4hhe0","./Dropdown":"27PdI","./DropdownButton":"7vE8v","./Fade":"2CU5C","./Form":"6A5ko","./FormControl":"573gP","./FormCheck":"6WcKM","./FormFile":"6mhKG","./FormGroup":"120iJ","./FormLabel":"70qP9","./FormText":"2VsfR","./Container":"3Mt3t","./Image":"5qrP5","./Figure":"2ZDTl","./InputGroup":"3nb5C","./Jumbotron":"1fO3T","./ListGroup":"6fErm","./ListGroupItem":"4tfxm","./Media":"120yO","./Modal":"20uUD","./ModalBody":"5Zu6o","./ModalDialog":"4OqPY","./ModalFooter":"4rYLN","./ModalTitle":"MJz12","./Nav":"3T3v1","./Navbar":"3qLFd","./NavbarBrand":"4flFi","./NavDropdown":"1qmIy","./NavItem":"39J70","./NavLink":"6stbu","./Overlay":"5PcTh","./OverlayTrigger":"4VaCP","./PageItem":"6IcgF","./Pagination":"3XBVG","./Popover":"4O1Nl","./PopoverTitle":"2W5ao","./PopoverContent":"1KTIN","./ProgressBar":"4HfN1","./ResponsiveEmbed":"76Zpv","./Row":"3fzwD","./SafeAnchor":"5VP5o","./Spinner":"4fhZt","./SplitButton":"qFVWq","./Tab":"2o9hU","./TabContainer":"31im4","./TabContent":"4a1d3","./Table":"34yor","./TabPane":"42ci1","./Tabs":"6YwyY","./ThemeProvider":"4rz1S","./Toast":"o9l9n","./ToastBody":"4qMwS","./ToastHeader":"3bTJs","./ToggleButton":"1noIF","./ToggleButtonGroup":"LW99s","./Tooltip":"2YAjd"}],"28En5":[function(require,module,exports) {
-var _typeof = require("@babel/runtime/helpers/typeof")["default"];
-
-function _getRequireWildcardCache() {
-  if (typeof WeakMap !== "function") return null;
-  var cache = new WeakMap();
-
-  _getRequireWildcardCache = function _getRequireWildcardCache() {
-    return cache;
-  };
-
-  return cache;
-}
-
-function _interopRequireWildcard(obj) {
-  if (obj && obj.__esModule) {
-    return obj;
-  }
-
-  if (obj === null || _typeof(obj) !== "object" && typeof obj !== "function") {
-    return {
-      "default": obj
-    };
-  }
-
-  var cache = _getRequireWildcardCache();
-
-  if (cache && cache.has(obj)) {
-    return cache.get(obj);
-  }
-
-  var newObj = {};
-  var hasPropertyDescriptor = Object.defineProperty && Object.getOwnPropertyDescriptor;
-
-  for (var key in obj) {
-    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-      var desc = hasPropertyDescriptor ? Object.getOwnPropertyDescriptor(obj, key) : null;
-
-      if (desc && (desc.get || desc.set)) {
-        Object.defineProperty(newObj, key, desc);
-      } else {
-        newObj[key] = obj[key];
-      }
-    }
-  }
-
-  newObj["default"] = obj;
-
-  if (cache) {
-    cache.set(obj, newObj);
-  }
-
-  return newObj;
-}
-
-module.exports = _interopRequireWildcard;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-},{"@babel/runtime/helpers/typeof":"3F8fn"}],"3F8fn":[function(require,module,exports) {
-function _typeof(obj) {
-  "@babel/helpers - typeof";
-
-  if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") {
-    module.exports = _typeof = function _typeof(obj) {
-      return typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  } else {
-    module.exports = _typeof = function _typeof(obj) {
-      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-    };
-
-    module.exports["default"] = module.exports, module.exports.__esModule = true;
-  }
-
-  return _typeof(obj);
-}
-
-module.exports = _typeof;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-},{}],"4ttVj":[function(require,module,exports) {
-function _interopRequireDefault(obj) {
-  return obj && obj.__esModule ? obj : {
-    "default": obj
-  };
-}
-
-module.exports = _interopRequireDefault;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-},{}],"123ZC":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireWildcard":"28En5","@babel/runtime/helpers/interopRequireDefault":"4ttVj","./Accordion":"123ZC","./AccordionContext":"6cHdE","./AccordionCollapse":"6fr2G","./AccordionToggle":"2CEru","./Alert":"1oIYX","./Badge":"2aFSj","./Breadcrumb":"hcZkb","./BreadcrumbItem":"fGRyA","./Button":"1ru0l","./ButtonGroup":"2THBw","./ButtonToolbar":"5QGeS","./Card":"1CZWQ","./CardColumns":"48yv5","./CardDeck":"4fiZs","./CardImg":"68LPL","./CardGroup":"1B9U7","./Carousel":"2Zcjk","./CarouselItem":"2tnC3","./CloseButton":"yWShL","./Col":"2D0r8","./Collapse":"4hhe0","./Dropdown":"27PdI","./DropdownButton":"7vE8v","./Fade":"2CU5C","./Form":"6A5ko","./FormControl":"573gP","./FormCheck":"6WcKM","./FormFile":"6mhKG","./FormGroup":"120iJ","./FormLabel":"70qP9","./FormText":"2VsfR","./Container":"3Mt3t","./Image":"5qrP5","./Figure":"2ZDTl","./InputGroup":"3nb5C","./Jumbotron":"1fO3T","./ListGroup":"6fErm","./ListGroupItem":"4tfxm","./Media":"120yO","./Modal":"20uUD","./ModalBody":"5Zu6o","./ModalDialog":"4OqPY","./ModalFooter":"4rYLN","./ModalTitle":"MJz12","./Nav":"3T3v1","./Navbar":"3qLFd","./NavbarBrand":"4flFi","./NavDropdown":"1qmIy","./NavItem":"39J70","./NavLink":"6stbu","./Overlay":"5PcTh","./OverlayTrigger":"4VaCP","./PageItem":"6IcgF","./Pagination":"3XBVG","./Popover":"4O1Nl","./PopoverTitle":"2W5ao","./PopoverContent":"1KTIN","./ProgressBar":"4HfN1","./ResponsiveEmbed":"76Zpv","./Row":"3fzwD","./SafeAnchor":"5VP5o","./Spinner":"4fhZt","./SplitButton":"qFVWq","./Tab":"2o9hU","./TabContainer":"31im4","./TabContent":"4a1d3","./Table":"34yor","./TabPane":"42ci1","./Tabs":"6YwyY","./ThemeProvider":"4rz1S","./Toast":"o9l9n","./ToastBody":"4qMwS","./ToastHeader":"3bTJs","./ToggleButton":"1noIF","./ToggleButtonGroup":"LW99s","./Tooltip":"2YAjd"}],"123ZC":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -32800,100 +33953,7 @@ Accordion.Collapse = _AccordionCollapse.default;
 var _default = Accordion;
 exports.default = _default;
 module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","uncontrollable":"4P7FS","./ThemeProvider":"4rz1S","./AccordionToggle":"2CEru","./SelectableContext":"3ATFf","./AccordionCollapse":"6fr2G","./AccordionContext":"6cHdE"}],"3krLJ":[function(require,module,exports) {
-function _extends() {
-  module.exports = _extends = Object.assign || function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-
-    return target;
-  };
-
-  module.exports["default"] = module.exports, module.exports.__esModule = true;
-  return _extends.apply(this, arguments);
-}
-
-module.exports = _extends;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-},{}],"3Yx9V":[function(require,module,exports) {
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-
-  return target;
-}
-
-module.exports = _objectWithoutPropertiesLoose;
-module.exports["default"] = module.exports, module.exports.__esModule = true;
-},{}],"5aJRc":[function(require,module,exports) {
-var define;
-/*!
-Copyright (c) 2018 Jed Watson.
-Licensed under the MIT License (MIT), see
-http://jedwatson.github.io/classnames
-*/
-/*global define*/
-(function () {
-  "use strict";
-  var hasOwn = ({}).hasOwnProperty;
-  function classNames() {
-    var classes = [];
-    for (var i = 0; i < arguments.length; i++) {
-      var arg = arguments[i];
-      if (!arg) continue;
-      var argType = typeof arg;
-      if (argType === 'string' || argType === 'number') {
-        classes.push(arg);
-      } else if (Array.isArray(arg)) {
-        if (arg.length) {
-          var inner = classNames.apply(null, arg);
-          if (inner) {
-            classes.push(inner);
-          }
-        }
-      } else if (argType === 'object') {
-        if (arg.toString === Object.prototype.toString) {
-          for (var key in arg) {
-            if (hasOwn.call(arg, key) && arg[key]) {
-              classes.push(key);
-            }
-          }
-        } else {
-          classes.push(arg.toString());
-        }
-      }
-    }
-    return classes.join(' ');
-  }
-  if (typeof module !== 'undefined' && module.exports) {
-    classNames.default = classNames;
-    module.exports = classNames;
-  } else if (typeof define === 'function' && typeof define.amd === 'object' && define.amd) {
-    // register as 'classnames', consistent with npm package name
-    define('classnames', [], function () {
-      return classNames;
-    });
-  } else {
-    window.classNames = classNames;
-  }
-})();
-
-},{}],"4P7FS":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","uncontrollable":"4P7FS","./ThemeProvider":"4rz1S","./AccordionToggle":"2CEru","./SelectableContext":"3ATFf","./AccordionCollapse":"6fr2G","./AccordionContext":"6cHdE"}],"4P7FS":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -33388,71 +34448,7 @@ function polyfill(Component) {
 
 exports.polyfill = polyfill;
 
-},{}],"4rz1S":[function(require,module,exports) {
-"use strict";
-
-var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-exports.__esModule = true;
-exports.useBootstrapPrefix = useBootstrapPrefix;
-exports.createBootstrapComponent = createBootstrapComponent;
-exports.default = exports.ThemeConsumer = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
-
-var _react = _interopRequireWildcard(require("react"));
-
-var ThemeContext = /*#__PURE__*/_react.default.createContext({});
-
-var Consumer = ThemeContext.Consumer,
-    Provider = ThemeContext.Provider;
-exports.ThemeConsumer = Consumer;
-
-function ThemeProvider(_ref) {
-  var prefixes = _ref.prefixes,
-      children = _ref.children;
-  var copiedPrefixes = (0, _react.useMemo)(function () {
-    return (0, _extends2.default)({}, prefixes);
-  }, [prefixes]);
-  return /*#__PURE__*/_react.default.createElement(Provider, {
-    value: copiedPrefixes
-  }, children);
-}
-
-function useBootstrapPrefix(prefix, defaultPrefix) {
-  var prefixes = (0, _react.useContext)(ThemeContext);
-  return prefix || prefixes[defaultPrefix] || defaultPrefix;
-}
-
-function createBootstrapComponent(Component, opts) {
-  if (typeof opts === 'string') opts = {
-    prefix: opts
-  };
-  var isClassy = Component.prototype && Component.prototype.isReactComponent; // If it's a functional component make sure we don't break it with a ref
-
-  var _opts = opts,
-      prefix = _opts.prefix,
-      _opts$forwardRefAs = _opts.forwardRefAs,
-      forwardRefAs = _opts$forwardRefAs === void 0 ? isClassy ? 'ref' : 'innerRef' : _opts$forwardRefAs;
-
-  var Wrapped = /*#__PURE__*/_react.default.forwardRef(function (_ref2, ref) {
-    var props = (0, _extends2.default)({}, _ref2);
-    props[forwardRefAs] = ref;
-    var bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
-    return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
-      bsPrefix: bsPrefix
-    }));
-  });
-
-  Wrapped.displayName = "Bootstrap(" + (Component.displayName || Component.name) + ")";
-  return Wrapped;
-}
-
-var _default = ThemeProvider;
-exports.default = _default;
-},{"@babel/runtime/helpers/interopRequireWildcard":"28En5","@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","react":"3b2NM"}],"2CEru":[function(require,module,exports) {
+},{}],"2CEru":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -34638,50 +35634,6 @@ function removeEventListener(node, eventName, handler, options) {
 var _default = removeEventListener;
 exports.default = _default;
 module.exports = exports["default"];
-},{}],"4RHiz":[function(require,module,exports) {
-"use strict";
-
-exports.__esModule = true;
-exports.default = void 0;
-
-/**
- * Safe chained function
- *
- * Will only create a new function if needed,
- * otherwise will pass back existing functions or null.
- *
- * @param {function} functions to chain
- * @returns {function|null}
- */
-function createChainedFunction() {
-  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
-    funcs[_key] = arguments[_key];
-  }
-
-  return funcs.filter(function (f) {
-    return f != null;
-  }).reduce(function (acc, f) {
-    if (typeof f !== 'function') {
-      throw new Error('Invalid Argument Type, must only provide functions, undefined, or null.');
-    }
-
-    if (acc === null) return f;
-    return function chainedFunction() {
-      for (var _len2 = arguments.length, args = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
-        args[_key2] = arguments[_key2];
-      }
-
-      // @ts-ignore
-      acc.apply(this, args); // @ts-ignore
-
-      f.apply(this, args);
-    };
-  }, null);
-}
-
-var _default = createChainedFunction;
-exports.default = _default;
-module.exports = exports["default"];
 },{}],"dj3Zh":[function(require,module,exports) {
 "use strict";
 
@@ -35035,91 +35987,7 @@ function camelize(string) {
 }
 
 module.exports = exports["default"];
-},{}],"5VP5o":[function(require,module,exports) {
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-exports.__esModule = true;
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
-
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
-
-var _react = _interopRequireDefault(require("react"));
-
-var _createChainedFunction = _interopRequireDefault(require("./createChainedFunction"));
-
-function isTrivialHref(href) {
-  return !href || href.trim() === '#';
-}
-/**
- * There are situations due to browser quirks or Bootstrap CSS where
- * an anchor tag is needed, when semantically a button tag is the
- * better choice. SafeAnchor ensures that when an anchor is used like a
- * button its accessible. It also emulates input `disabled` behavior for
- * links, which is usually desirable for Buttons, NavItems, DropdownItems, etc.
- */
-
-
-var SafeAnchor = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
-  var _ref$as = _ref.as,
-      Component = _ref$as === void 0 ? 'a' : _ref$as,
-      disabled = _ref.disabled,
-      onKeyDown = _ref.onKeyDown,
-      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["as", "disabled", "onKeyDown"]);
-
-  var handleClick = function handleClick(event) {
-    var href = props.href,
-        onClick = props.onClick;
-
-    if (disabled || isTrivialHref(href)) {
-      event.preventDefault();
-    }
-
-    if (disabled) {
-      event.stopPropagation();
-      return;
-    }
-
-    if (onClick) {
-      onClick(event);
-    }
-  };
-
-  var handleKeyDown = function handleKeyDown(event) {
-    if (event.key === ' ') {
-      event.preventDefault();
-      handleClick(event);
-    }
-  };
-
-  if (isTrivialHref(props.href)) {
-    props.role = props.role || 'button'; // we want to make sure there is a href attribute on the node
-    // otherwise, the cursor incorrectly styled (except with role='button')
-
-    props.href = props.href || '#';
-  }
-
-  if (disabled) {
-    props.tabIndex = -1;
-    props['aria-disabled'] = true;
-  }
-
-  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({
-    ref: ref
-  }, props, {
-    onClick: handleClick,
-    onKeyDown: (0, _createChainedFunction.default)(handleKeyDown, onKeyDown)
-  }));
-});
-
-SafeAnchor.displayName = 'SafeAnchor';
-var _default = SafeAnchor;
-exports.default = _default;
-module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","react":"3b2NM","./createChainedFunction":"4RHiz"}],"2aFSj":[function(require,module,exports) {
+},{}],"2aFSj":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -35271,75 +36139,7 @@ BreadcrumbItem.defaultProps = defaultProps;
 var _default = BreadcrumbItem;
 exports.default = _default;
 module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./SafeAnchor":"5VP5o","./ThemeProvider":"4rz1S"}],"1ru0l":[function(require,module,exports) {
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-exports.__esModule = true;
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
-
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
-
-var _classnames = _interopRequireDefault(require("classnames"));
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ThemeProvider = require("./ThemeProvider");
-
-var _SafeAnchor = _interopRequireDefault(require("./SafeAnchor"));
-
-var defaultProps = {
-  variant: 'primary',
-  active: false,
-  disabled: false
-};
-
-var Button = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
-  var bsPrefix = _ref.bsPrefix,
-      variant = _ref.variant,
-      size = _ref.size,
-      active = _ref.active,
-      className = _ref.className,
-      block = _ref.block,
-      type = _ref.type,
-      as = _ref.as,
-      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "variant", "size", "active", "className", "block", "type", "as"]);
-  var prefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'btn');
-  var classes = (0, _classnames.default)(className, prefix, active && 'active', variant && prefix + "-" + variant, block && prefix + "-block", size && prefix + "-" + size);
-
-  if (props.href) {
-    return /*#__PURE__*/_react.default.createElement(_SafeAnchor.default, (0, _extends2.default)({}, props, {
-      as: as,
-      ref: ref,
-      className: (0, _classnames.default)(classes, props.disabled && 'disabled')
-    }));
-  }
-
-  if (ref) {
-    props.ref = ref;
-  }
-
-  if (type) {
-    props.type = type;
-  } else if (!as) {
-    props.type = 'button';
-  }
-
-  var Component = as || 'button';
-  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
-    className: classes
-  }));
-});
-
-Button.displayName = 'Button';
-Button.defaultProps = defaultProps;
-var _default = Button;
-exports.default = _default;
-module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S","./SafeAnchor":"5VP5o"}],"2THBw":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./SafeAnchor":"5VP5o","./ThemeProvider":"4rz1S"}],"2THBw":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
@@ -36442,73 +37242,7 @@ function forEach(children, func) {
     if ( /*#__PURE__*/_react.default.isValidElement(child)) func(child, index++);
   });
 }
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","react":"3b2NM"}],"2D0r8":[function(require,module,exports) {
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-exports.__esModule = true;
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
-
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
-
-var _classnames = _interopRequireDefault(require("classnames"));
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ThemeProvider = require("./ThemeProvider");
-
-var DEVICE_SIZES = ['xl', 'lg', 'md', 'sm', 'xs'];
-
-var Col = /*#__PURE__*/_react.default.forwardRef( // Need to define the default "as" during prop destructuring to be compatible with styled-components github.com/react-bootstrap/react-bootstrap/issues/3595
-function (_ref, ref) {
-  var bsPrefix = _ref.bsPrefix,
-      className = _ref.className,
-      _ref$as = _ref.as,
-      Component = _ref$as === void 0 ? 'div' : _ref$as,
-      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "className", "as"]);
-  var prefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'col');
-  var spans = [];
-  var classes = [];
-  DEVICE_SIZES.forEach(function (brkPoint) {
-    var propValue = props[brkPoint];
-    delete props[brkPoint];
-    var span;
-    var offset;
-    var order;
-
-    if (typeof propValue === 'object' && propValue != null) {
-      var _propValue$span = propValue.span;
-      span = _propValue$span === void 0 ? true : _propValue$span;
-      offset = propValue.offset;
-      order = propValue.order;
-    } else {
-      span = propValue;
-    }
-
-    var infix = brkPoint !== 'xs' ? "-" + brkPoint : '';
-    if (span) spans.push(span === true ? "" + prefix + infix : "" + prefix + infix + "-" + span);
-    if (order != null) classes.push("order" + infix + "-" + order);
-    if (offset != null) classes.push("offset" + infix + "-" + offset);
-  });
-
-  if (!spans.length) {
-    spans.push(prefix); // plain 'col'
-  }
-
-  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({}, props, {
-    ref: ref,
-    className: _classnames.default.apply(void 0, [className].concat(spans, classes))
-  }));
-});
-
-Col.displayName = 'Col';
-var _default = Col;
-exports.default = _default;
-module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S"}],"27PdI":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","react":"3b2NM"}],"27PdI":[function(require,module,exports) {
 "use strict";
 
 var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
@@ -44406,65 +45140,6 @@ ResponsiveEmbed.defaultProps = defaultProps;
 var _default = ResponsiveEmbed;
 exports.default = _default;
 module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S"}],"3fzwD":[function(require,module,exports) {
-"use strict";
-
-var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
-
-exports.__esModule = true;
-exports.default = void 0;
-
-var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
-
-var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
-
-var _classnames = _interopRequireDefault(require("classnames"));
-
-var _react = _interopRequireDefault(require("react"));
-
-var _ThemeProvider = require("./ThemeProvider");
-
-var DEVICE_SIZES = ['xl', 'lg', 'md', 'sm', 'xs'];
-var defaultProps = {
-  noGutters: false
-};
-
-var Row = /*#__PURE__*/_react.default.forwardRef(function (_ref, ref) {
-  var bsPrefix = _ref.bsPrefix,
-      className = _ref.className,
-      noGutters = _ref.noGutters,
-      _ref$as = _ref.as,
-      Component = _ref$as === void 0 ? 'div' : _ref$as,
-      props = (0, _objectWithoutPropertiesLoose2.default)(_ref, ["bsPrefix", "className", "noGutters", "as"]);
-  var decoratedBsPrefix = (0, _ThemeProvider.useBootstrapPrefix)(bsPrefix, 'row');
-  var sizePrefix = decoratedBsPrefix + "-cols";
-  var classes = [];
-  DEVICE_SIZES.forEach(function (brkPoint) {
-    var propValue = props[brkPoint];
-    delete props[brkPoint];
-    var cols;
-
-    if (propValue != null && typeof propValue === 'object') {
-      cols = propValue.cols;
-    } else {
-      cols = propValue;
-    }
-
-    var infix = brkPoint !== 'xs' ? "-" + brkPoint : '';
-    if (cols != null) classes.push("" + sizePrefix + infix + "-" + cols);
-  });
-  return /*#__PURE__*/_react.default.createElement(Component, (0, _extends2.default)({
-    ref: ref
-  }, props, {
-    className: _classnames.default.apply(void 0, [className, decoratedBsPrefix, noGutters && 'no-gutters'].concat(classes))
-  }));
-});
-
-Row.displayName = 'Row';
-Row.defaultProps = defaultProps;
-var _default = Row;
-exports.default = _default;
-module.exports = exports["default"];
 },{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","./ThemeProvider":"4rz1S"}],"4fhZt":[function(require,module,exports) {
 "use strict";
 
@@ -45450,749 +46125,7 @@ Tooltip.displayName = 'Tooltip';
 var _default = Tooltip;
 exports.default = _default;
 module.exports = exports["default"];
-},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","prop-types-extra/lib/isRequiredForA11y":"4XrEc","./ThemeProvider":"4rz1S"}],"43n4t":[function() {},{}],"5gA8y":[function(require,module,exports) {
-"use strict";
-
-exports.interopDefault = function (a) {
-  return a && a.__esModule ? a : {
-    default: a
-  };
-};
-
-exports.defineInteropFlag = function (a) {
-  Object.defineProperty(a, '__esModule', {
-    value: true
-  });
-};
-
-exports.exportAll = function (source, dest) {
-  Object.keys(source).forEach(function (key) {
-    if (key === 'default' || key === '__esModule') {
-      return;
-    } // Skip duplicate re-exports when they have the same value.
-
-
-    if (key in dest && dest[key] === source[key]) {
-      return;
-    }
-
-    Object.defineProperty(dest, key, {
-      enumerable: true,
-      get: function () {
-        return source[key];
-      }
-    });
-  });
-  return dest;
-};
-
-exports.export = function (dest, destName, get) {
-  Object.defineProperty(dest, destName, {
-    enumerable: true,
-    get: get
-  });
-};
-},{}],"4Jj4f":[function(require,module,exports) {
-"use strict";
-var Refresh = require('react-refresh/runtime');
-function debounce(func, delay) {
-  if ("development" === 'test') {
-    return function (args) {
-      func.call(null, args);
-    };
-  } else {
-    var timeout = undefined;
-    return function (args) {
-      clearTimeout(timeout);
-      timeout = setTimeout(function () {
-        timeout = undefined;
-        func.call(null, args);
-      }, delay);
-    };
-  }
-}
-var enqueueUpdate = debounce(function () {
-  Refresh.performReactRefresh();
-}, 30);
-// Everthing below is either adapted or copied from
-// https://github.com/facebook/metro/blob/61de16bd1edd7e738dd0311c89555a644023ab2d/packages/metro/src/lib/polyfills/require.js
-// MIT License - Copyright (c) Facebook, Inc. and its affiliates.
-module.exports.prelude = function (module) {
-  window.$RefreshReg$ = function (type, id) {
-    Refresh.register(type, module.id + ' ' + id);
-  };
-  window.$RefreshSig$ = Refresh.createSignatureFunctionForTransform;
-};
-module.exports.postlude = function (module) {
-  if (isReactRefreshBoundary(module.exports)) {
-    registerExportsForReactRefresh(module);
-    if (module.hot) {
-      module.hot.dispose(function (data) {
-        if (Refresh.hasUnrecoverableErrors()) {
-          window.location.reload();
-        }
-        data.prevExports = module.exports;
-      });
-      module.hot.accept(function (getParents) {
-        var prevExports = module.hot.data.prevExports;
-        var nextExports = module.exports;
-        // Since we just executed the code for it, it's possible
-        // that the new exports make it ineligible for being a boundary.
-        var isNoLongerABoundary = !isReactRefreshBoundary(nextExports);
-        // It can also become ineligible if its exports are incompatible
-        // with the previous exports.
-        // For example, if you add/remove/change exports, we'll want
-        // to re-execute the importing modules, and force those components
-        // to re-render. Similarly, if you convert a class component
-        // to a function, we want to invalidate the boundary.
-        var didInvalidate = shouldInvalidateReactRefreshBoundary(prevExports, nextExports);
-        if (isNoLongerABoundary || didInvalidate) {
-          // We'll be conservative. The only case in which we won't do a full
-          // reload is if all parent modules are also refresh boundaries.
-          // In that case we'll add them to the current queue.
-          var parents = getParents();
-          if (parents.length === 0) {
-            // Looks like we bubbled to the root. Can't recover from that.
-            window.location.reload();
-            return;
-          }
-          return parents;
-        }
-        enqueueUpdate();
-      });
-    }
-  }
-};
-function isReactRefreshBoundary(exports) {
-  if (Refresh.isLikelyComponentType(exports)) {
-    return true;
-  }
-  if (exports == null || typeof exports !== 'object') {
-    // Exit if we can't iterate over exports.
-    return false;
-  }
-  var hasExports = false;
-  var areAllExportsComponents = true;
-  let isESM = ('__esModule' in exports);
-  for (var key in exports) {
-    hasExports = true;
-    if (key === '__esModule') {
-      continue;
-    }
-    var desc = Object.getOwnPropertyDescriptor(exports, key);
-    if (desc && desc.get && !isESM) {
-      // Don't invoke getters for CJS as they may have side effects.
-      return false;
-    }
-    var exportValue = exports[key];
-    if (!Refresh.isLikelyComponentType(exportValue)) {
-      areAllExportsComponents = false;
-    }
-  }
-  return hasExports && areAllExportsComponents;
-}
-function shouldInvalidateReactRefreshBoundary(prevExports, nextExports) {
-  var prevSignature = getRefreshBoundarySignature(prevExports);
-  var nextSignature = getRefreshBoundarySignature(nextExports);
-  if (prevSignature.length !== nextSignature.length) {
-    return true;
-  }
-  for (var i = 0; i < nextSignature.length; i++) {
-    if (prevSignature[i] !== nextSignature[i]) {
-      return true;
-    }
-  }
-  return false;
-}
-// When this signature changes, it's unsafe to stop at this refresh boundary.
-function getRefreshBoundarySignature(exports) {
-  var signature = [];
-  signature.push(Refresh.getFamilyByType(exports));
-  if (exports == null || typeof exports !== 'object') {
-    // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return signature;
-  }
-  let isESM = ('__esModule' in exports);
-  for (var key in exports) {
-    if (key === '__esModule') {
-      continue;
-    }
-    var desc = Object.getOwnPropertyDescriptor(exports, key);
-    if (desc && desc.get && !isESM) {
-      // Don't invoke getters for CJS as they may have side effects.
-      continue;
-    }
-    var exportValue = exports[key];
-    signature.push(key);
-    signature.push(Refresh.getFamilyByType(exportValue));
-  }
-  return signature;
-}
-function registerExportsForReactRefresh(module) {
-  var exports = module.exports, id = module.id;
-  Refresh.register(exports, id + ' %exports%');
-  if (exports == null || typeof exports !== 'object') {
-    // Exit if we can't iterate over exports.
-    // (This is important for legacy environments.)
-    return;
-  }
-  let isESM = ('__esModule' in exports);
-  for (var key in exports) {
-    var desc = Object.getOwnPropertyDescriptor(exports, key);
-    if (desc && desc.get && !isESM) {
-      // Don't invoke getters for CJS as they may have side effects.
-      continue;
-    }
-    var exportValue = exports[key];
-    Refresh.register(exportValue, id + ' %exports% ' + key);
-  }
-}
-
-},{"react-refresh/runtime":"592mh"}],"3xBbr":[function(require,module,exports) {
-var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-try {
-  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-  _parcelHelpers.defineInteropFlag(exports);
-  var _axios = require('axios');
-  var _axiosDefault = _parcelHelpers.interopDefault(_axios);
-  var _react = require("react");
-  var _reactDefault = _parcelHelpers.interopDefault(_react);
-  var _propTypes = require('prop-types');
-  var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
-  var _reactBootstrapButton = require('react-bootstrap/Button');
-  var _reactBootstrapButtonDefault = _parcelHelpers.interopDefault(_reactBootstrapButton);
-  var _reactBootstrapCol = require('react-bootstrap/Col');
-  var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
-  var _reactBootstrapRow = require('react-bootstrap/Row');
-  var _reactBootstrapRowDefault = _parcelHelpers.interopDefault(_reactBootstrapRow);
-  var _genreViewGenreView = require("../genre-view/genre-view");
-  var _genreViewGenreViewDefault = _parcelHelpers.interopDefault(_genreViewGenreView);
-  var _directorViewDirectorView = require("../director-view/director-view");
-  var _directorViewDirectorViewDefault = _parcelHelpers.interopDefault(_directorViewDirectorView);
-  require('../snackbar-component/snackbar-component');
-  require('./movie-view.scss');
-  require('react-bootstrap/esm/Image');
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-view/movie-view.jsx";
-  function MovieView({setFavState, user, movieData, onBackClick}) {
-    /*After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
-    */
-    const addFav = () => {
-      const token = localStorage.getItem('token');
-      _axiosDefault.default.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, {}, {
-        headers: {
-          "Authorization": `Bearer ${token}`
-        }
-      }).then(res => {
-        const favData = res.data.FavoriteMovies;
-        setFavState({
-          favorites: favData
-        });
-        alert("Movies was added to Favorites");
-      }).catch(e => {
-        console.log(e.message);
-      });
-    };
-    return (
-      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        md: 12,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 38,
-          columnNumber: 13
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("h3", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 39,
-          columnNumber: 17
-        }
-      }, movieData.Title, " (", movieData.Year, ")")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        md: "auto",
-        className: "p-3",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 43,
-          columnNumber: 13
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("img", {
-        className: "movie-view",
-        src: movieData.ImageUrl,
-        alt: movieData.Title,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 44,
-          columnNumber: 17
-        }
-      }), /*#__PURE__*/_reactDefault.default.createElement("br", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 44,
-          columnNumber: 94
-        }
-      }), /*#__PURE__*/_reactDefault.default.createElement("div", {
-        onClick: () => {
-          addFav();
-        },
-        className: "favstar mt-2",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 45,
-          columnNumber: 17
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("i", {
-        className: "bi bi-star m-3",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 46,
-          columnNumber: 21
-        }
-      }), /*#__PURE__*/_reactDefault.default.createElement("span", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 47,
-          columnNumber: 21
-        }
-      }, "Add to Favorites")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 50,
-          columnNumber: 17
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        md: 12,
-        className: "mt-3",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 51,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
-        onClick: () => {
-          onBackClick();
-        },
-        className: "bg-button",
-        variant: "dark",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 52,
-          columnNumber: 25
-        }
-      }, "Back")))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        md: 8,
-        className: "right-column p-3",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 58,
-          columnNumber: 13
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("p", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 59,
-          columnNumber: 17
-        }
-      }, movieData.Description), /*#__PURE__*/_reactDefault.default.createElement("hr", {
-        className: "solid",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 60,
-          columnNumber: 17
-        }
-      }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 61,
-          columnNumber: 17
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        sm: 4,
-        md: 4,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 62,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        className: "font-weight-bold",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 63,
-          columnNumber: 25
-        }
-      }, "Director"), /*#__PURE__*/_reactDefault.default.createElement(_directorViewDirectorViewDefault.default, {
-        movieData: movieData,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 64,
-          columnNumber: 25
-        }
-      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        sm: 4,
-        md: 4,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 69,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        className: "categories",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 70,
-          columnNumber: 25
-        }
-      }, "Genre"), /*#__PURE__*/_reactDefault.default.createElement(_genreViewGenreViewDefault.default, {
-        movieData: movieData,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 71,
-          columnNumber: 25
-        }
-      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
-        sm: 4,
-        md: 4,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 75,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        className: "categories",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 76,
-          columnNumber: 25
-        }
-      }, "Cast"), /*#__PURE__*/_reactDefault.default.createElement("ul", {
-        className: "mt-2",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 77,
-          columnNumber: 25
-        }
-      }, movieData.Actors.map(actor => /*#__PURE__*/_reactDefault.default.createElement("li", {
-        key: actor,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 78,
-          columnNumber: 60
-        }
-      }, actor)))))))
-    );
-  }
-  exports.default = MovieView;
-  _c = MovieView;
-  MovieView.propTypes = {
-    movieData: _propTypesDefault.default.shape({
-      Title: _propTypesDefault.default.string.isRequired,
-      Description: _propTypesDefault.default.string.isRequired,
-      Director: _propTypesDefault.default.shape({
-        Name: _propTypesDefault.default.string.isRequired,
-        Bio: _propTypesDefault.default.string.isRequired,
-        Birth: _propTypesDefault.default.string
-      }).isRequired,
-      Year: _propTypesDefault.default.number.isRequired,
-      Genre: _propTypesDefault.default.shape({
-        Name: _propTypesDefault.default.string.isRequired,
-        Description: _propTypesDefault.default.string.isRequired
-      }).isRequired,
-      Actors: _propTypesDefault.default.array.isRequired,
-      _id: _propTypesDefault.default.string.isRequired,
-      ImageUrl: _propTypesDefault.default.string.isRequired,
-      Featured: _propTypesDefault.default.bool.isRequired
-    }).isRequired,
-    onBackClick: _propTypesDefault.default.func.isRequired
-  };
-  var _c;
-  $RefreshReg$(_c, "MovieView");
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-
-},{"axios":"7rA65","react":"3b2NM","prop-types":"4dfy5","react-bootstrap/Button":"1ru0l","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","./movie-view.scss":"4iZ2Z","react-bootstrap/esm/Image":"rzPO3","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","../genre-view/genre-view":"6FLqj","../director-view/director-view":"7HF27","../snackbar-component/snackbar-component":"5o3zS"}],"4iZ2Z":[function() {},{}],"rzPO3":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-_parcelHelpers.export(exports, "propTypes", function () {
-  return propTypes;
-});
-var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
-var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
-var _babelRuntimeHelpersEsmObjectWithoutPropertiesLoose = require("@babel/runtime/helpers/esm/objectWithoutPropertiesLoose");
-var _babelRuntimeHelpersEsmObjectWithoutPropertiesLooseDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmObjectWithoutPropertiesLoose);
-var _classnames = require('classnames');
-var _classnamesDefault = _parcelHelpers.interopDefault(_classnames);
-var _react = require('react');
-var _reactDefault = _parcelHelpers.interopDefault(_react);
-var _propTypes = require('prop-types');
-var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
-var _ThemeProvider = require('./ThemeProvider');
-var propTypes = {
-  /**
-  * @default 'img'
-  */
-  bsPrefix: _propTypesDefault.default.string,
-  /**
-  * Sets image as fluid image.
-  */
-  fluid: _propTypesDefault.default.bool,
-  /**
-  * Sets image shape as rounded.
-  */
-  rounded: _propTypesDefault.default.bool,
-  /**
-  * Sets image shape as circle.
-  */
-  roundedCircle: _propTypesDefault.default.bool,
-  /**
-  * Sets image shape as thumbnail.
-  */
-  thumbnail: _propTypesDefault.default.bool
-};
-var defaultProps = {
-  fluid: false,
-  rounded: false,
-  roundedCircle: false,
-  thumbnail: false
-};
-var Image = /*#__PURE__*/_reactDefault.default.forwardRef(function (_ref, ref) {
-  var bsPrefix = _ref.bsPrefix, className = _ref.className, fluid = _ref.fluid, rounded = _ref.rounded, roundedCircle = _ref.roundedCircle, thumbnail = _ref.thumbnail, props = _babelRuntimeHelpersEsmObjectWithoutPropertiesLooseDefault.default(_ref, ["bsPrefix", "className", "fluid", "rounded", "roundedCircle", "thumbnail"]);
-  bsPrefix = _ThemeProvider.useBootstrapPrefix(bsPrefix, 'img');
-  var classes = _classnamesDefault.default(fluid && bsPrefix + "-fluid", rounded && "rounded", roundedCircle && "rounded-circle", thumbnail && bsPrefix + "-thumbnail");
-  return (
-    /*#__PURE__*/_reactDefault.default.createElement("img", _babelRuntimeHelpersEsmExtendsDefault.default({
-      // eslint-disable-line jsx-a11y/alt-text
-      ref: ref
-    }, props, {
-      className: _classnamesDefault.default(className, classes)
-    }))
-  );
-});
-Image.displayName = 'Image';
-Image.defaultProps = defaultProps;
-exports.default = Image;
-
-},{"@babel/runtime/helpers/esm/extends":"5qnVv","@babel/runtime/helpers/esm/objectWithoutPropertiesLoose":"6rNIl","classnames":"5aJRc","react":"3b2NM","prop-types":"4dfy5","./ThemeProvider":"6Pzum","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"5qnVv":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-function _extends() {
-  _extends = Object.assign || (function (target) {
-    for (var i = 1; i < arguments.length; i++) {
-      var source = arguments[i];
-      for (var key in source) {
-        if (Object.prototype.hasOwnProperty.call(source, key)) {
-          target[key] = source[key];
-        }
-      }
-    }
-    return target;
-  });
-  return _extends.apply(this, arguments);
-}
-exports.default = _extends;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6rNIl":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-function _objectWithoutPropertiesLoose(source, excluded) {
-  if (source == null) return {};
-  var target = {};
-  var sourceKeys = Object.keys(source);
-  var key, i;
-  for (i = 0; i < sourceKeys.length; i++) {
-    key = sourceKeys[i];
-    if (excluded.indexOf(key) >= 0) continue;
-    target[key] = source[key];
-  }
-  return target;
-}
-exports.default = _objectWithoutPropertiesLoose;
-
-},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6Pzum":[function(require,module,exports) {
-var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-_parcelHelpers.defineInteropFlag(exports);
-_parcelHelpers.export(exports, "useBootstrapPrefix", function () {
-  return useBootstrapPrefix;
-});
-_parcelHelpers.export(exports, "createBootstrapComponent", function () {
-  return createBootstrapComponent;
-});
-_parcelHelpers.export(exports, "ThemeConsumer", function () {
-  return Consumer;
-});
-var _babelRuntimeHelpersEsmExtends = require("@babel/runtime/helpers/esm/extends");
-var _babelRuntimeHelpersEsmExtendsDefault = _parcelHelpers.interopDefault(_babelRuntimeHelpersEsmExtends);
-var _react = require('react');
-var _reactDefault = _parcelHelpers.interopDefault(_react);
-var ThemeContext = /*#__PURE__*/_reactDefault.default.createContext({});
-var Consumer = ThemeContext.Consumer, Provider = ThemeContext.Provider;
-function ThemeProvider(_ref) {
-  var prefixes = _ref.prefixes, children = _ref.children;
-  var copiedPrefixes = _react.useMemo(function () {
-    return _babelRuntimeHelpersEsmExtendsDefault.default({}, prefixes);
-  }, [prefixes]);
-  return (
-    /*#__PURE__*/_reactDefault.default.createElement(Provider, {
-      value: copiedPrefixes
-    }, children)
-  );
-}
-function useBootstrapPrefix(prefix, defaultPrefix) {
-  var prefixes = _react.useContext(ThemeContext);
-  return prefix || prefixes[defaultPrefix] || defaultPrefix;
-}
-function createBootstrapComponent(Component, opts) {
-  if (typeof opts === 'string') opts = {
-    prefix: opts
-  };
-  var isClassy = Component.prototype && Component.prototype.isReactComponent;
-  // If it's a functional component make sure we don't break it with a ref
-  var _opts = opts, prefix = _opts.prefix, _opts$forwardRefAs = _opts.forwardRefAs, forwardRefAs = _opts$forwardRefAs === void 0 ? isClassy ? 'ref' : 'innerRef' : _opts$forwardRefAs;
-  var Wrapped = /*#__PURE__*/_reactDefault.default.forwardRef(function (_ref2, ref) {
-    var props = _babelRuntimeHelpersEsmExtendsDefault.default({}, _ref2);
-    props[forwardRefAs] = ref;
-    var bsPrefix = useBootstrapPrefix(props.bsPrefix, prefix);
-    return (
-      /*#__PURE__*/_reactDefault.default.createElement(Component, _babelRuntimeHelpersEsmExtendsDefault.default({}, props, {
-        bsPrefix: bsPrefix
-      }))
-    );
-  });
-  Wrapped.displayName = "Bootstrap(" + (Component.displayName || Component.name) + ")";
-  return Wrapped;
-}
-exports.default = ThemeProvider;
-
-},{"@babel/runtime/helpers/esm/extends":"5qnVv","react":"3b2NM","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"6FLqj":[function(require,module,exports) {
-var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
-var prevRefreshReg = window.$RefreshReg$;
-var prevRefreshSig = window.$RefreshSig$;
-helpers.prelude(module);
-try {
-  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
-  _parcelHelpers.defineInteropFlag(exports);
-  var _react = require("react");
-  var _reactDefault = _parcelHelpers.interopDefault(_react);
-  var _reactBootstrap = require('react-bootstrap');
-  require('./genre-view.scss');
-  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/genre-view/genre-view.jsx", _s = $RefreshSig$();
-  function GenreView({movieData}) {
-    _s();
-    const [isCollapsed, setIsCollapsed] = _react.useState(false);
-    const handleClick = () => {
-      setIsCollapsed(!isCollapsed);
-    };
-    return (
-      /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion, {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 14,
-          columnNumber: 9
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 15,
-          columnNumber: 13
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 16,
-          columnNumber: 17
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion.Toggle, {
-        as: _reactBootstrap.Button,
-        variant: "link",
-        eventKey: "0",
-        className: "p-0 mt-2",
-        onClick: handleClick,
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 17,
-          columnNumber: 21
-        }
-      }, movieData.Genre.Name, " ", isCollapsed ? /*#__PURE__*/_reactDefault.default.createElement("i", {
-        className: "bi bi-caret-up-fill",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 18,
-          columnNumber: 63
-        }
-      }, " ") : /*#__PURE__*/_reactDefault.default.createElement("i", {
-        className: "bi bi-caret-down-fill",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 18,
-          columnNumber: 106
-        }
-      }))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Accordion.Collapse, {
-        eventKey: "0",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 21,
-          columnNumber: 17
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
-        className: "genre-accordion mt-3",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 22,
-          columnNumber: 21
-        }
-      }, movieData.Genre.Description))))
-    );
-  }
-  exports.default = GenreView;
-  _s(GenreView, "XL80Ke9pMdZ2JRKLtHkkSCCoQZ0=");
-  _c = GenreView;
-  var _c;
-  $RefreshReg$(_c, "GenreView");
-  helpers.postlude(module);
-} finally {
-  window.$RefreshReg$ = prevRefreshReg;
-  window.$RefreshSig$ = prevRefreshSig;
-}
-
-},{"react":"3b2NM","react-bootstrap":"4n7hB","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","./genre-view.scss":"4iHPp"}],"4iHPp":[function() {},{}],"7HF27":[function(require,module,exports) {
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","classnames":"5aJRc","react":"3b2NM","prop-types-extra/lib/isRequiredForA11y":"4XrEc","./ThemeProvider":"4rz1S"}],"4iHPp":[function() {},{}],"7HF27":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -46349,7 +46282,1536 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","react-bootstrap/Toast":"o9l9n","./snackbar-component.scss":"6KSrd","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"6KSrd":[function() {},{}],"3CncI":[function(require,module,exports) {
+},{"react":"3b2NM","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","react-bootstrap/Toast":"o9l9n","./snackbar-component.scss":"6KSrd","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"6KSrd":[function() {},{}],"7GDa4":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+
+var _Provider = _interopRequireDefault(require("./components/Provider"));
+
+exports.Provider = _Provider["default"];
+
+var _connectAdvanced = _interopRequireDefault(require("./components/connectAdvanced"));
+
+exports.connectAdvanced = _connectAdvanced["default"];
+
+var _Context = require("./components/Context");
+
+exports.ReactReduxContext = _Context.ReactReduxContext;
+
+var _connect = _interopRequireDefault(require("./connect/connect"));
+
+exports.connect = _connect["default"];
+
+var _useDispatch = require("./hooks/useDispatch");
+
+exports.useDispatch = _useDispatch.useDispatch;
+exports.createDispatchHook = _useDispatch.createDispatchHook;
+
+var _useSelector = require("./hooks/useSelector");
+
+exports.useSelector = _useSelector.useSelector;
+exports.createSelectorHook = _useSelector.createSelectorHook;
+
+var _useStore = require("./hooks/useStore");
+
+exports.useStore = _useStore.useStore;
+exports.createStoreHook = _useStore.createStoreHook;
+
+var _batch = require("./utils/batch");
+
+var _reactBatchedUpdates = require("./utils/reactBatchedUpdates");
+
+exports.batch = _reactBatchedUpdates.unstable_batchedUpdates;
+
+var _shallowEqual = _interopRequireDefault(require("./utils/shallowEqual"));
+
+exports.shallowEqual = _shallowEqual["default"];
+(0, _batch.setBatch)(_reactBatchedUpdates.unstable_batchedUpdates);
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","./components/Provider":"3bhyH","./components/connectAdvanced":"SPrTN","./components/Context":"6ScOK","./connect/connect":"1HacB","./hooks/useDispatch":"4H7HK","./hooks/useSelector":"6dv0a","./hooks/useStore":"5zPKn","./utils/batch":"XOS5r","./utils/reactBatchedUpdates":"12gEH","./utils/shallowEqual":"1BbL9"}],"3bhyH":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+exports.__esModule = true;
+exports["default"] = void 0;
+var _react = _interopRequireWildcard(require("react"));
+var _propTypes = _interopRequireDefault(require("prop-types"));
+var _Context = require("./Context");
+var _Subscription = _interopRequireDefault(require("../utils/Subscription"));
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+function Provider(_ref) {
+  var store = _ref.store, context = _ref.context, children = _ref.children;
+  var contextValue = (0, _react.useMemo)(function () {
+    var subscription = new _Subscription["default"](store);
+    subscription.onStateChange = subscription.notifyNestedSubs;
+    return {
+      store: store,
+      subscription: subscription
+    };
+  }, [store]);
+  var previousState = (0, _react.useMemo)(function () {
+    return store.getState();
+  }, [store]);
+  (0, _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect)(function () {
+    var subscription = contextValue.subscription;
+    subscription.trySubscribe();
+    if (previousState !== store.getState()) {
+      subscription.notifyNestedSubs();
+    }
+    return function () {
+      subscription.tryUnsubscribe();
+      subscription.onStateChange = null;
+    };
+  }, [contextValue, previousState]);
+  var Context = context || _Context.ReactReduxContext;
+  return (
+    /*#__PURE__*/_react["default"].createElement(Context.Provider, {
+      value: contextValue
+    }, children)
+  );
+}
+if ("development" !== 'production') {
+  Provider.propTypes = {
+    store: _propTypes["default"].shape({
+      subscribe: _propTypes["default"].func.isRequired,
+      dispatch: _propTypes["default"].func.isRequired,
+      getState: _propTypes["default"].func.isRequired
+    }),
+    context: _propTypes["default"].object,
+    children: _propTypes["default"].any
+  };
+}
+var _default = Provider;
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/interopRequireWildcard":"28En5","react":"3b2NM","prop-types":"4dfy5","./Context":"6ScOK","../utils/Subscription":"Y1J0m","../utils/useIsomorphicLayoutEffect":"64Bcp"}],"6ScOK":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports["default"] = exports.ReactReduxContext = void 0;
+var _react = _interopRequireDefault(require("react"));
+var ReactReduxContext = /*#__PURE__*/_react["default"].createContext(null);
+exports.ReactReduxContext = ReactReduxContext;
+if ("development" !== 'production') {
+  ReactReduxContext.displayName = 'ReactRedux';
+}
+var _default = ReactReduxContext;
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","react":"3b2NM"}],"Y1J0m":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = void 0;
+
+var _batch = require("./batch");
+
+// encapsulates the subscription logic for connecting a component to the redux store, as
+// well as nesting subscriptions of descendant components, so that we can ensure the
+// ancestor components re-render before descendants
+var nullListeners = {
+  notify: function notify() {}
+};
+
+function createListenerCollection() {
+  var batch = (0, _batch.getBatch)();
+  var first = null;
+  var last = null;
+  return {
+    clear: function clear() {
+      first = null;
+      last = null;
+    },
+    notify: function notify() {
+      batch(function () {
+        var listener = first;
+
+        while (listener) {
+          listener.callback();
+          listener = listener.next;
+        }
+      });
+    },
+    get: function get() {
+      var listeners = [];
+      var listener = first;
+
+      while (listener) {
+        listeners.push(listener);
+        listener = listener.next;
+      }
+
+      return listeners;
+    },
+    subscribe: function subscribe(callback) {
+      var isSubscribed = true;
+      var listener = last = {
+        callback: callback,
+        next: null,
+        prev: last
+      };
+
+      if (listener.prev) {
+        listener.prev.next = listener;
+      } else {
+        first = listener;
+      }
+
+      return function unsubscribe() {
+        if (!isSubscribed || first === null) return;
+        isSubscribed = false;
+
+        if (listener.next) {
+          listener.next.prev = listener.prev;
+        } else {
+          last = listener.prev;
+        }
+
+        if (listener.prev) {
+          listener.prev.next = listener.next;
+        } else {
+          first = listener.next;
+        }
+      };
+    }
+  };
+}
+
+var Subscription = /*#__PURE__*/function () {
+  function Subscription(store, parentSub) {
+    this.store = store;
+    this.parentSub = parentSub;
+    this.unsubscribe = null;
+    this.listeners = nullListeners;
+    this.handleChangeWrapper = this.handleChangeWrapper.bind(this);
+  }
+
+  var _proto = Subscription.prototype;
+
+  _proto.addNestedSub = function addNestedSub(listener) {
+    this.trySubscribe();
+    return this.listeners.subscribe(listener);
+  };
+
+  _proto.notifyNestedSubs = function notifyNestedSubs() {
+    this.listeners.notify();
+  };
+
+  _proto.handleChangeWrapper = function handleChangeWrapper() {
+    if (this.onStateChange) {
+      this.onStateChange();
+    }
+  };
+
+  _proto.isSubscribed = function isSubscribed() {
+    return Boolean(this.unsubscribe);
+  };
+
+  _proto.trySubscribe = function trySubscribe() {
+    if (!this.unsubscribe) {
+      this.unsubscribe = this.parentSub ? this.parentSub.addNestedSub(this.handleChangeWrapper) : this.store.subscribe(this.handleChangeWrapper);
+      this.listeners = createListenerCollection();
+    }
+  };
+
+  _proto.tryUnsubscribe = function tryUnsubscribe() {
+    if (this.unsubscribe) {
+      this.unsubscribe();
+      this.unsubscribe = null;
+      this.listeners.clear();
+      this.listeners = nullListeners;
+    }
+  };
+
+  return Subscription;
+}();
+
+exports["default"] = Subscription;
+},{"./batch":"XOS5r"}],"XOS5r":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.getBatch = exports.setBatch = void 0;
+
+// Default to a dummy "batch" implementation that just runs the callback
+function defaultNoopBatch(callback) {
+  callback();
+}
+
+var batch = defaultNoopBatch; // Allow injecting another batching function later
+
+var setBatch = function setBatch(newBatch) {
+  return batch = newBatch;
+}; // Supply a getter just to skip dealing with ESM bindings
+
+
+exports.setBatch = setBatch;
+
+var getBatch = function getBatch() {
+  return batch;
+};
+
+exports.getBatch = getBatch;
+},{}],"64Bcp":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.useIsomorphicLayoutEffect = void 0;
+
+var _react = require("react");
+
+// React currently throws a warning when using useLayoutEffect on the server.
+// To get around it, we can conditionally useEffect on the server (no-op) and
+// useLayoutEffect in the browser. We need useLayoutEffect to ensure the store
+// subscription callback always has the selector from the latest render commit
+// available, otherwise a store update may happen between render and the effect,
+// which may cause missed updates; we also must ensure the store subscription
+// is created synchronously, otherwise a store update may occur before the
+// subscription is created and an inconsistent state may be observed
+var useIsomorphicLayoutEffect = typeof window !== 'undefined' && typeof window.document !== 'undefined' && typeof window.document.createElement !== 'undefined' ? _react.useLayoutEffect : _react.useEffect;
+exports.useIsomorphicLayoutEffect = useIsomorphicLayoutEffect;
+},{"react":"3b2NM"}],"SPrTN":[function(require,module,exports) {
+"use strict";
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports["default"] = connectAdvanced;
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+var _hoistNonReactStatics = _interopRequireDefault(require("hoist-non-react-statics"));
+var _react = _interopRequireWildcard(require("react"));
+var _reactIs = require("react-is");
+var _Subscription = _interopRequireDefault(require("../utils/Subscription"));
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+var _Context = require("./Context");
+// Define some constant arrays just to avoid re-creating these
+var EMPTY_ARRAY = [];
+var NO_SUBSCRIPTION_ARRAY = [null, null];
+var stringifyComponent = function stringifyComponent(Comp) {
+  try {
+    return JSON.stringify(Comp);
+  } catch (err) {
+    return String(Comp);
+  }
+};
+function storeStateUpdatesReducer(state, action) {
+  var updateCount = state[1];
+  return [action.payload, updateCount + 1];
+}
+function useIsomorphicLayoutEffectWithArgs(effectFunc, effectArgs, dependencies) {
+  (0, _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect)(function () {
+    return effectFunc.apply(void 0, effectArgs);
+  }, dependencies);
+}
+function captureWrapperProps(lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs) {
+  // We want to capture the wrapper props and child props we used for later comparisons
+  lastWrapperProps.current = wrapperProps;
+  lastChildProps.current = actualChildProps;
+  renderIsScheduled.current = false;
+  // If the render was from a store update, clear out that reference and cascade the subscriber update
+  if (childPropsFromStoreUpdate.current) {
+    childPropsFromStoreUpdate.current = null;
+    notifyNestedSubs();
+  }
+}
+function subscribeUpdates(shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch) {
+  // If we're not subscribed to the store, nothing to do here
+  if (!shouldHandleStateChanges) return;
+  // Capture values for checking if and when this component unmounts
+  var didUnsubscribe = false;
+  var lastThrownError = null;
+  // We'll run this callback every time a store subscription update propagates to this component
+  var checkForUpdates = function checkForUpdates() {
+    if (didUnsubscribe) {
+      // Don't run stale listeners.
+      // Redux doesn't guarantee unsubscriptions happen until next dispatch.
+      return;
+    }
+    var latestStoreState = store.getState();
+    var newChildProps, error;
+    try {
+      // Actually run the selector with the most recent store state and wrapper props
+      // to determine what the child props should be
+      newChildProps = childPropsSelector(latestStoreState, lastWrapperProps.current);
+    } catch (e) {
+      error = e;
+      lastThrownError = e;
+    }
+    if (!error) {
+      lastThrownError = null;
+    }
+    // If the child props haven't changed, nothing to do here - cascade the subscription update
+    if (newChildProps === lastChildProps.current) {
+      if (!renderIsScheduled.current) {
+        notifyNestedSubs();
+      }
+    } else {
+      // Save references to the new child props.  Note that we track the "child props from store update"
+      // as a ref instead of a useState/useReducer because we need a way to determine if that value has
+      // been processed.  If this went into useState/useReducer, we couldn't clear out the value without
+      // forcing another re-render, which we don't want.
+      lastChildProps.current = newChildProps;
+      childPropsFromStoreUpdate.current = newChildProps;
+      renderIsScheduled.current = true;
+      // If the child props _did_ change (or we caught an error), this wrapper component needs to re-render
+      forceComponentUpdateDispatch({
+        type: 'STORE_UPDATED',
+        payload: {
+          error: error
+        }
+      });
+    }
+  };
+  // Actually subscribe to the nearest connected ancestor (or store)
+  subscription.onStateChange = checkForUpdates;
+  subscription.trySubscribe();
+  // Pull data from the store after first render in case the store has
+  // changed since we began.
+  checkForUpdates();
+  var unsubscribeWrapper = function unsubscribeWrapper() {
+    didUnsubscribe = true;
+    subscription.tryUnsubscribe();
+    subscription.onStateChange = null;
+    if (lastThrownError) {
+      // It's possible that we caught an error due to a bad mapState function, but the
+      // parent re-rendered without this component and we're about to unmount.
+      // This shouldn't happen as long as we do top-down subscriptions correctly, but
+      // if we ever do those wrong, this throw will surface the error in our tests.
+      // In that case, throw the error from here so it doesn't get lost.
+      throw lastThrownError;
+    }
+  };
+  return unsubscribeWrapper;
+}
+var initStateUpdates = function initStateUpdates() {
+  return [null, 0];
+};
+function connectAdvanced(/*
+selectorFactory is a func that is responsible for returning the selector function used to
+compute new props from state, props, and dispatch. For example:
+export default connectAdvanced((dispatch, options) => (state, props) => ({
+thing: state.things[props.thingId],
+saveThing: fields => dispatch(actionCreators.saveThing(props.thingId, fields)),
+}))(YourComponent)
+Access to dispatch is provided to the factory so selectorFactories can bind actionCreators
+outside of their selector as an optimization. Options passed to connectAdvanced are passed to
+the selectorFactory, along with displayName and WrappedComponent, as the second argument.
+Note that selectorFactory is responsible for all caching/memoization of inbound and outbound
+props. Do not use connectAdvanced directly without memoizing results between calls to your
+selector, otherwise the Connect component will re-render on every state or props change.
+*/
+selectorFactory, // options object:
+_ref) {
+  if (_ref === void 0) {
+    _ref = {};
+  }
+  var _ref2 = _ref, _ref2$getDisplayName = _ref2.getDisplayName, getDisplayName = _ref2$getDisplayName === void 0 ? function (name) {
+    return "ConnectAdvanced(" + name + ")";
+  } : _ref2$getDisplayName, _ref2$methodName = _ref2.methodName, methodName = _ref2$methodName === void 0 ? 'connectAdvanced' : _ref2$methodName, _ref2$renderCountProp = _ref2.renderCountProp, renderCountProp = _ref2$renderCountProp === void 0 ? undefined : _ref2$renderCountProp, _ref2$shouldHandleSta = _ref2.shouldHandleStateChanges, shouldHandleStateChanges = _ref2$shouldHandleSta === void 0 ? true : _ref2$shouldHandleSta, _ref2$storeKey = _ref2.storeKey, storeKey = _ref2$storeKey === void 0 ? 'store' : _ref2$storeKey, _ref2$withRef = _ref2.withRef, withRef = _ref2$withRef === void 0 ? false : _ref2$withRef, _ref2$forwardRef = _ref2.forwardRef, forwardRef = _ref2$forwardRef === void 0 ? false : _ref2$forwardRef, _ref2$context = _ref2.context, context = _ref2$context === void 0 ? _Context.ReactReduxContext : _ref2$context, connectOptions = (0, _objectWithoutPropertiesLoose2["default"])(_ref2, ["getDisplayName", "methodName", "renderCountProp", "shouldHandleStateChanges", "storeKey", "withRef", "forwardRef", "context"]);
+  if ("development" !== 'production') {
+    if (renderCountProp !== undefined) {
+      throw new Error("renderCountProp is removed. render counting is built into the latest React Dev Tools profiling extension");
+    }
+    if (withRef) {
+      throw new Error('withRef is removed. To access the wrapped instance, use a ref on the connected component');
+    }
+    var customStoreWarningMessage = 'To use a custom Redux store for specific components, create a custom React context with ' + "React.createContext(), and pass the context object to React Redux's Provider and specific components" + ' like: <Provider context={MyContext}><ConnectedComponent context={MyContext} /></Provider>. ' + 'You may also pass a {context : MyContext} option to connect';
+    if (storeKey !== 'store') {
+      throw new Error('storeKey has been removed and does not do anything. ' + customStoreWarningMessage);
+    }
+  }
+  var Context = context;
+  return function wrapWithConnect(WrappedComponent) {
+    if ("development" !== 'production' && !(0, _reactIs.isValidElementType)(WrappedComponent)) {
+      throw new Error("You must pass a component to the function returned by " + (methodName + ". Instead received " + stringifyComponent(WrappedComponent)));
+    }
+    var wrappedComponentName = WrappedComponent.displayName || WrappedComponent.name || 'Component';
+    var displayName = getDisplayName(wrappedComponentName);
+    var selectorFactoryOptions = (0, _extends2["default"])({}, connectOptions, {
+      getDisplayName: getDisplayName,
+      methodName: methodName,
+      renderCountProp: renderCountProp,
+      shouldHandleStateChanges: shouldHandleStateChanges,
+      storeKey: storeKey,
+      displayName: displayName,
+      wrappedComponentName: wrappedComponentName,
+      WrappedComponent: WrappedComponent
+    });
+    var pure = connectOptions.pure;
+    function createChildSelector(store) {
+      return selectorFactory(store.dispatch, selectorFactoryOptions);
+    }
+    // If we aren't running in "pure" mode, we don't want to memoize values.
+    // To avoid conditionally calling hooks, we fall back to a tiny wrapper
+    // that just executes the given callback immediately.
+    var usePureOnlyMemo = pure ? _react.useMemo : function (callback) {
+      return callback();
+    };
+    function ConnectFunction(props) {
+      var _useMemo = (0, _react.useMemo)(function () {
+        // Distinguish between actual "data" props that were passed to the wrapper component,
+        // and values needed to control behavior (forwarded refs, alternate context instances).
+        // To maintain the wrapperProps object reference, memoize this destructuring.
+        var reactReduxForwardedRef = props.reactReduxForwardedRef, wrapperProps = (0, _objectWithoutPropertiesLoose2["default"])(props, ["reactReduxForwardedRef"]);
+        return [props.context, reactReduxForwardedRef, wrapperProps];
+      }, [props]), propsContext = _useMemo[0], reactReduxForwardedRef = _useMemo[1], wrapperProps = _useMemo[2];
+      var ContextToUse = (0, _react.useMemo)(function () {
+        // Users may optionally pass in a custom context instance to use instead of our ReactReduxContext.
+        // Memoize the check that determines which context instance we should use.
+        return propsContext && propsContext.Consumer && (0, _reactIs.isContextConsumer)(/*#__PURE__*/_react["default"].createElement(propsContext.Consumer, null)) ? propsContext : Context;
+      }, [propsContext, Context]);
+      // Retrieve the store and ancestor subscription via context, if available
+      var contextValue = (0, _react.useContext)(ContextToUse);
+      // The store _must_ exist as either a prop or in context.
+      // We'll check to see if it _looks_ like a Redux store first.
+      // This allows us to pass through a `store` prop that is just a plain value.
+      var didStoreComeFromProps = Boolean(props.store) && Boolean(props.store.getState) && Boolean(props.store.dispatch);
+      var didStoreComeFromContext = Boolean(contextValue) && Boolean(contextValue.store);
+      if ("development" !== 'production' && !didStoreComeFromProps && !didStoreComeFromContext) {
+        throw new Error("Could not find \"store\" in the context of " + ("\"" + displayName + "\". Either wrap the root component in a <Provider>, ") + "or pass a custom React context provider to <Provider> and the corresponding " + ("React context consumer to " + displayName + " in connect options."));
+      }
+      // Based on the previous check, one of these must be true
+      var store = didStoreComeFromProps ? props.store : contextValue.store;
+      var childPropsSelector = (0, _react.useMemo)(function () {
+        // The child props selector needs the store reference as an input.
+        // Re-create this selector whenever the store changes.
+        return createChildSelector(store);
+      }, [store]);
+      var _useMemo2 = (0, _react.useMemo)(function () {
+        if (!shouldHandleStateChanges) return NO_SUBSCRIPTION_ARRAY;
+        // This Subscription's source should match where store came from: props vs. context. A component
+        // connected to the store via props shouldn't use subscription from context, or vice versa.
+        var subscription = new _Subscription["default"](store, didStoreComeFromProps ? null : contextValue.subscription);
+        // `notifyNestedSubs` is duplicated to handle the case where the component is unmounted in
+        // the middle of the notification loop, where `subscription` will then be null. This can
+        // probably be avoided if Subscription's listeners logic is changed to not call listeners
+        // that have been unsubscribed in the  middle of the notification loop.
+        var notifyNestedSubs = subscription.notifyNestedSubs.bind(subscription);
+        return [subscription, notifyNestedSubs];
+      }, [store, didStoreComeFromProps, contextValue]), subscription = _useMemo2[0], notifyNestedSubs = _useMemo2[1];
+      // Determine what {store, subscription} value should be put into nested context, if necessary,
+      // and memoize that value to avoid unnecessary context updates.
+      var overriddenContextValue = (0, _react.useMemo)(function () {
+        if (didStoreComeFromProps) {
+          // This component is directly subscribed to a store from props.
+          // We don't want descendants reading from this store - pass down whatever
+          // the existing context value is from the nearest connected ancestor.
+          return contextValue;
+        }
+        // Otherwise, put this component's subscription instance into context, so that
+        // connected descendants won't update until after this component is done
+        return (0, _extends2["default"])({}, contextValue, {
+          subscription: subscription
+        });
+      }, [didStoreComeFromProps, contextValue, subscription]);
+      // We need to force this wrapper component to re-render whenever a Redux store update
+      // causes a change to the calculated child component props (or we caught an error in mapState)
+      var _useReducer = (0, _react.useReducer)(storeStateUpdatesReducer, EMPTY_ARRAY, initStateUpdates), _useReducer$ = _useReducer[0], previousStateUpdateResult = _useReducer$[0], forceComponentUpdateDispatch = _useReducer[1];
+      // Propagate any mapState/mapDispatch errors upwards
+      if (previousStateUpdateResult && previousStateUpdateResult.error) {
+        throw previousStateUpdateResult.error;
+      }
+      // Set up refs to coordinate values between the subscription effect and the render logic
+      var lastChildProps = (0, _react.useRef)();
+      var lastWrapperProps = (0, _react.useRef)(wrapperProps);
+      var childPropsFromStoreUpdate = (0, _react.useRef)();
+      var renderIsScheduled = (0, _react.useRef)(false);
+      var actualChildProps = usePureOnlyMemo(function () {
+        // Tricky logic here:
+        // - This render may have been triggered by a Redux store update that produced new child props
+        // - However, we may have gotten new wrapper props after that
+        // If we have new child props, and the same wrapper props, we know we should use the new child props as-is.
+        // But, if we have new wrapper props, those might change the child props, so we have to recalculate things.
+        // So, we'll use the child props from store update only if the wrapper props are the same as last time.
+        if (childPropsFromStoreUpdate.current && wrapperProps === lastWrapperProps.current) {
+          return childPropsFromStoreUpdate.current;
+        }
+        // TODO We're reading the store directly in render() here. Bad idea?
+        // This will likely cause Bad Things (TM) to happen in Concurrent Mode.
+        // Note that we do this because on renders _not_ caused by store updates, we need the latest store state
+        // to determine what the child props should be.
+        return childPropsSelector(store.getState(), wrapperProps);
+      }, [store, previousStateUpdateResult, wrapperProps]);
+      // We need this to execute synchronously every time we re-render. However, React warns
+      // about useLayoutEffect in SSR, so we try to detect environment and fall back to
+      // just useEffect instead to avoid the warning, since neither will run anyway.
+      useIsomorphicLayoutEffectWithArgs(captureWrapperProps, [lastWrapperProps, lastChildProps, renderIsScheduled, wrapperProps, actualChildProps, childPropsFromStoreUpdate, notifyNestedSubs]);
+      // Our re-subscribe logic only runs when the store/subscription setup changes
+      useIsomorphicLayoutEffectWithArgs(subscribeUpdates, [shouldHandleStateChanges, store, subscription, childPropsSelector, lastWrapperProps, lastChildProps, renderIsScheduled, childPropsFromStoreUpdate, notifyNestedSubs, forceComponentUpdateDispatch], [store, subscription, childPropsSelector]);
+      // Now that all that's done, we can finally try to actually render the child component.
+      // We memoize the elements for the rendered child component as an optimization.
+      var renderedWrappedComponent = (0, _react.useMemo)(function () {
+        return (
+          /*#__PURE__*/_react["default"].createElement(WrappedComponent, (0, _extends2["default"])({}, actualChildProps, {
+            ref: reactReduxForwardedRef
+          }))
+        );
+      }, [reactReduxForwardedRef, WrappedComponent, actualChildProps]);
+      // If React sees the exact same element reference as last time, it bails out of re-rendering
+      // that child, same as if it was wrapped in React.memo() or returned false from shouldComponentUpdate.
+      var renderedChild = (0, _react.useMemo)(function () {
+        if (shouldHandleStateChanges) {
+          // If this component is subscribed to store updates, we need to pass its own
+          // subscription instance down to our descendants. That means rendering the same
+          // Context instance, and putting a different value into the context.
+          return (
+            /*#__PURE__*/_react["default"].createElement(ContextToUse.Provider, {
+              value: overriddenContextValue
+            }, renderedWrappedComponent)
+          );
+        }
+        return renderedWrappedComponent;
+      }, [ContextToUse, renderedWrappedComponent, overriddenContextValue]);
+      return renderedChild;
+    }
+    // If we're in "pure" mode, ensure our wrapper component only re-renders when incoming props have changed.
+    var Connect = pure ? _react["default"].memo(ConnectFunction) : ConnectFunction;
+    Connect.WrappedComponent = WrappedComponent;
+    Connect.displayName = ConnectFunction.displayName = displayName;
+    if (forwardRef) {
+      var forwarded = _react["default"].forwardRef(function forwardConnectRef(props, ref) {
+        return (
+          /*#__PURE__*/_react["default"].createElement(Connect, (0, _extends2["default"])({}, props, {
+            reactReduxForwardedRef: ref
+          }))
+        );
+      });
+      forwarded.displayName = displayName;
+      forwarded.WrappedComponent = WrappedComponent;
+      return (0, _hoistNonReactStatics["default"])(forwarded, WrappedComponent);
+    }
+    return (0, _hoistNonReactStatics["default"])(Connect, WrappedComponent);
+  };
+}
+
+},{"@babel/runtime/helpers/interopRequireWildcard":"28En5","@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","hoist-non-react-statics":"3nUHV","react":"3b2NM","react-is":"68QIU","../utils/Subscription":"Y1J0m","../utils/useIsomorphicLayoutEffect":"64Bcp","./Context":"6ScOK"}],"1HacB":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.createConnect = createConnect;
+exports["default"] = void 0;
+
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+
+var _connectAdvanced = _interopRequireDefault(require("../components/connectAdvanced"));
+
+var _shallowEqual = _interopRequireDefault(require("../utils/shallowEqual"));
+
+var _mapDispatchToProps = _interopRequireDefault(require("./mapDispatchToProps"));
+
+var _mapStateToProps = _interopRequireDefault(require("./mapStateToProps"));
+
+var _mergeProps = _interopRequireDefault(require("./mergeProps"));
+
+var _selectorFactory = _interopRequireDefault(require("./selectorFactory"));
+
+/*
+  connect is a facade over connectAdvanced. It turns its args into a compatible
+  selectorFactory, which has the signature:
+
+    (dispatch, options) => (nextState, nextOwnProps) => nextFinalProps
+  
+  connect passes its args to connectAdvanced as options, which will in turn pass them to
+  selectorFactory each time a Connect component instance is instantiated or hot reloaded.
+
+  selectorFactory returns a final props selector from its mapStateToProps,
+  mapStateToPropsFactories, mapDispatchToProps, mapDispatchToPropsFactories, mergeProps,
+  mergePropsFactories, and pure args.
+
+  The resulting final props selector is called by the Connect component instance whenever
+  it receives new props or store state.
+ */
+function match(arg, factories, name) {
+  for (var i = factories.length - 1; i >= 0; i--) {
+    var result = factories[i](arg);
+    if (result) return result;
+  }
+
+  return function (dispatch, options) {
+    throw new Error("Invalid value of type " + typeof arg + " for " + name + " argument when connecting component " + options.wrappedComponentName + ".");
+  };
+}
+
+function strictEqual(a, b) {
+  return a === b;
+} // createConnect with default args builds the 'official' connect behavior. Calling it with
+// different options opens up some testing and extensibility scenarios
+
+
+function createConnect(_temp) {
+  var _ref = _temp === void 0 ? {} : _temp,
+      _ref$connectHOC = _ref.connectHOC,
+      connectHOC = _ref$connectHOC === void 0 ? _connectAdvanced["default"] : _ref$connectHOC,
+      _ref$mapStateToPropsF = _ref.mapStateToPropsFactories,
+      mapStateToPropsFactories = _ref$mapStateToPropsF === void 0 ? _mapStateToProps["default"] : _ref$mapStateToPropsF,
+      _ref$mapDispatchToPro = _ref.mapDispatchToPropsFactories,
+      mapDispatchToPropsFactories = _ref$mapDispatchToPro === void 0 ? _mapDispatchToProps["default"] : _ref$mapDispatchToPro,
+      _ref$mergePropsFactor = _ref.mergePropsFactories,
+      mergePropsFactories = _ref$mergePropsFactor === void 0 ? _mergeProps["default"] : _ref$mergePropsFactor,
+      _ref$selectorFactory = _ref.selectorFactory,
+      selectorFactory = _ref$selectorFactory === void 0 ? _selectorFactory["default"] : _ref$selectorFactory;
+
+  return function connect(mapStateToProps, mapDispatchToProps, mergeProps, _ref2) {
+    if (_ref2 === void 0) {
+      _ref2 = {};
+    }
+
+    var _ref3 = _ref2,
+        _ref3$pure = _ref3.pure,
+        pure = _ref3$pure === void 0 ? true : _ref3$pure,
+        _ref3$areStatesEqual = _ref3.areStatesEqual,
+        areStatesEqual = _ref3$areStatesEqual === void 0 ? strictEqual : _ref3$areStatesEqual,
+        _ref3$areOwnPropsEqua = _ref3.areOwnPropsEqual,
+        areOwnPropsEqual = _ref3$areOwnPropsEqua === void 0 ? _shallowEqual["default"] : _ref3$areOwnPropsEqua,
+        _ref3$areStatePropsEq = _ref3.areStatePropsEqual,
+        areStatePropsEqual = _ref3$areStatePropsEq === void 0 ? _shallowEqual["default"] : _ref3$areStatePropsEq,
+        _ref3$areMergedPropsE = _ref3.areMergedPropsEqual,
+        areMergedPropsEqual = _ref3$areMergedPropsE === void 0 ? _shallowEqual["default"] : _ref3$areMergedPropsE,
+        extraOptions = (0, _objectWithoutPropertiesLoose2["default"])(_ref3, ["pure", "areStatesEqual", "areOwnPropsEqual", "areStatePropsEqual", "areMergedPropsEqual"]);
+    var initMapStateToProps = match(mapStateToProps, mapStateToPropsFactories, 'mapStateToProps');
+    var initMapDispatchToProps = match(mapDispatchToProps, mapDispatchToPropsFactories, 'mapDispatchToProps');
+    var initMergeProps = match(mergeProps, mergePropsFactories, 'mergeProps');
+    return connectHOC(selectorFactory, (0, _extends2["default"])({
+      // used in error messages
+      methodName: 'connect',
+      // used to compute Connect's displayName from the wrapped component's displayName.
+      getDisplayName: function getDisplayName(name) {
+        return "Connect(" + name + ")";
+      },
+      // if mapStateToProps is falsy, the Connect component doesn't subscribe to store state changes
+      shouldHandleStateChanges: Boolean(mapStateToProps),
+      // passed through to selectorFactory
+      initMapStateToProps: initMapStateToProps,
+      initMapDispatchToProps: initMapDispatchToProps,
+      initMergeProps: initMergeProps,
+      pure: pure,
+      areStatesEqual: areStatesEqual,
+      areOwnPropsEqual: areOwnPropsEqual,
+      areStatePropsEqual: areStatePropsEqual,
+      areMergedPropsEqual: areMergedPropsEqual
+    }, extraOptions));
+  };
+}
+
+var _default = /*#__PURE__*/createConnect();
+
+exports["default"] = _default;
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","../components/connectAdvanced":"SPrTN","../utils/shallowEqual":"1BbL9","./mapDispatchToProps":"aHbco","./mapStateToProps":"6esSH","./mergeProps":"4XiYM","./selectorFactory":"XQRNr"}],"1BbL9":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = shallowEqual;
+
+function is(x, y) {
+  if (x === y) {
+    return x !== 0 || y !== 0 || 1 / x === 1 / y;
+  } else {
+    return x !== x && y !== y;
+  }
+}
+
+function shallowEqual(objA, objB) {
+  if (is(objA, objB)) return true;
+
+  if (typeof objA !== 'object' || objA === null || typeof objB !== 'object' || objB === null) {
+    return false;
+  }
+
+  var keysA = Object.keys(objA);
+  var keysB = Object.keys(objB);
+  if (keysA.length !== keysB.length) return false;
+
+  for (var i = 0; i < keysA.length; i++) {
+    if (!Object.prototype.hasOwnProperty.call(objB, keysA[i]) || !is(objA[keysA[i]], objB[keysA[i]])) {
+      return false;
+    }
+  }
+
+  return true;
+}
+},{}],"aHbco":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports.whenMapDispatchToPropsIsFunction = whenMapDispatchToPropsIsFunction;
+exports.whenMapDispatchToPropsIsMissing = whenMapDispatchToPropsIsMissing;
+exports.whenMapDispatchToPropsIsObject = whenMapDispatchToPropsIsObject;
+exports["default"] = void 0;
+
+var _bindActionCreators = _interopRequireDefault(require("../utils/bindActionCreators"));
+
+var _wrapMapToProps = require("./wrapMapToProps");
+
+function whenMapDispatchToPropsIsFunction(mapDispatchToProps) {
+  return typeof mapDispatchToProps === 'function' ? (0, _wrapMapToProps.wrapMapToPropsFunc)(mapDispatchToProps, 'mapDispatchToProps') : undefined;
+}
+
+function whenMapDispatchToPropsIsMissing(mapDispatchToProps) {
+  return !mapDispatchToProps ? (0, _wrapMapToProps.wrapMapToPropsConstant)(function (dispatch) {
+    return {
+      dispatch: dispatch
+    };
+  }) : undefined;
+}
+
+function whenMapDispatchToPropsIsObject(mapDispatchToProps) {
+  return mapDispatchToProps && typeof mapDispatchToProps === 'object' ? (0, _wrapMapToProps.wrapMapToPropsConstant)(function (dispatch) {
+    return (0, _bindActionCreators["default"])(mapDispatchToProps, dispatch);
+  }) : undefined;
+}
+
+var _default = [whenMapDispatchToPropsIsFunction, whenMapDispatchToPropsIsMissing, whenMapDispatchToPropsIsObject];
+exports["default"] = _default;
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","../utils/bindActionCreators":"21ucm","./wrapMapToProps":"7rpe9"}],"21ucm":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = bindActionCreators;
+
+function bindActionCreators(actionCreators, dispatch) {
+  var boundActionCreators = {};
+
+  var _loop = function _loop(key) {
+    var actionCreator = actionCreators[key];
+
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = function () {
+        return dispatch(actionCreator.apply(void 0, arguments));
+      };
+    }
+  };
+
+  for (var key in actionCreators) {
+    _loop(key);
+  }
+
+  return boundActionCreators;
+}
+},{}],"7rpe9":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports.wrapMapToPropsConstant = wrapMapToPropsConstant;
+exports.getDependsOnOwnProps = getDependsOnOwnProps;
+exports.wrapMapToPropsFunc = wrapMapToPropsFunc;
+var _verifyPlainObject = _interopRequireDefault(require("../utils/verifyPlainObject"));
+function wrapMapToPropsConstant(getConstant) {
+  return function initConstantSelector(dispatch, options) {
+    var constant = getConstant(dispatch, options);
+    function constantSelector() {
+      return constant;
+    }
+    constantSelector.dependsOnOwnProps = false;
+    return constantSelector;
+  };
+}
+// dependsOnOwnProps is used by createMapToPropsProxy to determine whether to pass props as args
+// to the mapToProps function being wrapped. It is also used by makePurePropsSelector to determine
+// whether mapToProps needs to be invoked when props have changed.
+// 
+// A length of one signals that mapToProps does not depend on props from the parent component.
+// A length of zero is assumed to mean mapToProps is getting args via arguments or ...args and
+// therefore not reporting its length accurately..
+function getDependsOnOwnProps(mapToProps) {
+  return mapToProps.dependsOnOwnProps !== null && mapToProps.dependsOnOwnProps !== undefined ? Boolean(mapToProps.dependsOnOwnProps) : mapToProps.length !== 1;
+}
+// Used by whenMapStateToPropsIsFunction and whenMapDispatchToPropsIsFunction,
+// this function wraps mapToProps in a proxy function which does several things:
+// 
+// * Detects whether the mapToProps function being called depends on props, which
+// is used by selectorFactory to decide if it should reinvoke on props changes.
+// 
+// * On first call, handles mapToProps if returns another function, and treats that
+// new function as the true mapToProps for subsequent calls.
+// 
+// * On first call, verifies the first result is a plain object, in order to warn
+// the developer that their mapToProps function is not returning a valid result.
+// 
+function wrapMapToPropsFunc(mapToProps, methodName) {
+  return function initProxySelector(dispatch, _ref) {
+    var displayName = _ref.displayName;
+    var proxy = function mapToPropsProxy(stateOrDispatch, ownProps) {
+      return proxy.dependsOnOwnProps ? proxy.mapToProps(stateOrDispatch, ownProps) : proxy.mapToProps(stateOrDispatch);
+    };
+    // allow detectFactoryAndVerify to get ownProps
+    proxy.dependsOnOwnProps = true;
+    proxy.mapToProps = function detectFactoryAndVerify(stateOrDispatch, ownProps) {
+      proxy.mapToProps = mapToProps;
+      proxy.dependsOnOwnProps = getDependsOnOwnProps(mapToProps);
+      var props = proxy(stateOrDispatch, ownProps);
+      if (typeof props === 'function') {
+        proxy.mapToProps = props;
+        proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
+        props = proxy(stateOrDispatch, ownProps);
+      }
+      if ("development" !== 'production') (0, _verifyPlainObject["default"])(props, displayName, methodName);
+      return props;
+    };
+    return proxy;
+  };
+}
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","../utils/verifyPlainObject":"4G4Zn"}],"4G4Zn":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports["default"] = verifyPlainObject;
+
+var _isPlainObject = _interopRequireDefault(require("./isPlainObject"));
+
+var _warning = _interopRequireDefault(require("./warning"));
+
+function verifyPlainObject(value, displayName, methodName) {
+  if (!(0, _isPlainObject["default"])(value)) {
+    (0, _warning["default"])(methodName + "() in " + displayName + " must return a plain object. Instead received " + value + ".");
+  }
+}
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","./isPlainObject":"Gqg7l","./warning":"2YNtu"}],"Gqg7l":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = isPlainObject;
+
+/**
+ * @param {any} obj The object to inspect.
+ * @returns {boolean} True if the argument appears to be a plain object.
+ */
+function isPlainObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+  var proto = Object.getPrototypeOf(obj);
+  if (proto === null) return true;
+  var baseProto = proto;
+
+  while (Object.getPrototypeOf(baseProto) !== null) {
+    baseProto = Object.getPrototypeOf(baseProto);
+  }
+
+  return proto === baseProto;
+}
+},{}],"2YNtu":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports["default"] = warning;
+
+/**
+ * Prints a warning in the console if it exists.
+ *
+ * @param {String} message The warning message.
+ * @returns {void}
+ */
+function warning(message) {
+  /* eslint-disable no-console */
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /* eslint-enable no-console */
+
+
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+    /* eslint-disable no-empty */
+  } catch (e) {}
+  /* eslint-enable no-empty */
+
+}
+},{}],"6esSH":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.whenMapStateToPropsIsFunction = whenMapStateToPropsIsFunction;
+exports.whenMapStateToPropsIsMissing = whenMapStateToPropsIsMissing;
+exports["default"] = void 0;
+
+var _wrapMapToProps = require("./wrapMapToProps");
+
+function whenMapStateToPropsIsFunction(mapStateToProps) {
+  return typeof mapStateToProps === 'function' ? (0, _wrapMapToProps.wrapMapToPropsFunc)(mapStateToProps, 'mapStateToProps') : undefined;
+}
+
+function whenMapStateToPropsIsMissing(mapStateToProps) {
+  return !mapStateToProps ? (0, _wrapMapToProps.wrapMapToPropsConstant)(function () {
+    return {};
+  }) : undefined;
+}
+
+var _default = [whenMapStateToPropsIsFunction, whenMapStateToPropsIsMissing];
+exports["default"] = _default;
+},{"./wrapMapToProps":"7rpe9"}],"4XiYM":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports.defaultMergeProps = defaultMergeProps;
+exports.wrapMergePropsFunc = wrapMergePropsFunc;
+exports.whenMergePropsIsFunction = whenMergePropsIsFunction;
+exports.whenMergePropsIsOmitted = whenMergePropsIsOmitted;
+exports["default"] = void 0;
+var _extends2 = _interopRequireDefault(require("@babel/runtime/helpers/extends"));
+var _verifyPlainObject = _interopRequireDefault(require("../utils/verifyPlainObject"));
+function defaultMergeProps(stateProps, dispatchProps, ownProps) {
+  return (0, _extends2["default"])({}, ownProps, stateProps, dispatchProps);
+}
+function wrapMergePropsFunc(mergeProps) {
+  return function initMergePropsProxy(dispatch, _ref) {
+    var displayName = _ref.displayName, pure = _ref.pure, areMergedPropsEqual = _ref.areMergedPropsEqual;
+    var hasRunOnce = false;
+    var mergedProps;
+    return function mergePropsProxy(stateProps, dispatchProps, ownProps) {
+      var nextMergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+      if (hasRunOnce) {
+        if (!pure || !areMergedPropsEqual(nextMergedProps, mergedProps)) mergedProps = nextMergedProps;
+      } else {
+        hasRunOnce = true;
+        mergedProps = nextMergedProps;
+        if ("development" !== 'production') (0, _verifyPlainObject["default"])(mergedProps, displayName, 'mergeProps');
+      }
+      return mergedProps;
+    };
+  };
+}
+function whenMergePropsIsFunction(mergeProps) {
+  return typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
+}
+function whenMergePropsIsOmitted(mergeProps) {
+  return !mergeProps ? function () {
+    return defaultMergeProps;
+  } : undefined;
+}
+var _default = [whenMergePropsIsFunction, whenMergePropsIsOmitted];
+exports["default"] = _default;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/extends":"3krLJ","../utils/verifyPlainObject":"4G4Zn"}],"XQRNr":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports.impureFinalPropsSelectorFactory = impureFinalPropsSelectorFactory;
+exports.pureFinalPropsSelectorFactory = pureFinalPropsSelectorFactory;
+exports["default"] = finalPropsSelectorFactory;
+var _objectWithoutPropertiesLoose2 = _interopRequireDefault(require("@babel/runtime/helpers/objectWithoutPropertiesLoose"));
+var _verifySubselectors = _interopRequireDefault(require("./verifySubselectors"));
+function impureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch) {
+  return function impureFinalPropsSelector(state, ownProps) {
+    return mergeProps(mapStateToProps(state, ownProps), mapDispatchToProps(dispatch, ownProps), ownProps);
+  };
+}
+function pureFinalPropsSelectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, _ref) {
+  var areStatesEqual = _ref.areStatesEqual, areOwnPropsEqual = _ref.areOwnPropsEqual, areStatePropsEqual = _ref.areStatePropsEqual;
+  var hasRunAtLeastOnce = false;
+  var state;
+  var ownProps;
+  var stateProps;
+  var dispatchProps;
+  var mergedProps;
+  function handleFirstCall(firstState, firstOwnProps) {
+    state = firstState;
+    ownProps = firstOwnProps;
+    stateProps = mapStateToProps(state, ownProps);
+    dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    hasRunAtLeastOnce = true;
+    return mergedProps;
+  }
+  function handleNewPropsAndNewState() {
+    stateProps = mapStateToProps(state, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleNewProps() {
+    if (mapStateToProps.dependsOnOwnProps) stateProps = mapStateToProps(state, ownProps);
+    if (mapDispatchToProps.dependsOnOwnProps) dispatchProps = mapDispatchToProps(dispatch, ownProps);
+    mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleNewState() {
+    var nextStateProps = mapStateToProps(state, ownProps);
+    var statePropsChanged = !areStatePropsEqual(nextStateProps, stateProps);
+    stateProps = nextStateProps;
+    if (statePropsChanged) mergedProps = mergeProps(stateProps, dispatchProps, ownProps);
+    return mergedProps;
+  }
+  function handleSubsequentCalls(nextState, nextOwnProps) {
+    var propsChanged = !areOwnPropsEqual(nextOwnProps, ownProps);
+    var stateChanged = !areStatesEqual(nextState, state);
+    state = nextState;
+    ownProps = nextOwnProps;
+    if (propsChanged && stateChanged) return handleNewPropsAndNewState();
+    if (propsChanged) return handleNewProps();
+    if (stateChanged) return handleNewState();
+    return mergedProps;
+  }
+  return function pureFinalPropsSelector(nextState, nextOwnProps) {
+    return hasRunAtLeastOnce ? handleSubsequentCalls(nextState, nextOwnProps) : handleFirstCall(nextState, nextOwnProps);
+  };
+}
+// TODO: Add more comments
+// If pure is true, the selector returned by selectorFactory will memoize its results,
+// allowing connectAdvanced's shouldComponentUpdate to return false if final
+// props have not changed. If false, the selector will always return a new
+// object and shouldComponentUpdate will always return true.
+function finalPropsSelectorFactory(dispatch, _ref2) {
+  var initMapStateToProps = _ref2.initMapStateToProps, initMapDispatchToProps = _ref2.initMapDispatchToProps, initMergeProps = _ref2.initMergeProps, options = (0, _objectWithoutPropertiesLoose2["default"])(_ref2, ["initMapStateToProps", "initMapDispatchToProps", "initMergeProps"]);
+  var mapStateToProps = initMapStateToProps(dispatch, options);
+  var mapDispatchToProps = initMapDispatchToProps(dispatch, options);
+  var mergeProps = initMergeProps(dispatch, options);
+  if ("development" !== 'production') {
+    (0, _verifySubselectors["default"])(mapStateToProps, mapDispatchToProps, mergeProps, options.displayName);
+  }
+  var selectorFactory = options.pure ? pureFinalPropsSelectorFactory : impureFinalPropsSelectorFactory;
+  return selectorFactory(mapStateToProps, mapDispatchToProps, mergeProps, dispatch, options);
+}
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","@babel/runtime/helpers/objectWithoutPropertiesLoose":"3Yx9V","./verifySubselectors":"5MUxF"}],"5MUxF":[function(require,module,exports) {
+"use strict";
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+exports.__esModule = true;
+exports["default"] = verifySubselectors;
+
+var _warning = _interopRequireDefault(require("../utils/warning"));
+
+function verify(selector, methodName, displayName) {
+  if (!selector) {
+    throw new Error("Unexpected value for " + methodName + " in " + displayName + ".");
+  } else if (methodName === 'mapStateToProps' || methodName === 'mapDispatchToProps') {
+    if (!Object.prototype.hasOwnProperty.call(selector, 'dependsOnOwnProps')) {
+      (0, _warning["default"])("The selector for " + methodName + " of " + displayName + " did not specify a value for dependsOnOwnProps.");
+    }
+  }
+}
+
+function verifySubselectors(mapStateToProps, mapDispatchToProps, mergeProps, displayName) {
+  verify(mapStateToProps, 'mapStateToProps', displayName);
+  verify(mapDispatchToProps, 'mapDispatchToProps', displayName);
+  verify(mergeProps, 'mergeProps', displayName);
+}
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","../utils/warning":"2YNtu"}],"4H7HK":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.createDispatchHook = createDispatchHook;
+exports.useDispatch = void 0;
+
+var _Context = require("../components/Context");
+
+var _useStore = require("./useStore");
+
+/**
+ * Hook factory, which creates a `useDispatch` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useDispatch` hook bound to the specified context.
+ */
+function createDispatchHook(context) {
+  if (context === void 0) {
+    context = _Context.ReactReduxContext;
+  }
+
+  var useStore = context === _Context.ReactReduxContext ? _useStore.useStore : (0, _useStore.createStoreHook)(context);
+  return function useDispatch() {
+    var store = useStore();
+    return store.dispatch;
+  };
+}
+/**
+ * A hook to access the redux `dispatch` function.
+ *
+ * @returns {any|function} redux store's `dispatch` function
+ *
+ * @example
+ *
+ * import React, { useCallback } from 'react'
+ * import { useDispatch } from 'react-redux'
+ *
+ * export const CounterComponent = ({ value }) => {
+ *   const dispatch = useDispatch()
+ *   const increaseCounter = useCallback(() => dispatch({ type: 'increase-counter' }), [])
+ *   return (
+ *     <div>
+ *       <span>{value}</span>
+ *       <button onClick={increaseCounter}>Increase counter</button>
+ *     </div>
+ *   )
+ * }
+ */
+
+
+var useDispatch = /*#__PURE__*/createDispatchHook();
+exports.useDispatch = useDispatch;
+},{"../components/Context":"6ScOK","./useStore":"5zPKn"}],"5zPKn":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.createStoreHook = createStoreHook;
+exports.useStore = void 0;
+
+var _react = require("react");
+
+var _Context = require("../components/Context");
+
+var _useReduxContext2 = require("./useReduxContext");
+
+/**
+ * Hook factory, which creates a `useStore` hook bound to a given context.
+ *
+ * @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+ * @returns {Function} A `useStore` hook bound to the specified context.
+ */
+function createStoreHook(context) {
+  if (context === void 0) {
+    context = _Context.ReactReduxContext;
+  }
+
+  var useReduxContext = context === _Context.ReactReduxContext ? _useReduxContext2.useReduxContext : function () {
+    return (0, _react.useContext)(context);
+  };
+  return function useStore() {
+    var _useReduxContext = useReduxContext(),
+        store = _useReduxContext.store;
+
+    return store;
+  };
+}
+/**
+ * A hook to access the redux store.
+ *
+ * @returns {any} the redux store
+ *
+ * @example
+ *
+ * import React from 'react'
+ * import { useStore } from 'react-redux'
+ *
+ * export const ExampleComponent = () => {
+ *   const store = useStore()
+ *   return <div>{store.getState()}</div>
+ * }
+ */
+
+
+var useStore = /*#__PURE__*/createStoreHook();
+exports.useStore = useStore;
+},{"react":"3b2NM","../components/Context":"6ScOK","./useReduxContext":"46ppV"}],"46ppV":[function(require,module,exports) {
+"use strict";
+exports.__esModule = true;
+exports.useReduxContext = useReduxContext;
+var _react = require("react");
+var _Context = require("../components/Context");
+/**
+* A hook to access the value of the `ReactReduxContext`. This is a low-level
+* hook that you should usually not need to call directly.
+*
+* @returns {any} the value of the `ReactReduxContext`
+*
+* @example
+*
+* import React from 'react'
+* import { useReduxContext } from 'react-redux'
+*
+* export const CounterComponent = ({ value }) => {
+*   const { store } = useReduxContext()
+*   return <div>{store.getState()}</div>
+* }
+*/
+function useReduxContext() {
+  var contextValue = (0, _react.useContext)(_Context.ReactReduxContext);
+  if ("development" !== 'production' && !contextValue) {
+    throw new Error('could not find react-redux context value; please ensure the component is wrapped in a <Provider>');
+  }
+  return contextValue;
+}
+
+},{"react":"3b2NM","../components/Context":"6ScOK"}],"6dv0a":[function(require,module,exports) {
+"use strict";
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+exports.__esModule = true;
+exports.createSelectorHook = createSelectorHook;
+exports.useSelector = void 0;
+var _react = require("react");
+var _useReduxContext2 = require("./useReduxContext");
+var _Subscription = _interopRequireDefault(require("../utils/Subscription"));
+var _useIsomorphicLayoutEffect = require("../utils/useIsomorphicLayoutEffect");
+var _Context = require("../components/Context");
+var refEquality = function refEquality(a, b) {
+  return a === b;
+};
+function useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub) {
+  var _useReducer = (0, _react.useReducer)(function (s) {
+    return s + 1;
+  }, 0), forceRender = _useReducer[1];
+  var subscription = (0, _react.useMemo)(function () {
+    return new _Subscription["default"](store, contextSub);
+  }, [store, contextSub]);
+  var latestSubscriptionCallbackError = (0, _react.useRef)();
+  var latestSelector = (0, _react.useRef)();
+  var latestStoreState = (0, _react.useRef)();
+  var latestSelectedState = (0, _react.useRef)();
+  var storeState = store.getState();
+  var selectedState;
+  try {
+    if (selector !== latestSelector.current || storeState !== latestStoreState.current || latestSubscriptionCallbackError.current) {
+      var newSelectedState = selector(storeState);
+      // ensure latest selected state is reused so that a custom equality function can result in identical references
+      if (latestSelectedState.current === undefined || !equalityFn(newSelectedState, latestSelectedState.current)) {
+        selectedState = newSelectedState;
+      } else {
+        selectedState = latestSelectedState.current;
+      }
+    } else {
+      selectedState = latestSelectedState.current;
+    }
+  } catch (err) {
+    if (latestSubscriptionCallbackError.current) {
+      err.message += "\nThe error may be correlated with this previous error:\n" + latestSubscriptionCallbackError.current.stack + "\n\n";
+    }
+    throw err;
+  }
+  (0, _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect)(function () {
+    latestSelector.current = selector;
+    latestStoreState.current = storeState;
+    latestSelectedState.current = selectedState;
+    latestSubscriptionCallbackError.current = undefined;
+  });
+  (0, _useIsomorphicLayoutEffect.useIsomorphicLayoutEffect)(function () {
+    function checkForUpdates() {
+      try {
+        var newStoreState = store.getState();
+        var _newSelectedState = latestSelector.current(newStoreState);
+        if (equalityFn(_newSelectedState, latestSelectedState.current)) {
+          return;
+        }
+        latestSelectedState.current = _newSelectedState;
+        latestStoreState.current = newStoreState;
+      } catch (err) {
+        // we ignore all errors here, since when the component
+        // is re-rendered, the selectors are called again, and
+        // will throw again, if neither props nor store state
+        // changed
+        latestSubscriptionCallbackError.current = err;
+      }
+      forceRender();
+    }
+    subscription.onStateChange = checkForUpdates;
+    subscription.trySubscribe();
+    checkForUpdates();
+    return function () {
+      return subscription.tryUnsubscribe();
+    };
+  }, [store, subscription]);
+  return selectedState;
+}
+/**
+* Hook factory, which creates a `useSelector` hook bound to a given context.
+*
+* @param {React.Context} [context=ReactReduxContext] Context passed to your `<Provider>`.
+* @returns {Function} A `useSelector` hook bound to the specified context.
+*/
+function createSelectorHook(context) {
+  if (context === void 0) {
+    context = _Context.ReactReduxContext;
+  }
+  var useReduxContext = context === _Context.ReactReduxContext ? _useReduxContext2.useReduxContext : function () {
+    return (0, _react.useContext)(context);
+  };
+  return function useSelector(selector, equalityFn) {
+    if (equalityFn === void 0) {
+      equalityFn = refEquality;
+    }
+    if ("development" !== 'production') {
+      if (!selector) {
+        throw new Error("You must pass a selector to useSelector");
+      }
+      if (typeof selector !== 'function') {
+        throw new Error("You must pass a function as a selector to useSelector");
+      }
+      if (typeof equalityFn !== 'function') {
+        throw new Error("You must pass a function as an equality function to useSelector");
+      }
+    }
+    var _useReduxContext = useReduxContext(), store = _useReduxContext.store, contextSub = _useReduxContext.subscription;
+    var selectedState = useSelectorWithStoreAndSubscription(selector, equalityFn, store, contextSub);
+    (0, _react.useDebugValue)(selectedState);
+    return selectedState;
+  };
+}
+/**
+* A hook to access the redux store's state. This hook takes a selector function
+* as an argument. The selector is called with the store state.
+*
+* This hook takes an optional equality comparison function as the second parameter
+* that allows you to customize the way the selected state is compared to determine
+* whether the component needs to be re-rendered.
+*
+* @param {Function} selector the selector function
+* @param {Function=} equalityFn the function that will be used to determine equality
+*
+* @returns {any} the selected state
+*
+* @example
+*
+* import React from 'react'
+* import { useSelector } from 'react-redux'
+*
+* export const CounterComponent = () => {
+*   const counter = useSelector(state => state.counter)
+*   return <div>{counter}</div>
+* }
+*/
+var useSelector = /*#__PURE__*/createSelectorHook();
+exports.useSelector = useSelector;
+
+},{"@babel/runtime/helpers/interopRequireDefault":"4ttVj","react":"3b2NM","./useReduxContext":"46ppV","../utils/Subscription":"Y1J0m","../utils/useIsomorphicLayoutEffect":"64Bcp","../components/Context":"6ScOK"}],"12gEH":[function(require,module,exports) {
+"use strict";
+
+exports.__esModule = true;
+exports.unstable_batchedUpdates = void 0;
+
+var _reactDom = require("react-dom");
+
+exports.unstable_batchedUpdates = _reactDom.unstable_batchedUpdates;
+},{"react-dom":"2sg1U"}],"5S6cN":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+_parcelHelpers.export(exports, "SET_MOVIES", function () {
+  return SET_MOVIES;
+});
+_parcelHelpers.export(exports, "SET_FILTER", function () {
+  return SET_FILTER;
+});
+_parcelHelpers.export(exports, "GET_FAVORITES", function () {
+  return GET_FAVORITES;
+});
+_parcelHelpers.export(exports, "TOGGLE_FAVORITE", function () {
+  return TOGGLE_FAVORITE;
+});
+_parcelHelpers.export(exports, "VALIDATE_USER", function () {
+  return VALIDATE_USER;
+});
+_parcelHelpers.export(exports, "SET_USER", function () {
+  return SET_USER;
+});
+_parcelHelpers.export(exports, "LOGOUT_USER", function () {
+  return LOGOUT_USER;
+});
+_parcelHelpers.export(exports, "DELETE_USER", function () {
+  return DELETE_USER;
+});
+_parcelHelpers.export(exports, "SetMovies", function () {
+  return SetMovies;
+});
+_parcelHelpers.export(exports, "SetFilter", function () {
+  return SetFilter;
+});
+_parcelHelpers.export(exports, "GeFavorites", function () {
+  return GeFavorites;
+});
+_parcelHelpers.export(exports, "ToggleFavorites", function () {
+  return ToggleFavorites;
+});
+_parcelHelpers.export(exports, "ValidateUser", function () {
+  return ValidateUser;
+});
+_parcelHelpers.export(exports, "SetUser", function () {
+  return SetUser;
+});
+_parcelHelpers.export(exports, "LogoutUser", function () {
+  return LogoutUser;
+});
+_parcelHelpers.export(exports, "UpdateUser", function () {
+  return UpdateUser;
+});
+_parcelHelpers.export(exports, "DeleteUser", function () {
+  return DeleteUser;
+});
+const SET_MOVIES = "Set movies";
+const SET_FILTER = 'Set filter';
+const GET_FAVORITES = "Get favorites";
+const TOGGLE_FAVORITE = "Toggle favorite";
+const VALIDATE_USER = "Validate User";
+const SET_USER = "Set user";
+const LOGOUT_USER = "Logout user";
+const DELETE_USER = "Delete user";
+function SetMovies(value) {
+  return {
+    type: SET_MOVIES,
+    value
+  };
+}
+_c = SetMovies;
+const SetFilter = value => ({
+  type: SET_FILTER,
+  value
+});
+_c2 = SetFilter;
+const GeFavorites = () => ({
+  type: GET_FAVORITES,
+  token
+});
+_c3 = GeFavorites;
+const ToggleFavorites = (value, field = "FavoriteMovies") => ({
+  type: TOGGLE_FAVORITE,
+  value,
+  field
+});
+_c4 = ToggleFavorites;
+const ValidateUser = (value = {
+  Username: "",
+  Name: "",
+  Email: "",
+  Password: "",
+  Birthday: ""
+}, field = null) => ({
+  type: VALIDATE_USER,
+  value,
+  field
+});
+_c5 = ValidateUser;
+const SetUser = value => ({
+  type: SET_USER,
+  value
+});
+_c6 = SetUser;
+const LogoutUser = () => ({
+  type: LOGOUT_USER
+});
+_c7 = LogoutUser;
+const UpdateUser = (value, field = null) => ({
+  type: UPDATE_USER,
+  value,
+  field
+});
+_c8 = UpdateUser;
+const DeleteUser = username => ({
+  type: DELETE_USER,
+  username
+});
+_c9 = DeleteUser;
+var _c, _c2, _c3, _c4, _c5, _c6, _c7, _c8, _c9;
+$RefreshReg$(_c, "SetMovies");
+$RefreshReg$(_c2, "SetFilter");
+$RefreshReg$(_c3, "GeFavorites");
+$RefreshReg$(_c4, "ToggleFavorites");
+$RefreshReg$(_c5, "ValidateUser");
+$RefreshReg$(_c6, "SetUser");
+$RefreshReg$(_c7, "LogoutUser");
+$RefreshReg$(_c8, "UpdateUser");
+$RefreshReg$(_c9, "DeleteUser");
+
+},{"@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3CncI":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -46361,13 +47823,12 @@ try {
   var _axiosDefault = _parcelHelpers.interopDefault(_axios);
   var _propTypes = require('prop-types');
   var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+  var _reactRedux = require('react-redux');
+  var _actionsActions = require('../../actions/actions');
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
   var _reactBootstrapForm = require('react-bootstrap/Form');
   var _reactBootstrapFormDefault = _parcelHelpers.interopDefault(_reactBootstrapForm);
-  require('react-bootstrap/FormGroup');
-  require('react-bootstrap/FormLabel');
-  require('react-bootstrap/FormControl');
   var _reactBootstrapCol = require('react-bootstrap/Col');
   var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
   var _reactBootstrapRow = require('react-bootstrap/Row');
@@ -46386,23 +47847,19 @@ try {
   var _modalComponentModalComponentDefault = _parcelHelpers.interopDefault(_modalComponentModalComponent);
   require('./profile-view.scss');
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/profile-view/profile-view.jsx", _s = $RefreshSig$();
-  function ProfileView({movies, logOut}) {
+  const mapStateToProps = state => {
+    return {
+      user: state.user,
+      movies: state.movies
+    };
+  };
+  function ProfileView({movies, logOut, ValidateUser, SetUser, user, ToggleFavorites}) {
     _s();
     const [isSuccessful, setisSuccessful] = _react.useState(false);
     // used for Snackback that appears when update is successful
-    const [favorites, setFavorites] = _react.useState([{
-      Title: "none"
-    }]);
+    const [favorites, setFavorites] = _react.useState([]);
     // array of movie objects that have been added to FavoriteMovies Array
-    const [favIds, setFavIds] = _react.useState([]);
-    // an Array of movie IDs that have been added to FavoriteMovies
-    /*Values from input fields and/or fetched use data*/
-    const [name, setName] = _react.useState("");
-    const [username, setUsername] = _react.useState("");
-    const [email, setEmail] = _react.useState("");
-    const [password, setPassword] = _react.useState("");
     const [passwordRepeat, setPasswordRepeat] = _react.useState("");
-    const [birthday, setBirthday] = _react.useState("");
     const localUsername = localStorage.getItem('user');
     // real username to make axios requests
     const token = localStorage.getItem('token');
@@ -46413,14 +47870,6 @@ try {
     const [emailErr, setEmailErr] = _react.useState({});
     const [passwordErr, setPasswordErr] = _react.useState({});
     const [birthdayErr, setBirthdayErr] = _react.useState({});
-    /*converts Array of IDs into Object on movies*/
-    const getFavs = favs => {
-      let favoriteMovieList = [];
-      movies.forEach(movie => {
-        favs.includes(movie._id) ? favoriteMovieList.push(movie) : null;
-      });
-      setFavorites(favoriteMovieList);
-    };
     /*When component renders for the first time, this fetches user data*/
     _react.useEffect(() => {
       _axiosDefault.default.get(`https://myflix-0001.herokuapp.com/users/${localUsername}`, {
@@ -46428,32 +47877,37 @@ try {
           "Authorization": `Bearer ${token}`
         }
       }).then(res => {
-        setName(res.data.Name);
-        setUsername(res.data.Username);
-        setEmail(res.data.Email);
-        setPassword(res.data.Password);
-        const date = res.data.Birthday.substring(0, 10);
-        setBirthday(date);
-        setFavIds(res.data.FavoriteMovies);
+        const userData = {
+          ...res.data,
+          Birthday: res.data.Birthday.substring(0, 10)
+        };
+        SetUser(userData);
       }).catch(e => {
         console.log(e);
       });
     }, []);
-    /*When Array of IDs change and are not empty, convert to a array of movie objects*/
     _react.useEffect(() => {
-      favIds ? getFavs(favIds) : setFavorites({});
-    }, [favIds]);
+      getFavs(user.FavoriteMovies);
+    }, []);
+    /*converts Array of IDs into Object of movies*/
+    const getFavs = favs => {
+      let favoriteMovieList = [];
+      movies.forEach(movie => {
+        favs.includes(movie._id) ? favoriteMovieList.push(movie) : favoriteMovieList;
+      });
+      setFavorites(favoriteMovieList);
+    };
     /*Event handler for updating user data*/
     const updateUserData = e => {
       e.preventDefault();
       let isValid = formValidation();
       if (isValid) {
-        _axiosDefault.default.put(`https://myflix-0001.herokuapp.com/users/${username}`, {
-          Name: name,
-          Username: username,
-          Email: email,
-          Password: password,
-          Birthday: birthday
+        _axiosDefault.default.put(`https://myflix-0001.herokuapp.com/users/${user.Username}`, {
+          Name: user.Name,
+          Username: user.Username,
+          Email: user.Email,
+          Password: user.Password,
+          Birthday: user.Birthday
         }, {
           headers: {
             "Authorization": `Bearer ${token}`
@@ -46465,25 +47919,35 @@ try {
         });
       }
     };
-    /*Deletes Favrorite from List of favorites*/
-    const deleteFav = favId => {
-      _axiosDefault.default.delete(`https://myflix-0001.herokuapp.com/users/${username}/movies/${favId}`, {
+    const toggleFav = movieId => {
+      user.FavoriteMovies.includes(movieId) ? _axiosDefault.default.delete(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       }).then(res => {
-        setFavIds(res.data.FavoriteMovies);
+        ToggleFavorites(res.data.FavoriteMovies);
+        getFavs(res.data.FavoriteMovies);
       }).catch(e => {
         console.log(e);
+      }) : _axiosDefault.default.put(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, {}, {
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      }).then(res => {
+        ToggleFavorites(res.data.FavoriteMovies);
+        getFavs(res.data.FavoriteMovies);
+      }).catch(e => {
+        console.log(e.message);
       });
     };
     /*Event handle for account deletion*/
     const handleAccountDelete = () => {
-      _axiosDefault.default.delete(`https://myflix-0001.herokuapp.com/users/${username}`, {
+      _axiosDefault.default.delete(`https://myflix-0001.herokuapp.com/users/${user.Username}`, {
         headers: {
           "Authorization": `Bearer ${token}`
         }
       }).then(res => {
+        console.info(res);
         logOut();
       });
     };
@@ -46495,31 +47959,31 @@ try {
       const passwordErr = {};
       const birthdayErr = {};
       let isValid = true;
-      if (name.trim().length === 0) {
+      if (user.Name.trim().length === 0) {
         nameErr.nameIsEmpty = "Please enter a name.";
         isValid = false;
       }
-      if (username.trim().length < 3) {
+      if (user.Username.trim().length < 3) {
         usernameErr.usernameTooShort = "Username must be at least 3 characters long";
         isValid = false;
       }
       ;
-      if (!email.includes("@")) {
+      if (!user.Email.includes("@")) {
         emailErr.noEmail = "This is not a valid e-mail.";
         isValid = false;
       }
       ;
-      if (password.trim().length < 8) {
+      if (user.Password.trim().length < 8) {
         passwordErr.passwordTooShort = "Password must be at least 8 characters long";
         isValid = false;
       }
       ;
-      if (password !== passwordRepeat) {
+      if (user.Password !== passwordRepeat) {
         passwordErr.passwordNoMatch = "Passwords don't match.";
         isValid = false;
       }
       ;
-      if (birthday.trim().length === 0) {
+      if (user.Birthday.trim().length === 0) {
         birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
         isValid = false;
       }
@@ -46538,10 +48002,10 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 169,
+          lineNumber: 173,
           columnNumber: 13
         }
-      }), favorites.length > 0 && /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+      }), favorites.length > 0 ? /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 12,
         sm: 8,
         md: 6,
@@ -46551,7 +48015,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 172,
+          lineNumber: 176,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
@@ -46560,14 +48024,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 173,
+          lineNumber: 177,
           columnNumber: 21
         }
       }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 174,
+          lineNumber: 178,
           columnNumber: 21
         }
       }, favorites.map(fav => {
@@ -46583,7 +48047,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 178,
+              lineNumber: 182,
               columnNumber: 33
             }
           }, /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCardDefault.default, {
@@ -46591,24 +48055,189 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 179,
+              lineNumber: 183,
               columnNumber: 37
             }
-          }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
-            onClick: () => deleteFav(fav._id),
-            type: "submit ",
-            className: "mt-3",
-            size: "sm",
-            variant: "outline-danger",
+          }), /*#__PURE__*/_reactDefault.default.createElement("div", {
+            onClick: () => toggleFav(fav._id),
+            className: "favstar mt-2",
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 180,
+              lineNumber: 184,
               columnNumber: 37
             }
-          }, "Delete"))
+          }, /*#__PURE__*/_reactDefault.default.createElement("i", {
+            className: "bi bi-star-fill mr-3 mt-3",
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 185,
+              columnNumber: 41
+            }
+          }), /*#__PURE__*/_reactDefault.default.createElement("span", {
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 186,
+              columnNumber: 41
+            }
+          }, "Remove")))
         );
+      }))) : /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        xs: 12,
+        sm: 8,
+        md: 6,
+        lg: 6,
+        xl: 6,
+        className: "p-3 m-2",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 196,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
+        title: "My Favorites",
+        isVisible: true,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 197,
+          columnNumber: 25
+        }
+      }), /*#__PURE__*/_reactDefault.default.createElement("p", {
+        className: "tag-line",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 198,
+          columnNumber: 25
+        }
+      }, "Add Movies to your Favorites List."), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapRowDefault.default, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 200,
+          columnNumber: 25
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        xs: 6,
+        sm: 4,
+        md: 4,
+        lg: 3,
+        xl: 3,
+        className: "p-3",
+        key: "1",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 201,
+          columnNumber: 29
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "placeholder-favorite",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 202,
+          columnNumber: 33
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 203,
+          columnNumber: 37
+        }
       }))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        xs: 6,
+        sm: 4,
+        md: 4,
+        lg: 3,
+        xl: 3,
+        className: "p-3",
+        key: "2",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 206,
+          columnNumber: 29
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "placeholder-favorite",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 207,
+          columnNumber: 33
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 208,
+          columnNumber: 37
+        }
+      }))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        xs: 6,
+        sm: 4,
+        md: 4,
+        lg: 3,
+        xl: 3,
+        className: "p-3",
+        key: "3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 211,
+          columnNumber: 29
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "placeholder-favorite",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 212,
+          columnNumber: 33
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 213,
+          columnNumber: 37
+        }
+      }))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
+        xs: 6,
+        sm: 4,
+        md: 4,
+        lg: 3,
+        xl: 3,
+        className: "p-3",
+        key: "4",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 216,
+          columnNumber: 29
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        className: "placeholder-favorite",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 217,
+          columnNumber: 33
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement("div", {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 218,
+          columnNumber: 37
+        }
+      })))))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 12,
         sm: 8,
         md: 5,
@@ -46617,7 +48246,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 188,
+          lineNumber: 226,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_dividerComponentDividerComponentDefault.default, {
@@ -46626,7 +48255,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 189,
+          lineNumber: 227,
           columnNumber: 17
         }
       }), /*#__PURE__*/_reactDefault.default.createElement("p", {
@@ -46634,14 +48263,14 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 190,
+          lineNumber: 228,
           columnNumber: 17
         }
       }, "Update your user information."), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 192,
+          lineNumber: 230,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
@@ -46649,25 +48278,25 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 193,
+          lineNumber: 231,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 194,
+          lineNumber: 232,
           columnNumber: 25
         }
       }, "Name"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter full name",
-        value: name,
-        onChange: e => setName(e.target.value),
+        defaultValue: user.Name,
+        onChange: e => ValidateUser(e.target.value, "Name"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 195,
+          lineNumber: 233,
           columnNumber: 25
         }
       })), Object.keys(nameErr).map(key => {
@@ -46680,7 +48309,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 200,
+              lineNumber: 238,
               columnNumber: 32
             }
           }, nameErr[key])
@@ -46690,25 +48319,25 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 203,
+          lineNumber: 241,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 204,
+          lineNumber: 242,
           columnNumber: 25
         }
       }, "Username"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter username",
-        value: username,
-        onChange: e => setUsername(e.target.value),
+        defaultValue: user.Username,
+        onChange: e => ValidateUser(e.target.value, "Username"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 205,
+          lineNumber: 243,
           columnNumber: 25
         }
       })), Object.keys(usernameErr).map(key => {
@@ -46721,7 +48350,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 209,
+              lineNumber: 247,
               columnNumber: 32
             }
           }, usernameErr[key])
@@ -46731,25 +48360,25 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 212,
+          lineNumber: 250,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 213,
+          lineNumber: 251,
           columnNumber: 25
         }
       }, "Email Address"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "email",
         placeholder: "Enter email",
-        value: email,
-        onChange: e => setEmail(e.target.value),
+        defaultValue: user.Email,
+        onChange: e => ValidateUser(e.target.value, "Email"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 214,
+          lineNumber: 252,
           columnNumber: 25
         }
       })), Object.keys(emailErr).map(key => {
@@ -46762,7 +48391,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 218,
+              lineNumber: 256,
               columnNumber: 32
             }
           }, emailErr[key])
@@ -46772,25 +48401,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 221,
+          lineNumber: 259,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 222,
+          lineNumber: 260,
           columnNumber: 25
         }
       }, "Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "password",
         placeholder: "Password",
-        value: password,
-        onChange: e => setPassword(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Password"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 223,
+          lineNumber: 261,
           columnNumber: 25
         }
       })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
@@ -46798,25 +48426,25 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 226,
+          lineNumber: 264,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 227,
+          lineNumber: 265,
           columnNumber: 25
         }
       }, "Repeat Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "password",
         placeholder: "Repeat Password",
-        value: passwordRepeat,
+        defaultValue: passwordRepeat,
         onChange: e => setPasswordRepeat(e.target.value),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 228,
+          lineNumber: 266,
           columnNumber: 25
         }
       })), Object.keys(passwordErr).map(key => {
@@ -46829,7 +48457,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 232,
+              lineNumber: 270,
               columnNumber: 32
             }
           }, passwordErr[key])
@@ -46839,25 +48467,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 235,
+          lineNumber: 273,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 236,
+          lineNumber: 274,
           columnNumber: 25
         }
       }, "Birthday"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "date",
-        placeholder: "yyyy-mm-dd",
-        value: birthday,
-        onChange: e => setBirthday(e.target.value),
+        value: user.Birthday,
+        onChange: e => ValidateUser(e.target.value, "Birthday"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 237,
+          lineNumber: 275,
           columnNumber: 25
         }
       })), Object.keys(birthdayErr).map(key => {
@@ -46870,7 +48497,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 241,
+              lineNumber: 279,
               columnNumber: 32
             }
           }, birthdayErr[key])
@@ -46880,7 +48507,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 244,
+          lineNumber: 282,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
@@ -46888,11 +48515,11 @@ try {
         as: "div",
         variant: "dark",
         type: "submit",
-        className: "mt-3",
+        className: "mt-3 mr-3",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 245,
+          lineNumber: 283,
           columnNumber: 25
         }
       }, "Save Changes")), /*#__PURE__*/_reactDefault.default.createElement(_modalComponentModalComponentDefault.default, {
@@ -46900,15 +48527,15 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 249,
+          lineNumber: 287,
           columnNumber: 21
         }
       }))))
     );
   }
-  exports.default = ProfileView;
-  _s(ProfileView, "EnBGaOo3XzeUGcfm4srK1S7ZayQ=");
+  _s(ProfileView, "0hyf2rHRVkPtqw2SJBHkfs46Y20=");
   _c = ProfileView;
+  ;
   ProfileView.propTypes = {
     movies: _propTypesDefault.default.arrayOf(_propTypesDefault.default.shape({
       Title: _propTypesDefault.default.string.isRequired,
@@ -46928,8 +48555,20 @@ try {
       ImageUrl: _propTypesDefault.default.string.isRequired,
       Featured: _propTypesDefault.default.bool.isRequired
     })).isRequired,
+    user: _propTypesDefault.default.shape({
+      Name: _propTypesDefault.default.string.isRequired,
+      Username: _propTypesDefault.default.string.isRequired,
+      Email: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired,
+      Birthday: _propTypesDefault.default.string.isRequired
+    }).isRequired,
     logOut: _propTypesDefault.default.func.isRequired
   };
+  exports.default = _reactRedux.connect(mapStateToProps, {
+    ValidateUser: _actionsActions.ValidateUser,
+    SetUser: _actionsActions.SetUser,
+    ToggleFavorites: _actionsActions.ToggleFavorites
+  })(ProfileView);
   var _c;
   $RefreshReg$(_c, "ProfileView");
   helpers.postlude(module);
@@ -46938,7 +48577,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"axios":"7rA65","react":"3b2NM","react-bootstrap/Form":"6A5ko","react-bootstrap/FormGroup":"120iJ","react-bootstrap/FormLabel":"70qP9","react-bootstrap/FormControl":"573gP","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","react-bootstrap/Container":"3Mt3t","react-bootstrap/Button":"1ru0l","react-router-dom":"1PMSK","../divider-component/divider-component":"5YjoE","../snackbar-component/snackbar-component":"5o3zS","../movie-card/movie-card":"7v6h3","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","./profile-view.scss":"3kYjk","../modal-component/modal-component":"33GnC","prop-types":"4dfy5"}],"5YjoE":[function(require,module,exports) {
+},{"axios":"7rA65","react":"3b2NM","react-bootstrap/Form":"6A5ko","react-bootstrap/Col":"2D0r8","react-bootstrap/Row":"3fzwD","react-bootstrap/Container":"3Mt3t","react-bootstrap/Button":"1ru0l","react-router-dom":"1PMSK","../divider-component/divider-component":"5YjoE","../snackbar-component/snackbar-component":"5o3zS","../movie-card/movie-card":"7v6h3","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","./profile-view.scss":"3kYjk","../modal-component/modal-component":"33GnC","prop-types":"4dfy5","react-redux":"7GDa4","../../actions/actions":"5S6cN"}],"5YjoE":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -46991,7 +48630,100 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","./divider-component.scss":"hTCty","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"hTCty":[function() {},{}],"3kYjk":[function() {},{}],"33GnC":[function(require,module,exports) {
+},{"react":"3b2NM","./divider-component.scss":"hTCty","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"hTCty":[function() {},{}],"7v6h3":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require("react");
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _propTypes = require("prop-types");
+  var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
+  require("react-bootstrap");
+  var _reactBootstrapOverlayTrigger = require('react-bootstrap/OverlayTrigger');
+  var _reactBootstrapOverlayTriggerDefault = _parcelHelpers.interopDefault(_reactBootstrapOverlayTrigger);
+  var _reactBootstrapTooltip = require('react-bootstrap/Tooltip');
+  var _reactBootstrapTooltipDefault = _parcelHelpers.interopDefault(_reactBootstrapTooltip);
+  var _reactBootstrapImage = require('react-bootstrap/Image');
+  var _reactBootstrapImageDefault = _parcelHelpers.interopDefault(_reactBootstrapImage);
+  var _reactRouterDom = require("react-router-dom");
+  require("./movie-card.scss");
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-card/movie-card.jsx";
+  function MovieCard({movieData}) {
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapOverlayTriggerDefault.default, {
+        delay: "100",
+        placement: 'top',
+        overlay: /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapTooltipDefault.default, {
+          id: "tooltip-top",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 19,
+            columnNumber: 21
+          }
+        }, movieData.Title, " (", movieData.Year, ")"),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 15,
+          columnNumber: 13
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
+        to: `/movies/${movieData._id}`,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 24,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapImageDefault.default, {
+        className: "movie-image",
+        src: movieData.ImageUrl,
+        alt: movieData.Title,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 25,
+          columnNumber: 21
+        }
+      }))))
+    );
+  }
+  exports.default = MovieCard;
+  _c = MovieCard;
+  MovieCard.propTypes = {
+    movieData: _propTypesDefault.default.shape({
+      Title: _propTypesDefault.default.string.isRequired,
+      Description: _propTypesDefault.default.string.isRequired,
+      Director: _propTypesDefault.default.shape({
+        Name: _propTypesDefault.default.string.isRequired,
+        Bio: _propTypesDefault.default.string.isRequired,
+        Birth: _propTypesDefault.default.string
+      }).isRequired,
+      Year: _propTypesDefault.default.number.isRequired,
+      Genre: _propTypesDefault.default.shape({
+        Name: _propTypesDefault.default.string.isRequired,
+        Description: _propTypesDefault.default.string.isRequired
+      }).isRequired,
+      Actors: _propTypesDefault.default.array.isRequired,
+      _id: _propTypesDefault.default.string.isRequired,
+      ImageUrl: _propTypesDefault.default.string.isRequired,
+      Featured: _propTypesDefault.default.bool.isRequired
+    }).isRequired
+  };
+  var _c;
+  $RefreshReg$(_c, "MovieCard");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","prop-types":"4dfy5","react-bootstrap":"4n7hB","react-bootstrap/OverlayTrigger":"4VaCP","react-bootstrap/Tooltip":"2YAjd","react-bootstrap/Image":"5qrP5","react-router-dom":"1PMSK","./movie-card.scss":"43n4t","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"43n4t":[function() {},{}],"3kYjk":[function() {},{}],"33GnC":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -47013,7 +48745,7 @@ try {
         as: "div",
         variant: "danger",
         type: "submit",
-        className: "mt-3 ml-3",
+        className: "mt-3",
         __self: this,
         __source: {
           fileName: _jsxFileName,
@@ -47116,11 +48848,9 @@ helpers.prelude(module);
 try {
   var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
   _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "LoginView", function () {
-    return LoginView;
-  });
   var _axios = require('axios');
   var _axiosDefault = _parcelHelpers.interopDefault(_axios);
+  var _actionsActions = require('../../actions/actions');
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
   var _propTypes = require('prop-types');
@@ -47133,60 +48863,77 @@ try {
   require('react-bootstrap/Row');
   var _reactBootstrapCol = require('react-bootstrap/Col');
   var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
-  require('react-bootstrap');
   var _reactRouterDom = require("react-router-dom");
+  var _reactRedux = require('react-redux');
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/login-view/login-view.jsx", _s = $RefreshSig$();
-  function LoginView({onLoggedIn}) {
+  const mapStateToProps = state => {
+    return {
+      user: state.user
+    };
+  };
+  function LoginView({onLoggedIn, user, ValidateUser, SetUser}) {
     _s();
-    const [username, setUsername] = _react.useState("");
-    const [password, setPassword] = _react.useState("");
     const [usernameErr, setUsernameErr] = _react.useState({});
     const [passwordErr, setPasswordErr] = _react.useState({});
+    const [httpErr, setHttpErr] = _react.useState({});
+    _react.useEffect(() => {
+      SetUser({
+        Username: "",
+        Password: ""
+      });
+    }, []);
     const handleSubmit = e => {
       e.preventDefault();
       let isValid = formValidation();
       if (isValid) {
-        _axiosDefault.default.post(`https://myflix-0001.herokuapp.com/login?Username=${username}&Password=${password}`).then(res => {
+        _axiosDefault.default.post(`https://myflix-0001.herokuapp.com/login?Username=${user.Username}&Password=${user.Password}`).then(res => {
           onLoggedIn(res.data);
         }).catch(e => {
-          console.log(e);
+          console.log(e.response.status);
+          formValidation(e.response.status);
         });
       }
     };
-    const formValidation = () => {
+    const formValidation = statusCode => {
       const usernameErr = {};
       const passwordErr = {};
+      const httpErr = {};
       let isValid = true;
-      if (username.trim().length < 3) {
+      if (statusCode === 400) {
+        httpErr.wrongCredentials = "Username or password are incorrect. Please try again.";
+        isValid = false;
+      }
+      if (user.Username.trim().length < 3) {
         usernameErr.usernameTooShort = "Username must be at least 3 characters long";
         isValid = false;
       }
       ;
-      if (password.trim().length < 8) {
+      if (user.Password.trim().length < 8) {
         passwordErr.passwordTooShort = "Password must be at least 8 characters long";
         isValid = false;
       }
       ;
       setUsernameErr(usernameErr);
       setPasswordErr(passwordErr);
+      setHttpErr(httpErr);
       return isValid;
     };
     return (
       /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 8,
         md: "auto",
-        className: "mr-5",
+        className: "mr-5 mt-5",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 61,
+          lineNumber: 80,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 62,
+          lineNumber: 81,
           columnNumber: 17
         }
       }, "MyFlix"), /*#__PURE__*/_reactDefault.default.createElement("p", {
@@ -47194,24 +48941,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 63,
+          lineNumber: 82,
           columnNumber: 17
         }
       }, "Discover some of the best movies in cinema history.")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 8,
         md: 6,
-        className: "p-1",
+        className: "p-1 mt-5",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 66,
+          lineNumber: 85,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 67,
+          lineNumber: 86,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
@@ -47219,26 +48966,25 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 68,
+          lineNumber: 87,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 69,
+          lineNumber: 88,
           columnNumber: 25
         }
       }, "Username"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter username",
-        value: username,
-        onChange: e => setUsername(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Username"),
         required: true,
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 70,
+          lineNumber: 89,
           columnNumber: 25
         }
       })), Object.keys(usernameErr).map(key => {
@@ -47251,7 +48997,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 74,
+              lineNumber: 93,
               columnNumber: 32
             }
           }, usernameErr[key])
@@ -47261,27 +49007,26 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 77,
+          lineNumber: 96,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 78,
+          lineNumber: 97,
           columnNumber: 25
         }
       }, "Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "password",
         placeholder: "Password",
-        value: password,
-        onChange: e => setPassword(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Password"),
         required: true,
         minLength: "8",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 79,
+          lineNumber: 98,
           columnNumber: 25
         }
       })), Object.keys(passwordErr).map(key => {
@@ -47294,10 +49039,25 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 83,
+              lineNumber: 103,
               columnNumber: 32
             }
           }, passwordErr[key])
+        );
+      }), Object.keys(httpErr).map(key => {
+        return (
+          /*#__PURE__*/_reactDefault.default.createElement("div", {
+            className: "m-1",
+            style: {
+              color: "red"
+            },
+            __self: this,
+            __source: {
+              fileName: _jsxFileName,
+              lineNumber: 107,
+              columnNumber: 32
+            }
+          }, httpErr[key])
         );
       }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
         onClick: handleSubmit,
@@ -47306,7 +49066,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 86,
+          lineNumber: 110,
           columnNumber: 21
         }
       }, "Login"), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
@@ -47314,7 +49074,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 89,
+          lineNumber: 113,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
@@ -47325,17 +49085,27 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 90,
+          lineNumber: 114,
           columnNumber: 25
         }
       }, "Register")))))
     );
   }
-  _s(LoginView, "crCZbV0zSaH/ZwT+MMIheni2Y8g=");
+  _s(LoginView, "qmdlWpKo3EwrboAVvoFg+sz3n+M=");
   _c = LoginView;
   LoginView.propTypes = {
-    onLoggedIn: _propTypesDefault.default.func
+    onLoggedIn: _propTypesDefault.default.func,
+    ValidateUser: _propTypesDefault.default.func,
+    SetUser: _propTypesDefault.default.func,
+    users: _propTypesDefault.default.shape({
+      Username: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired
+    })
   };
+  exports.default = _reactRedux.connect(mapStateToProps, {
+    ValidateUser: _actionsActions.ValidateUser,
+    SetUser: _actionsActions.SetUser
+  })(LoginView);
   var _c;
   $RefreshReg$(_c, "LoginView");
   helpers.postlude(module);
@@ -47344,7 +49114,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"axios":"7rA65","react":"3b2NM","prop-types":"4dfy5","./login-view.scss":"3ueKO","react-bootstrap/Form":"6A5ko","react-bootstrap/Button":"1ru0l","react-bootstrap/Row":"3fzwD","react-bootstrap/Col":"2D0r8","react-bootstrap":"4n7hB","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"3ueKO":[function() {},{}],"7gvH2":[function(require,module,exports) {
+},{"axios":"7rA65","react":"3b2NM","prop-types":"4dfy5","./login-view.scss":"3ueKO","react-bootstrap/Form":"6A5ko","react-bootstrap/Button":"1ru0l","react-bootstrap/Row":"3fzwD","react-bootstrap/Col":"2D0r8","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-redux":"7GDa4","../../actions/actions":"5S6cN"}],"3ueKO":[function() {},{}],"7gvH2":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -47352,11 +49122,10 @@ helpers.prelude(module);
 try {
   var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
   _parcelHelpers.defineInteropFlag(exports);
-  _parcelHelpers.export(exports, "RegistrationView", function () {
-    return RegistrationView;
-  });
   var _react = require("react");
   var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _reactRedux = require('react-redux');
+  var _actionsActions = require('../../actions/actions');
   var _propTypes = require("prop-types");
   var _propTypesDefault = _parcelHelpers.interopDefault(_propTypes);
   var _axios = require('axios');
@@ -47370,29 +49139,39 @@ try {
   var _reactBootstrapColDefault = _parcelHelpers.interopDefault(_reactBootstrapCol);
   var _reactRouterDom = require("react-router-dom");
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/registration-view/registration-view.jsx", _s = $RefreshSig$();
-  function RegistrationView() {
+  const mapStateToProps = state => {
+    return {
+      user: state.user
+    };
+  };
+  function RegistrationView({user, SetUser, ValidateUser}) {
     _s();
-    const [name, setName] = _react.useState("");
-    const [username, setUsername] = _react.useState("");
-    const [email, setEmail] = _react.useState("");
-    const [password, setPassword] = _react.useState("");
-    const [birthday, setBirthday] = _react.useState("");
     const [passwordRepeat, setPasswordRepeat] = _react.useState("");
     const [nameErr, setNameErr] = _react.useState({});
     const [usernameErr, setUsernameErr] = _react.useState({});
     const [emailErr, setEmailErr] = _react.useState({});
     const [passwordErr, setPasswordErr] = _react.useState({});
     const [birthdayErr, setBirthdayErr] = _react.useState({});
+    _react.useEffect(() => {
+      SetUser({
+        Username: "",
+        Name: "",
+        Email: "",
+        Password: "",
+        Birthday: "",
+        FavoriteMovies: []
+      });
+    }, []);
     handleSubmit = e => {
       e.preventDefault();
       let isValid = formValidation();
       if (isValid) {
         _axiosDefault.default.post("https://myflix-0001.herokuapp.com/users", {
-          Name: name,
-          Username: username,
-          Email: email,
-          Password: password,
-          Birthday: birthday
+          Name: user.Name,
+          Username: user.Username,
+          Email: user.Email,
+          Password: user.Password,
+          Birthday: user.Birthday
         }).then(res => {
           alert("Successfully registered.");
           window.open('/', '_self');
@@ -47408,31 +49187,31 @@ try {
       const passwordErr = {};
       const birthdayErr = {};
       let isValid = true;
-      if (name.trim().length === 0) {
+      if (user.Name.trim().length === 0) {
         nameErr.nameIsEmpty = "Please enter a name.";
         isValid = false;
       }
-      if (username.trim().length < 3) {
+      if (user.Username.trim().length < 3) {
         usernameErr.usernameTooShort = "Username must be at least 3 characters long";
         isValid = false;
       }
       ;
-      if (!email.includes("@")) {
+      if (!user.Email.includes("@")) {
         emailErr.noEmail = "This is not a valid e-mail.";
         isValid = false;
       }
       ;
-      if (password.trim().length < 8) {
+      if (user.Password.trim().length < 8) {
         passwordErr.passwordTooShort = "Password must be at least 8 characters long";
         isValid = false;
       }
       ;
-      if (password !== passwordRepeat) {
+      if (user.Password !== passwordRepeat) {
         passwordErr.passwordNoMatch = "Passwords don't match.";
         isValid = false;
       }
       ;
-      if (birthday.trim().length === 0) {
+      if (user.Birthday.trim().length === 0) {
         birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
         isValid = false;
       }
@@ -47448,18 +49227,18 @@ try {
       /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 8,
         md: "auto",
-        className: "mr-5",
+        className: "mr-5 mt-5",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 100,
+          lineNumber: 105,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement("h1", {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 101,
+          lineNumber: 106,
           columnNumber: 17
         }
       }, "MyFlix"), /*#__PURE__*/_reactDefault.default.createElement("p", {
@@ -47467,24 +49246,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 102,
+          lineNumber: 107,
           columnNumber: 17
         }
       }, "Register to create a new user account.")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapColDefault.default, {
         xs: 8,
         md: 6,
-        className: "p-1",
+        className: "p-1 mt-5",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 104,
+          lineNumber: 109,
           columnNumber: 13
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 105,
+          lineNumber: 110,
           columnNumber: 17
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
@@ -47492,25 +49271,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 106,
+          lineNumber: 111,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 107,
+          lineNumber: 112,
           columnNumber: 25
         }
       }, "Full Name"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter full name",
-        value: name,
-        onChange: e => setName(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Name"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 108,
+          lineNumber: 113,
           columnNumber: 25
         }
       })), Object.keys(nameErr).map(key => {
@@ -47523,7 +49301,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 112,
+              lineNumber: 117,
               columnNumber: 32
             }
           }, nameErr[key])
@@ -47533,25 +49311,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 115,
+          lineNumber: 120,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 116,
+          lineNumber: 121,
           columnNumber: 25
         }
       }, "Username"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "text",
         placeholder: "Enter username",
-        value: username,
-        onChange: e => setUsername(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Username"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 117,
+          lineNumber: 122,
           columnNumber: 25
         }
       })), Object.keys(usernameErr).map(key => {
@@ -47564,7 +49341,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 121,
+              lineNumber: 126,
               columnNumber: 32
             }
           }, usernameErr[key])
@@ -47574,25 +49351,24 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 124,
+          lineNumber: 129,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 125,
+          lineNumber: 130,
           columnNumber: 25
         }
       }, "Email Address"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "email",
         placeholder: "Enter email",
-        value: email,
-        onChange: e => setEmail(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Email"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 126,
+          lineNumber: 131,
           columnNumber: 25
         }
       })), Object.keys(emailErr).map(key => {
@@ -47605,39 +49381,13 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 130,
+              lineNumber: 135,
               columnNumber: 32
             }
           }, emailErr[key])
         );
       }), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
         controlId: "password",
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 133,
-          columnNumber: 21
-        }
-      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 134,
-          columnNumber: 25
-        }
-      }, "Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
-        type: "password",
-        placeholder: "Password",
-        value: password,
-        onChange: e => setPassword(e.target.value),
-        __self: this,
-        __source: {
-          fileName: _jsxFileName,
-          lineNumber: 135,
-          columnNumber: 25
-        }
-      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
-        controlId: "password-repeat",
         __self: this,
         __source: {
           fileName: _jsxFileName,
@@ -47651,15 +49401,40 @@ try {
           lineNumber: 139,
           columnNumber: 25
         }
-      }, "Repeat Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
+      }, "Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "password",
-        placeholder: "Repeat Password",
-        value: passwordRepeat,
-        onChange: e => setPasswordRepeat(e.target.value),
+        placeholder: "Password",
+        onChange: e => ValidateUser(e.target.value, "Password"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
           lineNumber: 140,
+          columnNumber: 25
+        }
+      })), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Group, {
+        controlId: "password-repeat",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 143,
+          columnNumber: 21
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 144,
+          columnNumber: 25
+        }
+      }, "Repeat Password"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
+        type: "password",
+        placeholder: "Repeat Password",
+        defaultValue: passwordRepeat,
+        onChange: e => setPasswordRepeat(e.target.value),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 145,
           columnNumber: 25
         }
       })), Object.keys(passwordErr).map(key => {
@@ -47672,7 +49447,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 144,
+              lineNumber: 149,
               columnNumber: 32
             }
           }, passwordErr[key])
@@ -47682,25 +49457,23 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 147,
+          lineNumber: 152,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Label, {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 148,
+          lineNumber: 153,
           columnNumber: 25
         }
       }, "Birthday"), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapFormDefault.default.Control, {
         type: "date",
-        placeholder: "yyyy.mm.dd",
-        value: birthday,
-        onChange: e => setBirthday(e.target.value),
+        onChange: e => ValidateUser(e.target.value, "Birthday"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 149,
+          lineNumber: 154,
           columnNumber: 25
         }
       })), Object.keys(birthdayErr).map(key => {
@@ -47713,7 +49486,7 @@ try {
             __self: this,
             __source: {
               fileName: _jsxFileName,
-              lineNumber: 153,
+              lineNumber: 158,
               columnNumber: 32
             }
           }, birthdayErr[key])
@@ -47725,7 +49498,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 156,
+          lineNumber: 161,
           columnNumber: 21
         }
       }, "Register"), /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
@@ -47733,7 +49506,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 159,
+          lineNumber: 164,
           columnNumber: 21
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapButtonDefault.default, {
@@ -47744,17 +49517,30 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 160,
+          lineNumber: 165,
           columnNumber: 25
         }
       }, "Login")))))
     );
   }
-  _s(RegistrationView, "Uhi299YBuZWu8w5ZrbVCCqDpACQ=");
+  _s(RegistrationView, "r+SvRXfhrMyUPyb6IsO+OoY/NiI=");
   _c = RegistrationView;
   RegistrationView.propTypes = {
-    onRegistered: _propTypesDefault.default.func
+    ValidateUser: _propTypesDefault.default.func,
+    SetUser: _propTypesDefault.default.func,
+    users: _propTypesDefault.default.shape({
+      Name: _propTypesDefault.default.string.isRequired,
+      Username: _propTypesDefault.default.string.isRequired,
+      Email: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired,
+      Birthday: _propTypesDefault.default.string.isRequired
+    })
   };
+  exports.default = _reactRedux.connect(mapStateToProps, {
+    RegisterUser: _actionsActions.RegisterUser,
+    SetUser: _actionsActions.SetUser,
+    ValidateUser: _actionsActions.ValidateUser
+  })(RegistrationView);
   var _c;
   $RefreshReg$(_c, "RegistrationView");
   helpers.postlude(module);
@@ -47763,7 +49549,7 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","prop-types":"4dfy5","axios":"7rA65","./registration-view.scss":"22HWg","react-bootstrap/Form":"6A5ko","react-bootstrap/Button":"1ru0l","react-bootstrap/Col":"2D0r8","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"22HWg":[function() {},{}],"7w6rl":[function(require,module,exports) {
+},{"react":"3b2NM","prop-types":"4dfy5","axios":"7rA65","./registration-view.scss":"22HWg","react-bootstrap/Form":"6A5ko","react-bootstrap/Button":"1ru0l","react-bootstrap/Col":"2D0r8","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-redux":"7GDa4","../../actions/actions":"5S6cN"}],"22HWg":[function() {},{}],"7w6rl":[function(require,module,exports) {
 var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
 var prevRefreshReg = window.$RefreshReg$;
 var prevRefreshSig = window.$RefreshSig$;
@@ -47784,7 +49570,8 @@ try {
   require('./bootstrap-navbar.scss');
   var _reactRouterDom = require("react-router-dom");
   var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/bootstrap-navbar/bootstrap-navbar.jsx";
-  function BootstrapNavbar({userState, logOut}) {
+  function BootstrapNavbar(props) {
+    const localUser = localStorage.getItem('user');
     return (
       /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavbarDefault.default, {
         className: "bs-navbar",
@@ -47793,15 +49580,15 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 14,
+          lineNumber: 15,
           columnNumber: 13
         }
-      }, userState ? /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
+      }, localUser ? /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
         to: "/",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 17,
+          lineNumber: 18,
           columnNumber: 25
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavbarDefault.default.Brand, {
@@ -47809,16 +49596,16 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 18,
+          lineNumber: 19,
           columnNumber: 29
         }
       }, "MyFlix")), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default, {
-        className: "bs-navbar",
+        className: "justify-content-end",
         as: "ul",
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 21,
+          lineNumber: 22,
           columnNumber: 25
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Item, {
@@ -47827,7 +49614,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 22,
+          lineNumber: 23,
           columnNumber: 29
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
@@ -47836,7 +49623,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 23,
+          lineNumber: 24,
           columnNumber: 33
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.OverlayTrigger, {
@@ -47847,14 +49634,14 @@ try {
           __self: this,
           __source: {
             fileName: _jsxFileName,
-            lineNumber: 28,
+            lineNumber: 29,
             columnNumber: 45
           }
         }, "Profile"),
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 24,
+          lineNumber: 25,
           columnNumber: 37
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Link, {
@@ -47862,7 +49649,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 33,
+          lineNumber: 34,
           columnNumber: 41
         }
       }, " ", /*#__PURE__*/_reactDefault.default.createElement("i", {
@@ -47870,7 +49657,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 33,
+          lineNumber: 34,
           columnNumber: 61
         }
       }))))), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Item, {
@@ -47879,7 +49666,7 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 38,
+          lineNumber: 39,
           columnNumber: 29
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactRouterDom.Link, {
@@ -47888,18 +49675,18 @@ try {
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 39,
+          lineNumber: 40,
           columnNumber: 33
         }
       }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrapNavDefault.default.Link, {
         as: "div",
         onClick: () => {
-          logOut();
+          props.logOut();
         },
         __self: this,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 40,
+          lineNumber: 41,
           columnNumber: 37
         }
       }, "Logout"))))) : null))
@@ -47914,6 +49701,917 @@ try {
   window.$RefreshSig$ = prevRefreshSig;
 }
 
-},{"react":"3b2NM","react-bootstrap/Navbar":"3qLFd","react-bootstrap/Nav":"3T3v1","./bootstrap-navbar.scss":"2j5CF","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-bootstrap":"4n7hB"}],"2j5CF":[function() {},{}],"3X8QW":[function() {},{}],"5iJih":[function() {},{}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
+},{"react":"3b2NM","react-bootstrap/Navbar":"3qLFd","react-bootstrap/Nav":"3T3v1","./bootstrap-navbar.scss":"2j5CF","react-router-dom":"1PMSK","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-bootstrap":"4n7hB"}],"2j5CF":[function() {},{}],"3X8QW":[function() {},{}],"54YBA":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _reactRedux = require('react-redux');
+  var _movieCardMovieCard = require('../movie-card/movie-card');
+  var _movieCardMovieCardDefault = _parcelHelpers.interopDefault(_movieCardMovieCard);
+  var _reactBootstrap = require('react-bootstrap');
+  var _visibilityFilterInputComponentVisibilityFilterInputComponent = require('../visibility-filter-input-component/visibility-filter-input-component');
+  var _visibilityFilterInputComponentVisibilityFilterInputComponentDefault = _parcelHelpers.interopDefault(_visibilityFilterInputComponentVisibilityFilterInputComponent);
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/movie-list/movie-list.jsx";
+  const mapStateTopProps = state => {
+    const {visibilityFilter} = state;
+    return {
+      visibilityFilter
+    };
+  };
+  function MoviesList(props) {
+    const {movies, visibilityFilter} = props;
+    let filteredMovies = movies;
+    if (visibilityFilter != '') {
+      filteredMovies = movies.filter(movie => {
+        return movie.Title.toLowerCase().includes(visibilityFilter.toLowerCase());
+      });
+    }
+    if (!movies) {
+      return (
+        /*#__PURE__*/_reactDefault.default.createElement("div", {
+          className: "main-view",
+          __self: this,
+          __source: {
+            fileName: _jsxFileName,
+            lineNumber: 25,
+            columnNumber: 28
+          }
+        }, "Empty")
+      );
+    }
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactDefault.default.Fragment, null, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Container, {
+        fluid: true,
+        className: "m-3 p-0",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 29,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_visibilityFilterInputComponentVisibilityFilterInputComponentDefault.default, {
+        visibilityFilter: visibilityFilter,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 30,
+          columnNumber: 13
+        }
+      })), filteredMovies.map(movie => /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Col, {
+        xs: 12,
+        sm: 6,
+        md: 4,
+        lg: 2,
+        className: "p-3",
+        key: movie._id,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 35,
+          columnNumber: 17
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_movieCardMovieCardDefault.default, {
+        movieData: movie,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 36,
+          columnNumber: 21
+        }
+      }))))
+    );
+  }
+  _c = MoviesList;
+  ;
+  exports.default = _reactRedux.connect(mapStateTopProps)(MoviesList);
+  var _c;
+  $RefreshReg$(_c, "MoviesList");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","react-redux":"7GDa4","../movie-card/movie-card":"7v6h3","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f","react-bootstrap":"4n7hB","../visibility-filter-input-component/visibility-filter-input-component":"4dsVz"}],"4dsVz":[function(require,module,exports) {
+var helpers = require("../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+helpers.prelude(module);
+try {
+  var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+  _parcelHelpers.defineInteropFlag(exports);
+  var _react = require('react');
+  var _reactDefault = _parcelHelpers.interopDefault(_react);
+  var _reactBootstrap = require('react-bootstrap');
+  var _reactRedux = require('react-redux');
+  var _actionsActions = require('../../actions/actions');
+  var _jsxFileName = "/Users/juliane/Coding/CF_myflix_client/src/components/visibility-filter-input-component/visibility-filter-input-component.jsx";
+  function VisibilityFilterInput(props) {
+    const handleSearch = e => {
+      e.preventDefault;
+      props.SetFilter(e.target.value);
+    };
+    return (
+      /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Form, {
+        inline: true,
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 15,
+          columnNumber: 9
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Form.Group, {
+        className: "m-1",
+        controlId: "Search",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 16,
+          columnNumber: 13
+        }
+      }, /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Form.Label, {
+        className: "mr-3",
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 17,
+          columnNumber: 17
+        }
+      }, "Search: "), /*#__PURE__*/_reactDefault.default.createElement(_reactBootstrap.Form.Control, {
+        className: "form-control-sm",
+        type: "text",
+        placeholder: "Search for movies",
+        defaultValue: props.visibilityFilter,
+        onChange: e => handleSearch(e),
+        __self: this,
+        __source: {
+          fileName: _jsxFileName,
+          lineNumber: 18,
+          columnNumber: 17
+        }
+      })))
+    );
+  }
+  _c = VisibilityFilterInput;
+  ;
+  exports.default = _reactRedux.connect(null, {
+    SetFilter: _actionsActions.SetFilter
+  })(VisibilityFilterInput);
+  var _c;
+  $RefreshReg$(_c, "VisibilityFilterInput");
+  helpers.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+
+},{"react":"3b2NM","react-bootstrap":"4n7hB","react-redux":"7GDa4","../../actions/actions":"5S6cN","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y","../../../node_modules/@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"4Jj4f"}],"5iJih":[function() {},{}],"7panR":[function(require,module,exports) {
+"use strict";
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+var _objectSpread = require('@babel/runtime/helpers/objectSpread2');
+function _interopDefaultLegacy(e) {
+  return e && typeof e === 'object' && ('default' in e) ? e : {
+    'default': e
+  };
+}
+var _objectSpread__default = /*#__PURE__*/_interopDefaultLegacy(_objectSpread);
+/**
+* Adapted from React: https://github.com/facebook/react/blob/master/packages/shared/formatProdErrorMessage.js
+*
+* Do not require this module directly! Use normal throw error calls. These messages will be replaced with error codes
+* during build.
+* @param {number} code
+*/
+function formatProdErrorMessage(code) {
+  return "Minified Redux error #" + code + "; visit https://redux.js.org/Errors?code=" + code + " for the full message or " + 'use the non-minified dev environment for full errors. ';
+}
+// Inlined version of the `symbol-observable` polyfill
+var $$observable = (function () {
+  return typeof Symbol === 'function' && Symbol.observable || '@@observable';
+})();
+/**
+* These are private action types reserved by Redux.
+* For any unknown actions, you must return the current state.
+* If the current state is undefined, you must return the initial state.
+* Do not reference these action types directly in your code.
+*/
+var randomString = function randomString() {
+  return Math.random().toString(36).substring(7).split('').join('.');
+};
+var ActionTypes = {
+  INIT: "@@redux/INIT" + randomString(),
+  REPLACE: "@@redux/REPLACE" + randomString(),
+  PROBE_UNKNOWN_ACTION: function PROBE_UNKNOWN_ACTION() {
+    return "@@redux/PROBE_UNKNOWN_ACTION" + randomString();
+  }
+};
+/**
+* @param {any} obj The object to inspect.
+* @returns {boolean} True if the argument appears to be a plain object.
+*/
+function isPlainObject(obj) {
+  if (typeof obj !== 'object' || obj === null) return false;
+  var proto = obj;
+  while (Object.getPrototypeOf(proto) !== null) {
+    proto = Object.getPrototypeOf(proto);
+  }
+  return Object.getPrototypeOf(obj) === proto;
+}
+function kindOf(val) {
+  var typeOfVal = typeof val;
+  if ("development" !== 'production') {
+    // Inlined / shortened version of `kindOf` from https://github.com/jonschlinkert/kind-of
+    function miniKindOf(val) {
+      if (val === void 0) return 'undefined';
+      if (val === null) return 'null';
+      var type = typeof val;
+      switch (type) {
+        case 'boolean':
+        case 'string':
+        case 'number':
+        case 'symbol':
+        case 'function':
+          {
+            return type;
+          }
+      }
+      if (Array.isArray(val)) return 'array';
+      if (isDate(val)) return 'date';
+      if (isError(val)) return 'error';
+      var constructorName = ctorName(val);
+      switch (constructorName) {
+        case 'Symbol':
+        case 'Promise':
+        case 'WeakMap':
+        case 'WeakSet':
+        case 'Map':
+        case 'Set':
+          return constructorName;
+      }
+      // other
+      return type.slice(8, -1).toLowerCase().replace(/\s/g, '');
+    }
+    function ctorName(val) {
+      return typeof val.constructor === 'function' ? val.constructor.name : null;
+    }
+    function isError(val) {
+      return val instanceof Error || typeof val.message === 'string' && val.constructor && typeof val.constructor.stackTraceLimit === 'number';
+    }
+    function isDate(val) {
+      if (val instanceof Date) return true;
+      return typeof val.toDateString === 'function' && typeof val.getDate === 'function' && typeof val.setDate === 'function';
+    }
+    typeOfVal = miniKindOf(val);
+  }
+  return typeOfVal;
+}
+/**
+* Creates a Redux store that holds the state tree.
+* The only way to change the data in the store is to call `dispatch()` on it.
+*
+* There should only be a single store in your app. To specify how different
+* parts of the state tree respond to actions, you may combine several reducers
+* into a single reducer function by using `combineReducers`.
+*
+* @param {Function} reducer A function that returns the next state tree, given
+* the current state tree and the action to handle.
+*
+* @param {any} [preloadedState] The initial state. You may optionally specify it
+* to hydrate the state from the server in universal apps, or to restore a
+* previously serialized user session.
+* If you use `combineReducers` to produce the root reducer function, this must be
+* an object with the same shape as `combineReducers` keys.
+*
+* @param {Function} [enhancer] The store enhancer. You may optionally specify it
+* to enhance the store with third-party capabilities such as middleware,
+* time travel, persistence, etc. The only store enhancer that ships with Redux
+* is `applyMiddleware()`.
+*
+* @returns {Store} A Redux store that lets you read the state, dispatch actions
+* and subscribe to changes.
+*/
+function createStore(reducer, preloadedState, enhancer) {
+  var _ref2;
+  if (typeof preloadedState === 'function' && typeof enhancer === 'function' || typeof enhancer === 'function' && typeof arguments[3] === 'function') {
+    throw new Error("development" === "production" ? formatProdErrorMessage(0) : 'It looks like you are passing several store enhancers to ' + 'createStore(). This is not supported. Instead, compose them ' + 'together to a single function. See https://redux.js.org/tutorials/fundamentals/part-4-store#creating-a-store-with-enhancers for an example.');
+  }
+  if (typeof preloadedState === 'function' && typeof enhancer === 'undefined') {
+    enhancer = preloadedState;
+    preloadedState = undefined;
+  }
+  if (typeof enhancer !== 'undefined') {
+    if (typeof enhancer !== 'function') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(1) : "Expected the enhancer to be a function. Instead, received: '" + kindOf(enhancer) + "'");
+    }
+    return enhancer(createStore)(reducer, preloadedState);
+  }
+  if (typeof reducer !== 'function') {
+    throw new Error("development" === "production" ? formatProdErrorMessage(2) : "Expected the root reducer to be a function. Instead, received: '" + kindOf(reducer) + "'");
+  }
+  var currentReducer = reducer;
+  var currentState = preloadedState;
+  var currentListeners = [];
+  var nextListeners = currentListeners;
+  var isDispatching = false;
+  /**
+  * This makes a shallow copy of currentListeners so we can use
+  * nextListeners as a temporary list while dispatching.
+  *
+  * This prevents any bugs around consumers calling
+  * subscribe/unsubscribe in the middle of a dispatch.
+  */
+  function ensureCanMutateNextListeners() {
+    if (nextListeners === currentListeners) {
+      nextListeners = currentListeners.slice();
+    }
+  }
+  /**
+  * Reads the state tree managed by the store.
+  *
+  * @returns {any} The current state tree of your application.
+  */
+  function getState() {
+    if (isDispatching) {
+      throw new Error("development" === "production" ? formatProdErrorMessage(3) : 'You may not call store.getState() while the reducer is executing. ' + 'The reducer has already received the state as an argument. ' + 'Pass it down from the top reducer instead of reading it from the store.');
+    }
+    return currentState;
+  }
+  /**
+  * Adds a change listener. It will be called any time an action is dispatched,
+  * and some part of the state tree may potentially have changed. You may then
+  * call `getState()` to read the current state tree inside the callback.
+  *
+  * You may call `dispatch()` from a change listener, with the following
+  * caveats:
+  *
+  * 1. The subscriptions are snapshotted just before every `dispatch()` call.
+  * If you subscribe or unsubscribe while the listeners are being invoked, this
+  * will not have any effect on the `dispatch()` that is currently in progress.
+  * However, the next `dispatch()` call, whether nested or not, will use a more
+  * recent snapshot of the subscription list.
+  *
+  * 2. The listener should not expect to see all state changes, as the state
+  * might have been updated multiple times during a nested `dispatch()` before
+  * the listener is called. It is, however, guaranteed that all subscribers
+  * registered before the `dispatch()` started will be called with the latest
+  * state by the time it exits.
+  *
+  * @param {Function} listener A callback to be invoked on every dispatch.
+  * @returns {Function} A function to remove this change listener.
+  */
+  function subscribe(listener) {
+    if (typeof listener !== 'function') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(4) : "Expected the listener to be a function. Instead, received: '" + kindOf(listener) + "'");
+    }
+    if (isDispatching) {
+      throw new Error("development" === "production" ? formatProdErrorMessage(5) : 'You may not call store.subscribe() while the reducer is executing. ' + 'If you would like to be notified after the store has been updated, subscribe from a ' + 'component and invoke store.getState() in the callback to access the latest state. ' + 'See https://redux.js.org/api/store#subscribelistener for more details.');
+    }
+    var isSubscribed = true;
+    ensureCanMutateNextListeners();
+    nextListeners.push(listener);
+    return function unsubscribe() {
+      if (!isSubscribed) {
+        return;
+      }
+      if (isDispatching) {
+        throw new Error("development" === "production" ? formatProdErrorMessage(6) : 'You may not unsubscribe from a store listener while the reducer is executing. ' + 'See https://redux.js.org/api/store#subscribelistener for more details.');
+      }
+      isSubscribed = false;
+      ensureCanMutateNextListeners();
+      var index = nextListeners.indexOf(listener);
+      nextListeners.splice(index, 1);
+      currentListeners = null;
+    };
+  }
+  /**
+  * Dispatches an action. It is the only way to trigger a state change.
+  *
+  * The `reducer` function, used to create the store, will be called with the
+  * current state tree and the given `action`. Its return value will
+  * be considered the **next** state of the tree, and the change listeners
+  * will be notified.
+  *
+  * The base implementation only supports plain object actions. If you want to
+  * dispatch a Promise, an Observable, a thunk, or something else, you need to
+  * wrap your store creating function into the corresponding middleware. For
+  * example, see the documentation for the `redux-thunk` package. Even the
+  * middleware will eventually dispatch plain object actions using this method.
+  *
+  * @param {Object} action A plain object representing “what changed”. It is
+  * a good idea to keep actions serializable so you can record and replay user
+  * sessions, or use the time travelling `redux-devtools`. An action must have
+  * a `type` property which may not be `undefined`. It is a good idea to use
+  * string constants for action types.
+  *
+  * @returns {Object} For convenience, the same action object you dispatched.
+  *
+  * Note that, if you use a custom middleware, it may wrap `dispatch()` to
+  * return something else (for example, a Promise you can await).
+  */
+  function dispatch(action) {
+    if (!isPlainObject(action)) {
+      throw new Error("development" === "production" ? formatProdErrorMessage(7) : "Actions must be plain objects. Instead, the actual type was: '" + kindOf(action) + "'. You may need to add middleware to your store setup to handle dispatching other values, such as 'redux-thunk' to handle dispatching functions. See https://redux.js.org/tutorials/fundamentals/part-4-store#middleware and https://redux.js.org/tutorials/fundamentals/part-6-async-logic#using-the-redux-thunk-middleware for examples.");
+    }
+    if (typeof action.type === 'undefined') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(8) : 'Actions may not have an undefined "type" property. You may have misspelled an action type string constant.');
+    }
+    if (isDispatching) {
+      throw new Error("development" === "production" ? formatProdErrorMessage(9) : 'Reducers may not dispatch actions.');
+    }
+    try {
+      isDispatching = true;
+      currentState = currentReducer(currentState, action);
+    } finally {
+      isDispatching = false;
+    }
+    var listeners = currentListeners = nextListeners;
+    for (var i = 0; i < listeners.length; i++) {
+      var listener = listeners[i];
+      listener();
+    }
+    return action;
+  }
+  /**
+  * Replaces the reducer currently used by the store to calculate the state.
+  *
+  * You might need this if your app implements code splitting and you want to
+  * load some of the reducers dynamically. You might also need this if you
+  * implement a hot reloading mechanism for Redux.
+  *
+  * @param {Function} nextReducer The reducer for the store to use instead.
+  * @returns {void}
+  */
+  function replaceReducer(nextReducer) {
+    if (typeof nextReducer !== 'function') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(10) : "Expected the nextReducer to be a function. Instead, received: '" + kindOf(nextReducer));
+    }
+    currentReducer = nextReducer;
+    // This action has a similiar effect to ActionTypes.INIT.
+    // Any reducers that existed in both the new and old rootReducer
+    // will receive the previous state. This effectively populates
+    // the new state tree with any relevant data from the old one.
+    dispatch({
+      type: ActionTypes.REPLACE
+    });
+  }
+  /**
+  * Interoperability point for observable/reactive libraries.
+  * @returns {observable} A minimal observable of state changes.
+  * For more information, see the observable proposal:
+  * https://github.com/tc39/proposal-observable
+  */
+  function observable() {
+    var _ref;
+    var outerSubscribe = subscribe;
+    return (_ref = {
+      /**
+      * The minimal observable subscription method.
+      * @param {Object} observer Any object that can be used as an observer.
+      * The observer object should have a `next` method.
+      * @returns {subscription} An object with an `unsubscribe` method that can
+      * be used to unsubscribe the observable from the store, and prevent further
+      * emission of values from the observable.
+      */
+      subscribe: function subscribe(observer) {
+        if (typeof observer !== 'object' || observer === null) {
+          throw new Error("development" === "production" ? formatProdErrorMessage(11) : "Expected the observer to be an object. Instead, received: '" + kindOf(observer) + "'");
+        }
+        function observeState() {
+          if (observer.next) {
+            observer.next(getState());
+          }
+        }
+        observeState();
+        var unsubscribe = outerSubscribe(observeState);
+        return {
+          unsubscribe: unsubscribe
+        };
+      }
+    }, _ref[$$observable] = function () {
+      return this;
+    }, _ref);
+  }
+  // When a store is created, an "INIT" action is dispatched so that every
+  // reducer returns their initial state. This effectively populates
+  // the initial state tree.
+  dispatch({
+    type: ActionTypes.INIT
+  });
+  return (_ref2 = {
+    dispatch: dispatch,
+    subscribe: subscribe,
+    getState: getState,
+    replaceReducer: replaceReducer
+  }, _ref2[$$observable] = observable, _ref2);
+}
+/**
+* Prints a warning in the console if it exists.
+*
+* @param {String} message The warning message.
+* @returns {void}
+*/
+function warning(message) {
+  /*eslint-disable no-console*/
+  if (typeof console !== 'undefined' && typeof console.error === 'function') {
+    console.error(message);
+  }
+  /*eslint-enable no-console*/
+  try {
+    // This error was thrown as a convenience so that if you enable
+    // "break on all exceptions" in your console,
+    // it would pause the execution at this line.
+    throw new Error(message);
+  } catch (e) {}
+}
+function getUnexpectedStateShapeWarningMessage(inputState, reducers, action, unexpectedKeyCache) {
+  var reducerKeys = Object.keys(reducers);
+  var argumentName = action && action.type === ActionTypes.INIT ? 'preloadedState argument passed to createStore' : 'previous state received by the reducer';
+  if (reducerKeys.length === 0) {
+    return 'Store does not have a valid reducer. Make sure the argument passed ' + 'to combineReducers is an object whose values are reducers.';
+  }
+  if (!isPlainObject(inputState)) {
+    return "The " + argumentName + " has unexpected type of \"" + kindOf(inputState) + "\". Expected argument to be an object with the following " + ("keys: \"" + reducerKeys.join('", "') + "\"");
+  }
+  var unexpectedKeys = Object.keys(inputState).filter(function (key) {
+    return !reducers.hasOwnProperty(key) && !unexpectedKeyCache[key];
+  });
+  unexpectedKeys.forEach(function (key) {
+    unexpectedKeyCache[key] = true;
+  });
+  if (action && action.type === ActionTypes.REPLACE) return;
+  if (unexpectedKeys.length > 0) {
+    return "Unexpected " + (unexpectedKeys.length > 1 ? 'keys' : 'key') + " " + ("\"" + unexpectedKeys.join('", "') + "\" found in " + argumentName + ". ") + "Expected to find one of the known reducer keys instead: " + ("\"" + reducerKeys.join('", "') + "\". Unexpected keys will be ignored.");
+  }
+}
+function assertReducerShape(reducers) {
+  Object.keys(reducers).forEach(function (key) {
+    var reducer = reducers[key];
+    var initialState = reducer(undefined, {
+      type: ActionTypes.INIT
+    });
+    if (typeof initialState === 'undefined') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(12) : "The slice reducer for key \"" + key + "\" returned undefined during initialization. " + "If the state passed to the reducer is undefined, you must " + "explicitly return the initial state. The initial state may " + "not be undefined. If you don't want to set a value for this reducer, " + "you can use null instead of undefined.");
+    }
+    if (typeof reducer(undefined, {
+      type: ActionTypes.PROBE_UNKNOWN_ACTION()
+    }) === 'undefined') {
+      throw new Error("development" === "production" ? formatProdErrorMessage(13) : "The slice reducer for key \"" + key + "\" returned undefined when probed with a random type. " + ("Don't try to handle '" + ActionTypes.INIT + "' or other actions in \"redux/*\" ") + "namespace. They are considered private. Instead, you must return the " + "current state for any unknown actions, unless it is undefined, " + "in which case you must return the initial state, regardless of the " + "action type. The initial state may not be undefined, but can be null.");
+    }
+  });
+}
+/**
+* Turns an object whose values are different reducer functions, into a single
+* reducer function. It will call every child reducer, and gather their results
+* into a single state object, whose keys correspond to the keys of the passed
+* reducer functions.
+*
+* @param {Object} reducers An object whose values correspond to different
+* reducer functions that need to be combined into one. One handy way to obtain
+* it is to use ES6 `import * as reducers` syntax. The reducers may never return
+* undefined for any action. Instead, they should return their initial state
+* if the state passed to them was undefined, and the current state for any
+* unrecognized action.
+*
+* @returns {Function} A reducer function that invokes every reducer inside the
+* passed object, and builds a state object with the same shape.
+*/
+function combineReducers(reducers) {
+  var reducerKeys = Object.keys(reducers);
+  var finalReducers = {};
+  for (var i = 0; i < reducerKeys.length; i++) {
+    var key = reducerKeys[i];
+    if ("development" !== 'production') {
+      if (typeof reducers[key] === 'undefined') {
+        warning("No reducer provided for key \"" + key + "\"");
+      }
+    }
+    if (typeof reducers[key] === 'function') {
+      finalReducers[key] = reducers[key];
+    }
+  }
+  var finalReducerKeys = Object.keys(finalReducers);
+  // This is used to make sure we don't warn about the same
+  // keys multiple times.
+  var unexpectedKeyCache;
+  if ("development" !== 'production') {
+    unexpectedKeyCache = {};
+  }
+  var shapeAssertionError;
+  try {
+    assertReducerShape(finalReducers);
+  } catch (e) {
+    shapeAssertionError = e;
+  }
+  return function combination(state, action) {
+    if (state === void 0) {
+      state = {};
+    }
+    if (shapeAssertionError) {
+      throw shapeAssertionError;
+    }
+    if ("development" !== 'production') {
+      var warningMessage = getUnexpectedStateShapeWarningMessage(state, finalReducers, action, unexpectedKeyCache);
+      if (warningMessage) {
+        warning(warningMessage);
+      }
+    }
+    var hasChanged = false;
+    var nextState = {};
+    for (var _i = 0; _i < finalReducerKeys.length; _i++) {
+      var _key = finalReducerKeys[_i];
+      var reducer = finalReducers[_key];
+      var previousStateForKey = state[_key];
+      var nextStateForKey = reducer(previousStateForKey, action);
+      if (typeof nextStateForKey === 'undefined') {
+        var actionType = action && action.type;
+        throw new Error("development" === "production" ? formatProdErrorMessage(14) : "When called with an action of type " + (actionType ? "\"" + String(actionType) + "\"" : '(unknown type)') + ", the slice reducer for key \"" + _key + "\" returned undefined. " + "To ignore an action, you must explicitly return the previous state. " + "If you want this reducer to hold no value, you can return null instead of undefined.");
+      }
+      nextState[_key] = nextStateForKey;
+      hasChanged = hasChanged || nextStateForKey !== previousStateForKey;
+    }
+    hasChanged = hasChanged || finalReducerKeys.length !== Object.keys(state).length;
+    return hasChanged ? nextState : state;
+  };
+}
+function bindActionCreator(actionCreator, dispatch) {
+  return function () {
+    return dispatch(actionCreator.apply(this, arguments));
+  };
+}
+/**
+* Turns an object whose values are action creators, into an object with the
+* same keys, but with every function wrapped into a `dispatch` call so they
+* may be invoked directly. This is just a convenience method, as you can call
+* `store.dispatch(MyActionCreators.doSomething())` yourself just fine.
+*
+* For convenience, you can also pass an action creator as the first argument,
+* and get a dispatch wrapped function in return.
+*
+* @param {Function|Object} actionCreators An object whose values are action
+* creator functions. One handy way to obtain it is to use ES6 `import * as`
+* syntax. You may also pass a single function.
+*
+* @param {Function} dispatch The `dispatch` function available on your Redux
+* store.
+*
+* @returns {Function|Object} The object mimicking the original object, but with
+* every action creator wrapped into the `dispatch` call. If you passed a
+* function as `actionCreators`, the return value will also be a single
+* function.
+*/
+function bindActionCreators(actionCreators, dispatch) {
+  if (typeof actionCreators === 'function') {
+    return bindActionCreator(actionCreators, dispatch);
+  }
+  if (typeof actionCreators !== 'object' || actionCreators === null) {
+    throw new Error("development" === "production" ? formatProdErrorMessage(16) : "bindActionCreators expected an object or a function, but instead received: '" + kindOf(actionCreators) + "'. " + "Did you write \"import ActionCreators from\" instead of \"import * as ActionCreators from\"?");
+  }
+  var boundActionCreators = {};
+  for (var key in actionCreators) {
+    var actionCreator = actionCreators[key];
+    if (typeof actionCreator === 'function') {
+      boundActionCreators[key] = bindActionCreator(actionCreator, dispatch);
+    }
+  }
+  return boundActionCreators;
+}
+/**
+* Composes single-argument functions from right to left. The rightmost
+* function can take multiple arguments as it provides the signature for
+* the resulting composite function.
+*
+* @param {...Function} funcs The functions to compose.
+* @returns {Function} A function obtained by composing the argument functions
+* from right to left. For example, compose(f, g, h) is identical to doing
+* (...args) => f(g(h(...args))).
+*/
+function compose() {
+  for (var _len = arguments.length, funcs = new Array(_len), _key = 0; _key < _len; _key++) {
+    funcs[_key] = arguments[_key];
+  }
+  if (funcs.length === 0) {
+    return function (arg) {
+      return arg;
+    };
+  }
+  if (funcs.length === 1) {
+    return funcs[0];
+  }
+  return funcs.reduce(function (a, b) {
+    return function () {
+      return a(b.apply(void 0, arguments));
+    };
+  });
+}
+/**
+* Creates a store enhancer that applies middleware to the dispatch method
+* of the Redux store. This is handy for a variety of tasks, such as expressing
+* asynchronous actions in a concise manner, or logging every action payload.
+*
+* See `redux-thunk` package as an example of the Redux middleware.
+*
+* Because middleware is potentially asynchronous, this should be the first
+* store enhancer in the composition chain.
+*
+* Note that each middleware will be given the `dispatch` and `getState` functions
+* as named arguments.
+*
+* @param {...Function} middlewares The middleware chain to be applied.
+* @returns {Function} A store enhancer applying the middleware.
+*/
+function applyMiddleware() {
+  for (var _len = arguments.length, middlewares = new Array(_len), _key = 0; _key < _len; _key++) {
+    middlewares[_key] = arguments[_key];
+  }
+  return function (createStore) {
+    return function () {
+      var store = createStore.apply(void 0, arguments);
+      var _dispatch = function dispatch() {
+        throw new Error("development" === "production" ? formatProdErrorMessage(15) : 'Dispatching while constructing your middleware is not allowed. ' + 'Other middleware would not be applied to this dispatch.');
+      };
+      var middlewareAPI = {
+        getState: store.getState,
+        dispatch: function dispatch() {
+          return _dispatch.apply(void 0, arguments);
+        }
+      };
+      var chain = middlewares.map(function (middleware) {
+        return middleware(middlewareAPI);
+      });
+      _dispatch = compose.apply(void 0, chain)(store.dispatch);
+      return _objectSpread__default['default'](_objectSpread__default['default']({}, store), {}, {
+        dispatch: _dispatch
+      });
+    };
+  };
+}
+/*
+* This is a dummy function to check if the function name has been altered by minification.
+* If the function has been minified and NODE_ENV !== 'production', warn the user.
+*/
+function isCrushed() {}
+if ("development" !== 'production' && typeof isCrushed.name === 'string' && isCrushed.name !== 'isCrushed') {
+  warning('You are currently using minified code outside of NODE_ENV === "production". ' + 'This means that you are running a slower development build of Redux. ' + 'You can use loose-envify (https://github.com/zertosh/loose-envify) for browserify ' + 'or setting mode to production in webpack (https://webpack.js.org/concepts/mode/) ' + 'to ensure you have the correct code for your production build.');
+}
+exports.__DO_NOT_USE__ActionTypes = ActionTypes;
+exports.applyMiddleware = applyMiddleware;
+exports.bindActionCreators = bindActionCreators;
+exports.combineReducers = combineReducers;
+exports.compose = compose;
+exports.createStore = createStore;
+
+},{"@babel/runtime/helpers/objectSpread2":"3FdZf"}],"3FdZf":[function(require,module,exports) {
+var defineProperty = require("./defineProperty.js");
+
+function ownKeys(object, enumerableOnly) {
+  var keys = Object.keys(object);
+
+  if (Object.getOwnPropertySymbols) {
+    var symbols = Object.getOwnPropertySymbols(object);
+    if (enumerableOnly) symbols = symbols.filter(function (sym) {
+      return Object.getOwnPropertyDescriptor(object, sym).enumerable;
+    });
+    keys.push.apply(keys, symbols);
+  }
+
+  return keys;
+}
+
+function _objectSpread2(target) {
+  for (var i = 1; i < arguments.length; i++) {
+    var source = arguments[i] != null ? arguments[i] : {};
+
+    if (i % 2) {
+      ownKeys(Object(source), true).forEach(function (key) {
+        defineProperty(target, key, source[key]);
+      });
+    } else if (Object.getOwnPropertyDescriptors) {
+      Object.defineProperties(target, Object.getOwnPropertyDescriptors(source));
+    } else {
+      ownKeys(Object(source)).forEach(function (key) {
+        Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key));
+      });
+    }
+  }
+
+  return target;
+}
+
+module.exports = _objectSpread2;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{"./defineProperty.js":"5PI63"}],"5PI63":[function(require,module,exports) {
+function _defineProperty(obj, key, value) {
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value: value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+
+  return obj;
+}
+
+module.exports = _defineProperty;
+module.exports["default"] = module.exports, module.exports.__esModule = true;
+},{}],"2736c":[function(require,module,exports) {
+var _parcelHelpers = require("@parcel/transformer-js/lib/esmodule-helpers.js");
+_parcelHelpers.defineInteropFlag(exports);
+var _redux = require('redux');
+var _actionsActions = require('../actions/actions');
+const visibilityFilter = (state = '', action) => {
+  switch (action.type) {
+    case _actionsActions.SET_FILTER:
+      return action.value;
+    default:
+      return state;
+  }
+};
+const movies = (state = [], action) => {
+  switch (action.type) {
+    case _actionsActions.SET_MOVIES:
+      return action.value;
+    default:
+      return state;
+  }
+};
+const user = (state = {
+  Username: "",
+  Name: "",
+  Email: "",
+  Password: "",
+  Birthday: "",
+  FavoriteMovies: []
+}, action) => {
+  const {field, value} = action;
+  switch (action.type) {
+    case _actionsActions.SET_USER:
+      return value;
+    case _actionsActions.VALIDATE_USER:
+      return {
+        ...state,
+        [field]: value
+      };
+    case _actionsActions.LOGOUT_USER:
+      return {
+        Username: "",
+        Name: "",
+        Email: "",
+        Password: "",
+        Birthday: "",
+        FavoriteMovies: []
+      };
+    case _actionsActions.TOGGLE_FAVORITE:
+      return {
+        ...state,
+        [field]: [...value]
+      };
+    default:
+      return state;
+  }
+};
+const movieApp = _redux.combineReducers({
+  visibilityFilter,
+  movies,
+  user
+});
+exports.default = movieApp;
+
+},{"redux":"7panR","../actions/actions":"5S6cN","@parcel/transformer-js/lib/esmodule-helpers.js":"5gA8y"}],"3vUkb":[function(require,module,exports) {
+'use strict';
+
+var compose = require('redux').compose;
+
+exports.__esModule = true;
+exports.composeWithDevTools =
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
+    : function () {
+        if (arguments.length === 0) return undefined;
+        if (typeof arguments[0] === 'object') return compose;
+        return compose.apply(null, arguments);
+      };
+
+exports.devToolsEnhancer =
+  typeof window !== 'undefined' && window.__REDUX_DEVTOOLS_EXTENSION__
+    ? window.__REDUX_DEVTOOLS_EXTENSION__
+    : function () {
+        return function (noop) {
+          return noop;
+        };
+      };
+
+},{"redux":"7panR"}]},["1j6wU","68WUB","1DVjT"], "1DVjT", "parcelRequire0a1a")
 
 //# sourceMappingURL=index.02675e63.js.map

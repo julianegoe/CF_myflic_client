@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { connect } from 'react-redux';
+import { RegisterUser, SetUser, ValidateUser } from '../../actions/actions';
 import PropTypes from "prop-types";
 import axios from 'axios'
 import './registration-view.scss';
@@ -7,22 +9,23 @@ import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
 import { Link } from "react-router-dom";
 
+const mapStateToProps = (state) => {
+    return {
+        user: state.user,
+    }
+}
 
-export function RegistrationView() {
-    const [name, setName] = useState("");
-    const [username, setUsername] = useState("");
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [birthday, setBirthday] = useState("");
-    const [passwordRepeat, setPasswordRepeat] = useState("");
-
-
+function RegistrationView({ user, SetUser, ValidateUser }) {
+    const [passwordRepeat, setPasswordRepeat] = useState("")
     const [nameErr, setNameErr] = useState({});
     const [usernameErr, setUsernameErr] = useState({});
     const [emailErr, setEmailErr] = useState({});
     const [passwordErr, setPasswordErr] = useState({});
     const [birthdayErr, setBirthdayErr] = useState({});
 
+    useEffect(() => {
+        SetUser({ Username: "", Name: "", Email: "", Password: "", Birthday: "", FavoriteMovies: [] })
+    }, [])
 
     handleSubmit = (e) => {
         e.preventDefault();
@@ -30,11 +33,11 @@ export function RegistrationView() {
         if (isValid) {
             axios.post("https://myflix-0001.herokuapp.com/users",
                 {
-                    Name: name,
-                    Username: username,
-                    Email: email,
-                    Password: password,
-                    Birthday: birthday
+                    Name: user.Name,
+                    Username: user.Username,
+                    Email: user.Email,
+                    Password: user.Password,
+                    Birthday: user.Birthday
 
                 }).then((res) => {
                     alert("Successfully registered.")
@@ -46,6 +49,7 @@ export function RegistrationView() {
     };
 
     const formValidation = () => {
+
         const nameErr = {};
         const usernameErr = {};
         const emailErr = {};
@@ -53,35 +57,36 @@ export function RegistrationView() {
         const birthdayErr = {};
         let isValid = true;
 
-        if (name.trim().length === 0) {
+        if (user.Name.trim().length === 0) {
             nameErr.nameIsEmpty = "Please enter a name.";
             isValid = false;
         }
 
-        if (username.trim().length < 3) {
+        if (user.Username.trim().length < 3) {
             usernameErr.usernameTooShort = "Username must be at least 3 characters long";
             isValid = false;
         };
 
-        if (!email.includes("@")) {
+        if (!user.Email.includes("@")) {
             emailErr.noEmail = "This is not a valid e-mail.";
             isValid = false
         };
 
-        if (password.trim().length < 8) {
+        if (user.Password.trim().length < 8) {
             passwordErr.passwordTooShort = "Password must be at least 8 characters long";
             isValid = false
         };
 
-        if (password !== passwordRepeat) {
+        if (user.Password !== passwordRepeat) {
             passwordErr.passwordNoMatch = "Passwords don't match.";
             isValid = false
         };
 
-        if (birthday.trim().length === 0) {
+        if (user.Birthday.trim().length === 0) {
             birthdayErr.birthdayIsEmpty = "Please enter a birthday.";
             isValid = false
         };
+
 
         setNameErr(nameErr);
         setUsernameErr(usernameErr);
@@ -97,15 +102,15 @@ export function RegistrationView() {
 
     return (
         <>
-            <Col xs={8} md={"auto"} className="mr-5">
+            <Col xs={8} md={"auto"} className="mr-5 mt-5">
                 <h1>MyFlix</h1>
                 <p className="tag-line">Register to create a new user account.</p>
             </Col>
-            <Col xs={8} md={6} className="p-1">
+            <Col xs={8} md={6} className="p-1 mt-5">
                 <Form>
                     <Form.Group controlId="fullName">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter full name" value={name} onChange={e => setName(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter full name" onChange={e => ValidateUser(e.target.value, "Name")} />
                     </Form.Group>
 
                     {Object.keys(nameErr).map((key) => {
@@ -114,7 +119,7 @@ export function RegistrationView() {
 
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" value={username} onChange={e => setUsername(e.target.value)} />
+                        <Form.Control type="text" placeholder="Enter username" onChange={e => ValidateUser(e.target.value, "Username")} />
                     </Form.Group>
 
                     {Object.keys(usernameErr).map((key) => {
@@ -123,7 +128,7 @@ export function RegistrationView() {
 
                     <Form.Group controlId="email">
                         <Form.Label>Email Address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" value={email} onChange={e => setEmail(e.target.value)} />
+                        <Form.Control type="email" placeholder="Enter email" onChange={e => ValidateUser(e.target.value, "Email")} />
                     </Form.Group>
 
                     {Object.keys(emailErr).map((key) => {
@@ -132,12 +137,12 @@ export function RegistrationView() {
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" value={password} onChange={e => setPassword(e.target.value)} />
+                        <Form.Control type="password" placeholder="Password" onChange={e => ValidateUser(e.target.value, "Password")} />
                     </Form.Group>
 
                     <Form.Group controlId="password-repeat">
                         <Form.Label>Repeat Password</Form.Label>
-                        <Form.Control type="password" placeholder="Repeat Password" value={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
+                        <Form.Control type="password" placeholder="Repeat Password" defaultValue={passwordRepeat} onChange={e => setPasswordRepeat(e.target.value)} />
                     </Form.Group>
 
                     {Object.keys(passwordErr).map((key) => {
@@ -146,7 +151,7 @@ export function RegistrationView() {
 
                     <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" placeholder="yyyy.mm.dd" value={birthday} onChange={e => setBirthday(e.target.value)} />
+                        <Form.Control type="date" onChange={e => ValidateUser(e.target.value, "Birthday")} />
                     </Form.Group>
 
                     {Object.keys(birthdayErr).map((key) => {
@@ -170,6 +175,15 @@ export function RegistrationView() {
 }
 
 RegistrationView.propTypes = {
-    onRegistered: PropTypes.func
+    ValidateUser: PropTypes.func,
+    SetUser: PropTypes.func,
+    users: PropTypes.shape({
+        Name: PropTypes.string.isRequired,
+        Username: PropTypes.string.isRequired,
+        Email: PropTypes.string.isRequired,
+        Password: PropTypes.string.isRequired,
+        Birthday: PropTypes.string.isRequired,
+    })
 }
 
+export default connect(mapStateToProps, { RegisterUser, SetUser, ValidateUser })(RegistrationView)
