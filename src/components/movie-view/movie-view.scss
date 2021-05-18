@@ -23,10 +23,17 @@ hr.solid {
     font-weight: bolder;
 }
 
-.category {
+.favstar {
     cursor: pointer;
+    transition: transform 200ms;
 }
 
-.category:hover {
-    font-weight: bold;
+.favstar:hover {
+    transform: scale(1.08);
 }
+
+.favstar_item {
+    object-fit: contain;
+    height: 30px;
+    margin: 10px;
+  }

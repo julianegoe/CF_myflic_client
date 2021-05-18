@@ -1,12 +1,14 @@
 import React from "react";
 import axios from 'axios';
+import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieCard from "../movie-card/movie-card";
 import MovieView from "../movie-view/movie-view";
+import ProfileView from "../profile-view/profile-view";
 import { LoginView } from "../login-view/login-view";
-import Divider from "../divider-component/divider-component";
 import { RegistrationView } from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
+import Divider from "../divider-component/divider-component";
 
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
@@ -17,79 +19,87 @@ export class MainView extends React.Component {
         super();
         this.state = {
             movies: [],
-            selectedMovie: null,
             user: null,
-            registered: false,
-            isLoggedIn: true,
             favorites: []
         };
     }
 
-    setSelectedMovie(clickedMovie) {
+    onLoggedIn(authData) {
         this.setState({
-            selectedMovie: clickedMovie
-        })
-    }
-
-    onLoggedIn(user) {
-        this.setState({
-            user: user
+            user: authData.user.Username
         });
-    }
-
-    onRegistered(event) {
         this.setState({
-            registered: true
+            favorites: authData.user.FavoriteMovies
         });
+        localStorage.setItem('token', authData.token);
+        localStorage.setItem('user', authData.user.Username);
+        this.getMovies(authData.token);
     }
 
-    render() {
-        const { movies, selectedMovie, user, registered, favorites } = this.state;
-
-        if (!registered) return <RegistrationView onRegistered={event => this.onRegistered(event)} />;
-        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-
-        if (movies.length === 0) { return <div>Empty</div> }
-        return (
-            <>
-                <BootstrapNavbar />
-                {
-                    !selectedMovie ? <Divider title="All Movies" /> : null
-                }
-                <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
-                    {
-                        selectedMovie ?
-                            (
-
-                                <MovieView goBack={() => { this.setSelectedMovie() }} movieData={selectedMovie} />
-                            )
-                            :
-
-                            movies.map(movie => (
-
-                                <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
-                                    <MovieCard movieData={movie} onMovieClick={(movie) => { this.setSelectedMovie(movie) }} />
-                                </Col>
-                            ))
-
-
-                    }
-                </Row >
-                {
-                    favorites.length > 0 ? <Divider title="My Favorites" /> : null
-                }
-            </>
-        )
-    }
-
-    componentDidMount() {
-        axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJGYXZvcml0ZU1vdmllcyI6W10sIl9pZCI6IjYwOGIwMTUxOWRlMjk5MDAxNTFjZGNkYiIsIk5hbWUiOiJKdWxpYW5lIEfDtnJzY2giLCJVc2VybmFtZSI6InVzZXIxIiwiUGFzc3dvcmQiOiIkMmIkMTAkYnhieUJWZVdOYTczNklVaWZvUUhWLmZKZlpYV1FiZTR2bGVIaGVHZFloL2xwVVlnYXZjRkMiLCJFbWFpbCI6ImdvZXJzY2guanVsaWFuZUBnbWFpbC5jb20iLCJCaXJ0aGRheSI6IjE5ODktMTEtMTlUMDA6MDA6MDAuMDAwWiIsIl9fdiI6MCwiaWF0IjoxNjE5NzIyNjIwLCJleHAiOjE2MjAzMjc0MjAsInN1YiI6InVzZXIxIn0.hn9L143-8wDuo0LyZH2Y1zcOJyXe-cXKFFSql-CXwIk` } }
+    getMovies(token) {
+        axios.get("https://myflix-0001.herokuapp.com/movies", { headers: { "Authorization": `Bearer ${token}` } }
         ).then((res) => {
-            console.log(res.data)
             this.setState({ movies: res.data })
         }).catch((e) => {
             console.log(e)
         })
+    };
+
+    logOut() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+        this.setState({
+            user: null
+        });
+    };
+
+
+    render() {
+        const { movies, user } = this.state;
+
+        return (
+            <Router>
+                <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
+                <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+                    <Route exact path="/" render={() => {
+                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                        if (movies.length === 0) { return <div>Loading...</div> }
+                        { movies.length > 0 && <Divider title="All Movies" /> }
+                        return movies.map(movie => (
+                            <Col xs={12} sm={6} md={4} lg={3} xl={2} className="p-3" key={movie._id}>
+                                <MovieCard movieData={movie} />
+                            </Col>
+                        ))
+                    }} />
+
+                    <Route exact path="/register" render={() => {
+                        if (user) return <Redirect to="/" />
+                        return <RegistrationView />
+                    }} />
+
+                    <Route exact path="/movies/:movieId" render={({ match, history }) => {
+                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                        if (movies.length === 0) return <div className="main-view" />;
+                        return <MovieView setFavState={() => this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} user={user} onBackClick={() => history.goBack()} />
+                    }} />
+
+                    <Route exact path="/profile" render={() => {
+                        return <ProfileView logOut={() => this.logOut()} movies={movies} />
+                    }} />
+                </Row >
+            </Router>
+        )
+    }
+
+    componentDidMount() {
+        let accessToken = localStorage.getItem('token');
+        if (accessToken) {
+            this.setState({
+                user: localStorage.getItem('user')
+            });
+            this.getMovies(accessToken);
+        }
     }
 
 }
+
