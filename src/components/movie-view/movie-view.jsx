@@ -45,23 +45,11 @@ function MovieView({ user, movieData, onBackClick, ToggleFavorites }) {
             })
     }
 
-/* After trying for days, I realized that adding movies to Favorites wasn't even part of the Task'
- */    const addFav = () => {
-        const token = localStorage.getItem('token');
-        const user = localStorage.getItem('user');
-        axios.put(`https://myflix-0001.herokuapp.com/users/${user}/movies/${movieData._id}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
-        ).then((res) => {
-            alert("Movies was added to Favorites")
-        }).catch((e) => {
-            console.log(e.message)
-        })
-    };
-
 
     return (
         <>
             {/* This is the title element spanning all Bootstrap columns */}
-            <Col md={12}>
+            <Col className="mt-5" md={12}>
                 <h3>{movieData.Title} ({movieData.Year})</h3>
             </Col>
 

@@ -6,7 +6,6 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import { FormCheck } from 'react-bootstrap';
 import { Link } from "react-router-dom";
 
 
@@ -58,12 +57,12 @@ export function LoginView({ onLoggedIn }) {
 
     return (
         <>
-            <Col xs={8} md={"auto"} className="mr-5">
+            <Col xs={8} md={"auto"} className="mr-5 mt-5">
                 <h1>MyFlix</h1>
                 <p className="tag-line">Discover some of the best movies in cinema history.</p>
             </Col>
 
-            <Col xs={8} md={6} className="p-1">
+            <Col xs={8} md={6} className="p-1 mt-5">
                 <Form>
                     <Form.Group controlId="email">
                         <Form.Label>Username</Form.Label>

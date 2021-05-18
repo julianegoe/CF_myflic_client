@@ -281,7 +281,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
                     })}
 
                     <Link to="/profile">
-                        <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="mt-3">
+                        <Button onClick={updateUserData} as="div" variant="dark" type="submit" className="mt-3 mr-3">
                             Save Changes
                     </Button>
                     </Link>

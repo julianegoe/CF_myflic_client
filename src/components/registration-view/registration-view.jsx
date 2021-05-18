@@ -101,11 +101,11 @@ function RegistrationView({ user, RegisterUser }) {
 
     return (
         <>
-            <Col xs={8} md={"auto"} className="mr-5">
+            <Col xs={8} md={"auto"} className="mr-5 mt-5">
                 <h1>MyFlix</h1>
                 <p className="tag-line">Register to create a new user account.</p>
             </Col>
-            <Col xs={8} md={6} className="p-1">
+            <Col xs={8} md={6} className="p-1 mt-5">
                 <Form>
                     <Form.Group controlId="fullName">
                         <Form.Label>Full Name</Form.Label>

@@ -11,7 +11,7 @@ import MoviesList from "../movie-list/movie-list";
 import RegistrationView from "../registration-view/registration-view";
 import { BootstrapNavbar } from "../bootstrap-navbar/bootstrap-navbar";
 
-import Row from 'react-bootstrap/Row';
+import { Row, Container } from 'react-bootstrap';
 import './main-view.scss';
 
 let mapStateToProps = state => {
@@ -24,17 +24,12 @@ let mapStateToProps = state => {
 export class MainView extends React.Component {
     constructor() {
         super();
-        this.state = {
-            favorites: []
-        };
+
     }
 
     onLoggedIn(authData) {
         let userData = { ...authData.user, Birthday: authData.user.Birthday.substring(0, 10) }
         this.props.SetUser(userData);
-        this.setState({
-            favorites: authData.user.FavoriteMovies
-        });
         localStorage.setItem('token', authData.token);
         localStorage.setItem('user', authData.user.Username);
         this.getMovies(authData.token);
@@ -64,28 +59,31 @@ export class MainView extends React.Component {
         return (
             <Router>
                 <BootstrapNavbar userState={user} logOut={() => this.logOut()} />
-                <Row className="m-5 justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
-                    <Route exact path="/" render={() => {
-                        if (!localUser) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-                        if (movies.length === 0) { return <div>Loading...</div> }
-                        return <MoviesList movies={movies} />
-                    }} />
+                <Container>
+                    <Row className="justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
+                        <Route exact path="/" render={() => {
+                            if (!localUser) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                            if (movies.length === 0) { return <div>Loading...</div> }
+                            return <MoviesList movies={movies} />
+                        }} />
 
-                    <Route exact path="/register" render={() => {
-                        if (localUser) return <Redirect to="/" />
-                        return <RegistrationView />
-                    }} />
+                        <Route exact path="/register" render={() => {
+                            if (localUser) return <Redirect to="/" />
+                            return <RegistrationView />
+                        }} />
 
-                    <Route exact path="/movies/:movieId" render={({ match, history }) => {
-                        if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-                        if (movies.length === 0) return <div className="main-view" />;
-                        return <MovieView setFavState={() => this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
-                    }} />
+                        <Route exact path="/movies/:movieId" render={({ match, history }) => {
+                            if (!user) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
+                            if (movies.length === 0) return <div className="main-view" />;
+                            return <MovieView setFavState={() => this.setState} movieData={movies.find(movie => movie._id === match.params.movieId)} onBackClick={() => history.goBack()} />
+                        }} />
 
-                    <Route exact path="/profile" render={() => {
-                        return <ProfileView logOut={() => this.logOut()} movies={movies} user={user} />
-                    }} />
-                </Row >
+                        <Route exact path="/profile" render={() => {
+                            return <ProfileView logOut={() => this.logOut()} movies={movies} user={user} />
+                        }} />
+
+                    </Row >
+                </Container>
             </Router>
         )
     }
