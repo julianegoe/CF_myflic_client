@@ -163,7 +163,7 @@ function RegistrationView({ user, SetUser, ValidateUser }) {
                     </Button>
                     <Link to="/">
                         <Button as="div" variant="secondary" type="submit" className="m-3">
-                            Login
+                            I already have an account
                     </Button>
                     </Link>
 
