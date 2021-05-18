@@ -178,7 +178,7 @@ RegistrationView.propTypes = {
     onRegistered: PropTypes.func
 }
 
-/* PropTypes.shape(
+PropTypes.shape(
     {
         Name: PropTypes.string.isRequired,
         Username: PropTypes.string.isRequired,
@@ -187,6 +187,6 @@ RegistrationView.propTypes = {
         Birthday: PropTypes.string.isRequired
     }
 )
-} */
+
 
 export default connect(mapStateToProps, { RegisterUser, SetUser, ValidateUser })(RegistrationView)

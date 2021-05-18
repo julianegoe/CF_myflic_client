@@ -49515,6 +49515,13 @@ try {
   RegistrationView.propTypes = {
     onRegistered: _propTypesDefault.default.func
   };
+  _propTypesDefault.default.shape({
+    Name: _propTypesDefault.default.string.isRequired,
+    Username: _propTypesDefault.default.string.isRequired,
+    Email: _propTypesDefault.default.string.isRequired,
+    Password: _propTypesDefault.default.string.isRequired,
+    Birthday: _propTypesDefault.default.string.isRequired
+  });
   exports.default = _reactRedux.connect(mapStateToProps, {
     RegisterUser: _actionsActions.RegisterUser,
     SetUser: _actionsActions.SetUser,
