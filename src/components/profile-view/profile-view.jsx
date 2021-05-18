@@ -314,6 +314,13 @@ ProfileView.propTypes = {
         ImageUrl: PropTypes.string.isRequired,
         Featured: PropTypes.bool.isRequired
     })).isRequired,
+    users: PropTypes.shape({
+        Name: PropTypes.string.isRequired,
+        Username: PropTypes.string.isRequired,
+        Email: PropTypes.string.isRequired,
+        Password: PropTypes.string.isRequired,
+        Birthday: PropTypes.string.isRequired,
+    }).isRequired,
     logOut: PropTypes.func.isRequired
 };
 

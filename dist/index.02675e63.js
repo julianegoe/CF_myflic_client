@@ -48555,6 +48555,13 @@ try {
       ImageUrl: _propTypesDefault.default.string.isRequired,
       Featured: _propTypesDefault.default.bool.isRequired
     })).isRequired,
+    users: _propTypesDefault.default.shape({
+      Name: _propTypesDefault.default.string.isRequired,
+      Username: _propTypesDefault.default.string.isRequired,
+      Email: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired,
+      Birthday: _propTypesDefault.default.string.isRequired
+    }).isRequired,
     logOut: _propTypesDefault.default.func.isRequired
   };
   exports.default = _reactRedux.connect(mapStateToProps, {
@@ -49087,7 +49094,13 @@ try {
   _s(LoginView, "qmdlWpKo3EwrboAVvoFg+sz3n+M=");
   _c = LoginView;
   LoginView.propTypes = {
-    onLoggedIn: _propTypesDefault.default.func
+    onLoggedIn: _propTypesDefault.default.func,
+    ValidateUser: _propTypesDefault.default.func,
+    SetUser: _propTypesDefault.default.func,
+    users: _propTypesDefault.default.shape({
+      Username: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired
+    })
   };
   exports.default = _reactRedux.connect(mapStateToProps, {
     ValidateUser: _actionsActions.ValidateUser,
@@ -49131,7 +49144,7 @@ try {
       user: state.user
     };
   };
-  function RegistrationView({user, RegisterUser, SetUser, ValidateUser}) {
+  function RegistrationView({user, SetUser, ValidateUser}) {
     _s();
     const [passwordRepeat, setPasswordRepeat] = _react.useState("");
     const [nameErr, setNameErr] = _react.useState({});
@@ -49513,15 +49526,16 @@ try {
   _s(RegistrationView, "r+SvRXfhrMyUPyb6IsO+OoY/NiI=");
   _c = RegistrationView;
   RegistrationView.propTypes = {
-    onRegistered: _propTypesDefault.default.func
+    ValidateUser: _propTypesDefault.default.func,
+    SetUser: _propTypesDefault.default.func,
+    users: _propTypesDefault.default.shape({
+      Name: _propTypesDefault.default.string.isRequired,
+      Username: _propTypesDefault.default.string.isRequired,
+      Email: _propTypesDefault.default.string.isRequired,
+      Password: _propTypesDefault.default.string.isRequired,
+      Birthday: _propTypesDefault.default.string.isRequired
+    })
   };
-  _propTypesDefault.default.shape({
-    Name: _propTypesDefault.default.string.isRequired,
-    Username: _propTypesDefault.default.string.isRequired,
-    Email: _propTypesDefault.default.string.isRequired,
-    Password: _propTypesDefault.default.string.isRequired,
-    Birthday: _propTypesDefault.default.string.isRequired
-  });
   exports.default = _reactRedux.connect(mapStateToProps, {
     RegisterUser: _actionsActions.RegisterUser,
     SetUser: _actionsActions.SetUser,

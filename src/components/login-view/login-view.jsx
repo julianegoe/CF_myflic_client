@@ -122,7 +122,13 @@ function LoginView({ onLoggedIn, user, ValidateUser, SetUser }) {
 }
 
 LoginView.propTypes = {
-    onLoggedIn: PropTypes.func
+    onLoggedIn: PropTypes.func,
+    ValidateUser: PropTypes.func,
+    SetUser: PropTypes.func,
+    users: PropTypes.shape({
+        Username: PropTypes.string.isRequired,
+        Password: PropTypes.string.isRequired,
+    })
 };
 
 export default connect(mapStateToProps, { ValidateUser, SetUser })(LoginView)

@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-function RegistrationView({ user, RegisterUser, SetUser, ValidateUser }) {
+function RegistrationView({ user, SetUser, ValidateUser }) {
     const [passwordRepeat, setPasswordRepeat] = useState("")
     const [nameErr, setNameErr] = useState({});
     const [usernameErr, setUsernameErr] = useState({});
@@ -175,18 +175,15 @@ function RegistrationView({ user, RegisterUser, SetUser, ValidateUser }) {
 }
 
 RegistrationView.propTypes = {
-    onRegistered: PropTypes.func
-}
-
-PropTypes.shape(
-    {
+    ValidateUser: PropTypes.func,
+    SetUser: PropTypes.func,
+    users: PropTypes.shape({
         Name: PropTypes.string.isRequired,
         Username: PropTypes.string.isRequired,
         Email: PropTypes.string.isRequired,
         Password: PropTypes.string.isRequired,
-        Birthday: PropTypes.string.isRequired
-    }
-)
-
+        Birthday: PropTypes.string.isRequired,
+    })
+}
 
 export default connect(mapStateToProps, { RegisterUser, SetUser, ValidateUser })(RegistrationView)
