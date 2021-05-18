@@ -1,23 +1,33 @@
 import React from "react";
-import PropTypes from 'prop-types';
+import PropTypes from "prop-types";
+import { Container, Card } from "react-bootstrap";
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
+import "./movie-card.scss";
+import Image from 'react-bootstrap/Image';
 
-export class MovieCard extends React.Component {
-    render() {
-        const { movieData, onMovieClick } = this.props;
-        return <div className="movie-card" onClick={() => { onMovieClick(movieData) }}>
-            <h1>{movieData.Title}</h1>
-            <img className="movie-poster" src={movieData.ImageUrl} alt="movie poster" />
-            <div className="movie-info">
-                <p>{"Year: " + movieData.Year}</p>
-                <p>{"Director: " + movieData.Director.Name}</p>
-            </div>
-        </div >
+export default function MovieCard({ movieData, onMovieClick }) {
 
-    }
+    return (
+        <>
+            <OverlayTrigger
+                delay="100"
+                placement={'top'}
+                overlay={
+                    <Tooltip id='tooltip-top'>
+                        {movieData.Title} ({movieData.Year})
+                    </Tooltip>
+                }
+            >
+                <Image onClick={() => { onMovieClick(movieData) }} className="movie-image" src={movieData.ImageUrl} alt={movieData.Title} />
+            </OverlayTrigger>
+        </>
+    );
 }
 
+
 MovieCard.propTypes = {
-    movieData: PropTypes.exact({
+    movieData: PropTypes.shape({
         Title: PropTypes.string.isRequired,
         Description: PropTypes.string.isRequired,
         Director: PropTypes.shape({

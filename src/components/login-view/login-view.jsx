@@ -1,30 +1,39 @@
 import React, { useState } from "react";
 import PropTypes from 'prop-types';
+import './login-view.scss';
+import Form from 'react-bootstrap/Form';
+import Button from 'react-bootstrap/Button';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-export function LoginView(props) {
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+export function LoginView({ onLoggedIn }) {
+    const [username, setUsername] = useState("dummy");
+    const [password, setPassword] = useState("dummy");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(username, password);
-        props.onLoggedIn(username);
+        onLoggedIn(username);
     }
 
     return (
-        <div className="login-component">
-            <form>
-                <div className="login-username">
-                    <label>Username:</label><br />
-                    <input type="text" id="username" name="username" value={username} onChange={e => setUsername(e.target.value)} /><br />
-                </div>
-                <div className="login-password">
-                    <label>Password:</label><br />
-                    <input type="password" id="pasword" name="password" value={password} onChange={e => setPassword(e.target.value)} /><br />
-                </div>
-                <button type="submit" onClick={handleSubmit}>Login</button>
-            </form>
-        </div>)
+        <Row className="m-5 justify-content-xs-center justify-content-sm-center justify-content-md-center justify-content-lg-center">
+            <Col xs={8} md={6} className="p-1">
+                <Form>
+                    <Form.Group controlId="email">
+                        <Form.Label>Email address</Form.Label>
+                        <Form.Control type="email" placeholder="Enter email" />
+                    </Form.Group>
+
+                    <Form.Group controlId="password">
+                        <Form.Label>Password</Form.Label>
+                        <Form.Control type="password" placeholder="Password" />
+                    </Form.Group>
+                    <Button onClick={handleSubmit} variant="dark" type="submit">
+                        Login
+                    </Button>
+                </Form>
+            </Col>
+        </Row>)
 
 }
 

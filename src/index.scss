@@ -1,84 +1,20 @@
-$color: steelblue;
-$font-size: 2rem;
+@import "bootstrap/scss/bootstrap";
+$font-size: 1rem;
+$primary-color: #1A1A1D;
+$secondary-color: #950740;
+$tertiary-color: #6F2232;
+$quariary-color: #4E4E50;
+$auxiliary-color: #C3073F;
+$font-color: white;
+
 
 * {
   box-sizing: border-box;
-}
-
-body {
-  font-family: Arial, Helvetica, sans-serif
-}
-
-input {
-  width: 50%;
-  padding: 12px 20px;
-  margin: 10px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-sizing: border-box;
-}
-
-.my-flix {
-  color: $color;
   font-size: $font-size;
 }
 
-.main-view {
-  display: grid;
-  grid-template-columns: 300px 300px 300px;
-  grid-gap: 60px;
-  margin: 80px;
-  justify-content: center;
+.app-container {
+  color: $font-color;
+  background-color: $primary-color;
 
-}
-
-.info-section {
-  font-size: medium;
-  display: flex;
-  flex-direction: row;
-}
-
-.movie-section {
-  display: flex;
-  flex-direction: row;
-  margin-top: 10px;
-}
-
-.movie-description {
-  max-width: 500px;
-  margin-left: 30px;
-}
-
-button {
-  font-size: larger;
-  padding: 5px;
-  margin-top: 10px;
-  cursor: pointer;
-}
-
-.movie-card {
-  text-align: center;
-  cursor: pointer;
-}
-
-.movie-poster {
-  max-width: 250px;
-}
-
-.login-component {
-  margin: 200px;
-  text-align: center;
-  font-size: $font-size;
-  border-radius: 5px;
-  background-color: #f2f2f2;
-  padding: 30px;
-}
-
-.login-username {
-  padding: 10px;
-}
-
-.login-password {
-  padding: 10px;
 }
