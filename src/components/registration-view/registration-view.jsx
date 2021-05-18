@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { connect } from 'react-redux';
-import { RegisterUser } from '../../actions/actions';
+import { RegisterUser, SetUser, ValidateUser } from '../../actions/actions';
 import PropTypes from "prop-types";
 import axios from 'axios'
 import './registration-view.scss';
@@ -15,7 +15,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-function RegistrationView({ user, RegisterUser }) {
+function RegistrationView({ user, RegisterUser, SetUser, ValidateUser }) {
     const [passwordRepeat, setPasswordRepeat] = useState("")
     const [nameErr, setNameErr] = useState({});
     const [usernameErr, setUsernameErr] = useState({});
@@ -23,12 +23,14 @@ function RegistrationView({ user, RegisterUser }) {
     const [passwordErr, setPasswordErr] = useState({});
     const [birthdayErr, setBirthdayErr] = useState({});
 
+    useEffect(() => {
+        SetUser({ Username: "", Name: "", Email: "", Password: "", Birthday: "", FavoriteMovies: [] })
+    }, [])
 
     handleSubmit = (e) => {
         e.preventDefault();
         let isValid = formValidation();
         if (isValid) {
-            console.log(user)
             axios.post("https://myflix-0001.herokuapp.com/users",
                 {
                     Name: user.Name,
@@ -56,7 +58,6 @@ function RegistrationView({ user, RegisterUser }) {
         let isValid = true;
 
         if (user.Name.trim().length === 0) {
-            console.log(user.Name)
             nameErr.nameIsEmpty = "Please enter a name.";
             isValid = false;
         }
@@ -109,7 +110,7 @@ function RegistrationView({ user, RegisterUser }) {
                 <Form>
                     <Form.Group controlId="fullName">
                         <Form.Label>Full Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter full name" onChange={e => RegisterUser(e.target.value, "Name")} />
+                        <Form.Control type="text" placeholder="Enter full name" onChange={e => ValidateUser(e.target.value, "Name")} />
                     </Form.Group>
 
                     {Object.keys(nameErr).map((key) => {
@@ -118,7 +119,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" onChange={e => RegisterUser(e.target.value, "Username")} />
+                        <Form.Control type="text" placeholder="Enter username" onChange={e => ValidateUser(e.target.value, "Username")} />
                     </Form.Group>
 
                     {Object.keys(usernameErr).map((key) => {
@@ -127,7 +128,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="email">
                         <Form.Label>Email Address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" onChange={e => RegisterUser(e.target.value, "Email")} />
+                        <Form.Control type="email" placeholder="Enter email" onChange={e => ValidateUser(e.target.value, "Email")} />
                     </Form.Group>
 
                     {Object.keys(emailErr).map((key) => {
@@ -136,7 +137,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" onChange={e => RegisterUser(e.target.value, "Password")} />
+                        <Form.Control type="password" placeholder="Password" onChange={e => ValidateUser(e.target.value, "Password")} />
                     </Form.Group>
 
                     <Form.Group controlId="password-repeat">
@@ -150,7 +151,7 @@ function RegistrationView({ user, RegisterUser }) {
 
                     <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" onChange={e => RegisterUser(e.target.value, "Birthday")} />
+                        <Form.Control type="date" onChange={e => ValidateUser(e.target.value, "Birthday")} />
                     </Form.Group>
 
                     {Object.keys(birthdayErr).map((key) => {
@@ -188,4 +189,4 @@ RegistrationView.propTypes = {
 )
 } */
 
-export default connect(mapStateToProps, { RegisterUser })(RegistrationView)
+export default connect(mapStateToProps, { RegisterUser, SetUser, ValidateUser })(RegistrationView)

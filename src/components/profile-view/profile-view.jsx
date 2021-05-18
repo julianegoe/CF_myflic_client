@@ -1,7 +1,7 @@
 import axios from 'axios';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { UpdateUser, SetUser, ToggleFavorites } from '../../actions/actions';
+import { ValidateUser, SetUser, ToggleFavorites } from '../../actions/actions';
 import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
@@ -23,10 +23,10 @@ const mapStateToProps = (state) => {
     }
 }
 
-function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorites }) {
+function ProfileView({ movies, logOut, ValidateUser, SetUser, user, ToggleFavorites }) {
     const [isSuccessful, setisSuccessful] = useState(false); // used for Snackback that appears when update is successful
 
-    const [favorites, setFavorites] = useState([{}]); // array of movie objects that have been added to FavoriteMovies Array
+    const [favorites, setFavorites] = useState([]); // array of movie objects that have been added to FavoriteMovies Array
 
     const [passwordRepeat, setPasswordRepeat] = useState("");
 
@@ -46,20 +46,22 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
             .then((res) => {
                 const userData = { ...res.data, Birthday: res.data.Birthday.substring(0, 10) }
                 SetUser(userData);
-                getFavs(userData.FavoriteMovies)
             }).catch((e) => {
                 console.log(e)
             })
     }, [])
 
-    /* converts Array of IDs into Object on movies */
+    useEffect(() => {
+        getFavs(user.FavoriteMovies)
+    }, [])
+
+    /* converts Array of IDs into Object of movies */
     const getFavs = (favs) => {
         let favoriteMovieList = [];
         movies.forEach((movie) => {
             favs.includes(movie._id) ? favoriteMovieList.push(movie) : favoriteMovieList
         });
         setFavorites(favoriteMovieList)
-        console.log(favoriteMovieList)
     };
 
 
@@ -86,11 +88,9 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
     }
 
     const toggleFav = (movieId) => {
-        console.log(movieId);
         user.FavoriteMovies.includes(movieId) ?
             axios.delete(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, { headers: { "Authorization": `Bearer ${token}` } }
             ).then((res) => {
-                console.log(res.data.FavoriteMovies);
                 ToggleFavorites(res.data.FavoriteMovies);
                 getFavs(res.data.FavoriteMovies)
             }).catch((e) => { console.log(e) })
@@ -99,7 +99,6 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
 
             axios.put(`https://myflix-0001.herokuapp.com/users/${localUsername}/movies/${movieId}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
             ).then((res) => {
-                console.log(res.data.FavoriteMovies);
                 ToggleFavorites(res.data.FavoriteMovies)
                 getFavs(res.data.FavoriteMovies)
             }).catch((e) => {
@@ -199,22 +198,22 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
                         <p className="tag-line">Add Movies to your Favorites List.</p>
 
                         <Row>
-                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key="1">
                                 <div className="placeholder-favorite">
                                     <div></div>
                                 </div>
                             </Col>
-                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key="2">
                                 <div className="placeholder-favorite">
                                     <div></div>
                                 </div>
                             </Col>
-                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key="3">
                                 <div className="placeholder-favorite">
                                     <div></div>
                                 </div>
                             </Col>
-                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3">
+                            <Col xs={6} sm={4} md={4} lg={3} xl={3} className="p-3" key="4">
                                 <div className="placeholder-favorite">
                                     <div></div>
                                 </div>
@@ -231,7 +230,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
                 <Form>
                     <Form.Group controlId="Name">
                         <Form.Label>Name</Form.Label>
-                        <Form.Control type="text" placeholder="Enter full name" defaultValue={user.Name} onChange={e => UpdateUser(e.target.value, "Name")} />
+                        <Form.Control type="text" placeholder="Enter full name" defaultValue={user.Name} onChange={e => ValidateUser(e.target.value, "Name")} />
 
                     </Form.Group>
 
@@ -241,7 +240,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
 
                     <Form.Group controlId="username">
                         <Form.Label>Username</Form.Label>
-                        <Form.Control type="text" placeholder="Enter username" defaultValue={user.Username} onChange={e => UpdateUser(e.target.value, "Username")} />
+                        <Form.Control type="text" placeholder="Enter username" defaultValue={user.Username} onChange={e => ValidateUser(e.target.value, "Username")} />
                     </Form.Group>
 
                     {Object.keys(usernameErr).map((key) => {
@@ -250,7 +249,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
 
                     <Form.Group controlId="email">
                         <Form.Label>Email Address</Form.Label>
-                        <Form.Control type="email" placeholder="Enter email" defaultValue={user.Email} onChange={e => UpdateUser(e.target.value, "Email")} />
+                        <Form.Control type="email" placeholder="Enter email" defaultValue={user.Email} onChange={e => ValidateUser(e.target.value, "Email")} />
                     </Form.Group>
 
                     {Object.keys(emailErr).map((key) => {
@@ -259,7 +258,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
 
                     <Form.Group controlId="password">
                         <Form.Label>Password</Form.Label>
-                        <Form.Control type="password" placeholder="Password" onChange={e => UpdateUser(e.target.value, "Password")} />
+                        <Form.Control type="password" placeholder="Password" onChange={e => ValidateUser(e.target.value, "Password")} />
                     </Form.Group>
 
                     <Form.Group controlId="password-repeat">
@@ -273,7 +272,7 @@ function ProfileView({ movies, logOut, UpdateUser, SetUser, user, ToggleFavorite
 
                     <Form.Group controlId="birthday">
                         <Form.Label>Birthday</Form.Label>
-                        <Form.Control type="date" value={user.Birthday} onChange={e => UpdateUser(e.target.value, "Birthday")} />
+                        <Form.Control type="date" value={user.Birthday} onChange={e => ValidateUser(e.target.value, "Birthday")} />
                     </Form.Group>
 
                     {Object.keys(birthdayErr).map((key) => {
@@ -318,4 +317,4 @@ ProfileView.propTypes = {
     logOut: PropTypes.func.isRequired
 };
 
-export default connect(mapStateToProps, { UpdateUser, SetUser, ToggleFavorites })(ProfileView)
+export default connect(mapStateToProps, { ValidateUser, SetUser, ToggleFavorites })(ProfileView)

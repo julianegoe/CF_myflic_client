@@ -1,7 +1,7 @@
 // src/reducers/reducers.js
 import { combineReducers } from 'redux';
 
-import { SET_USER, SET_FILTER, SET_MOVIES, UPDATE_USER, LOGOUT_USER, REGISTER_USER, TOGGLE_FAVORITE } from '../actions/actions';
+import { SET_USER, SET_FILTER, SET_MOVIES, LOGOUT_USER, TOGGLE_FAVORITE, VALIDATE_USER } from '../actions/actions';
 
 const visibilityFilter = (state = '', action) => {
     switch (action.type) {
@@ -19,29 +19,36 @@ const movies = (state = [], action) => {
     }
 };
 
-const user = (state = {Username: "", Name: "", Email: "", Password: "", Birthday: "", FavoriteMovies: []}, action) => {
+const user = (state = {
+    Username: "", 
+    Name: "", 
+    Email: "", 
+    Password: "", 
+    Birthday: "", 
+    FavoriteMovies: []} , action) => {
     const { field, value } = action;
     switch (action.type) {
-        case REGISTER_USER: 
-        return {
-            ...state,
-            [field] : value
-          };
 
         case SET_USER: return value;
 
-        case LOGOUT_USER: return null;
-
-        case UPDATE_USER: 
-        return {
+        case VALIDATE_USER: return {
             ...state,
             [field] : value
           };
+
+        case LOGOUT_USER: return {
+            Username: "", 
+            Name: "", 
+            Email: "", 
+            Password: "", 
+            Birthday: "", 
+            FavoriteMovies: []} ;
+
 
         case TOGGLE_FAVORITE:
             return {
                 ...state,
-                [field] : [...action.value]
+                [field] : [...value]
             }
 
         default: return state

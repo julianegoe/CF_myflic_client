@@ -12,17 +12,10 @@ export const TOGGLE_FAVORITE = "Toggle favorite";
 
 /* Users */
 
-export const REGISTER_USER = "Register User"
+export const VALIDATE_USER = "Validate User";
 export const SET_USER = "Set user";
 export const LOGOUT_USER = "Logout user"
-export const UPDATE_USER = "Update user";
 export const DELETE_USER = "Delete user";
-
-/*
-const VALIDATE_REGISTER_FORM = "Validate register form";
-const VALIDATE_LOGIN_FORM = "Validate login form";
-const VALIDATE_UPDATE_FORM = "Validate update form";
-*/
 
 
 // Action Creators
@@ -50,8 +43,9 @@ export const ToggleFavorites = (value, field = "FavoriteMovies") => ({
 	field
 });
 
-export const RegisterUser = (value = {Username: "", Name: "", Email: "", Password: "", Birthday: ""}, field = null) => ({
-	type: REGISTER_USER,
+
+export const ValidateUser = (value = {Username: "", Name: "", Email: "", Password: "", Birthday: ""}, field = null) => ({
+	type: VALIDATE_USER,
 	value,
 	field
 });

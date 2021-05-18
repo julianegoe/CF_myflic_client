@@ -30,7 +30,6 @@ function MovieView({ user, movieData, onBackClick, ToggleFavorites }) {
         user.FavoriteMovies.includes(movieData._id) ?
             axios.delete(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, { headers: { "Authorization": `Bearer ${token}` } }
             ).then((res) => {
-                console.log(res.data.FavoriteMovies);
                 ToggleFavorites(res.data.FavoriteMovies);
             }).catch((e) => { console.log(e) })
 
@@ -38,7 +37,6 @@ function MovieView({ user, movieData, onBackClick, ToggleFavorites }) {
 
             axios.put(`https://myflix-0001.herokuapp.com/users/${localUser}/movies/${movieData._id}`, {}, { headers: { "Authorization": `Bearer ${token}` } }
             ).then((res) => {
-                console.log(res.data.FavoriteMovies);
                 ToggleFavorites(res.data.FavoriteMovies)
             }).catch((e) => {
                 console.log(e.message)

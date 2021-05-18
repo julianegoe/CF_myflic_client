@@ -21,7 +21,6 @@ function MoviesList(props) {
         })
     }
 
-    console.log(filteredMovies)
 
     if (!movies) { return (<div className="main-view">Empty</div>) }
 
