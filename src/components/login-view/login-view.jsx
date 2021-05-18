@@ -41,7 +41,7 @@ function LoginView({ onLoggedIn, user, ValidateUser, SetUser }) {
         }
     };
 
-    const formValidation = (statusCode) => {
+    const formValidation = (statusCode = 200) => {
         const usernameErr = {};
         const passwordErr = {};
         const httpErr = {};
