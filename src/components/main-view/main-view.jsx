@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Route, Redirect } from "react-router-dom";
 import ReactDom, { render } from "react-dom";
 import MovieView from "../movie-view/movie-view";
 import ProfileView from "../profile-view/profile-view";
+import Loader from "../loader-component/loader-component";
 import LoginView from "../login-view/login-view";
 import MoviesList from "../movie-list/movie-list";
 import RegistrationView from "../registration-view/registration-view";
@@ -63,7 +64,7 @@ export class MainView extends React.Component {
                     <Row className="justify-content-xs-start justify-content-sm-start justify-content-md-start justify-content-lg-start">
                         <Route exact path="/" render={() => {
                             if (!localUser) return <LoginView onLoggedIn={user => this.onLoggedIn(user)} />;
-                            if (movies.length === 0) { return <div>Loading...</div> }
+                            if (movies.length === 0) { return <Loader /> }
                             return <MoviesList movies={movies} />
                         }} />
 
