@@ -6,7 +6,6 @@ import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row'
-import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button';
 import { Link } from "react-router-dom";
 import Divider from '../divider-component/divider-component';

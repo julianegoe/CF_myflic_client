@@ -29,7 +29,11 @@ To build the app run
 ```
 npm start
 ```
+
 ## Build Process
 
 The build is done with [Parcel v2](https://www.npmjs.com/package/parcel#transformers)
 
+## Live Demo
+
+https://app-myflix.netlify.app/
